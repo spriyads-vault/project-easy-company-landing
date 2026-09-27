@@ -102,3 +102,28 @@ test.describe("Legal pages", () => {
     await expect(page.locator("#specifications")).toBeInViewport();
   });
 });
+
+test.describe("Docs page", () => {
+  test("header Docs link opens /docs and is marked active", async ({ page }) => {
+    await page.goto("/");
+    const nav = page.getByRole("navigation", { name: "Primary Navigation" });
+    await expect(nav.getByRole("link", { name: "Docs" })).not.toHaveAttribute("aria-current", "page");
+
+    await nav.getByRole("link", { name: "Docs" }).click();
+    await expect(page).toHaveURL(/\/docs$/);
+    await expect(page.getByRole("heading", { level: 1, name: /System Architecture/ })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Docs" })).toHaveAttribute("aria-current", "page");
+  });
+
+  for (const id of ["deterministic-gates", "regulatory-standards"]) {
+    test(`sidebar link #${id} scrolls to its section`, async ({ page }) => {
+      await page.goto("/docs");
+      const sidebar = page.getByRole("navigation", { name: "Documentation" });
+      await sidebar.getByRole("link", { name: `#${id}` }).click();
+
+      await expect(page).toHaveURL(new RegExp(`/docs#${id}$`));
+      await expect(page.locator(`#${id}`)).toBeInViewport();
+      await expect(sidebar.getByRole("link", { name: `#${id}` })).toHaveAttribute("aria-current", "location");
+    });
+  }
+});
