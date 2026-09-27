@@ -10,6 +10,7 @@ const LINK =
 const SECTION_LINKS = [
   { href: "/#thesis", label: "Thesis" },
   { href: "/#pipeline", label: "System" },
+  { href: "/#specifications", label: "Specifications" },
 ];
 
 export default function NavLinks() {
@@ -18,9 +19,9 @@ export default function NavLinks() {
   return (
     <>
       {SECTION_LINKS.map(({ href, label }) => (
-        <a key={href} href={href} className={`${LINK} text-muted-2 hover:text-paper`}>
+        <Link key={href} href={href} className={`${LINK} text-muted-2 hover:text-paper`}>
           {label}
-        </a>
+        </Link>
       ))}
       <Link
         href="/docs"

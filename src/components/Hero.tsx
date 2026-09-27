@@ -106,9 +106,8 @@ function TerminalPreview() {
 export default function Hero() {
   return (
     <section
-      id="thesis"
       aria-labelledby="hero-title"
-      className="scroll-mt-(--header-h) flex min-h-[85vh] w-full flex-wrap border-b border-ink"
+      className="flex min-h-[85vh] w-full flex-wrap border-b border-ink"
     >
       <div className="relative flex min-w-0 flex-[1_1_520px] flex-col justify-center border-r border-ink bg-paper px-[clamp(48px,7vw,96px)] py-20">
         <div

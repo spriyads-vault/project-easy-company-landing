@@ -1,6 +1,15 @@
 import { expect, test, type Page } from "@playwright/test";
 
-// The section's top edge should sit flush under the sticky header, not behind it.
+// Offsets (px) between the sticky header's bottom edge and each anchor target once scrolled.
+// scroll-mt-32 (128px) minus the 65px header leaves 63px; the rest sit flush.
+const HEADER_GAP: Record<string, number> = {
+  thesis: 63,
+  pipeline: 63,
+  specifications: 63,
+  architecture: 0,
+  faq: 0,
+};
+
 async function expectBelowStickyHeader(page: Page, id: string) {
   const section = page.locator(`#${id}`);
   await expect(section).toBeInViewport();
@@ -8,9 +17,9 @@ async function expectBelowStickyHeader(page: Page, id: string) {
     .poll(async () => {
       const header = await page.locator("header").boundingBox();
       const target = await section.boundingBox();
-      return header && target ? Math.abs(target.y - (header.y + header.height)) : Infinity;
+      return header && target ? Math.round(target.y - (header.y + header.height)) : null;
     })
-    .toBeLessThanOrEqual(1);
+    .toBe(HEADER_GAP[id]);
 }
 
 test.describe("Crado landing page", () => {
@@ -27,6 +36,7 @@ test.describe("Crado landing page", () => {
   for (const { label, id } of [
     { label: "Thesis", id: "thesis" },
     { label: "System", id: "pipeline" },
+    { label: "Specifications", id: "specifications" },
   ]) {
     test(`nav link "${label}" scrolls to #${id}`, async ({ page }) => {
       await page.goto("/");
@@ -39,17 +49,23 @@ test.describe("Crado landing page", () => {
     });
   }
 
-  for (const id of ["thesis", "pipeline", "architecture", "specifications", "faq"]) {
-    test(`/#${id} from /docs lands on the section, clear of the sticky header`, async ({ page }) => {
+  for (const { label, id } of [
+    { label: "Thesis", id: "thesis" },
+    { label: "System", id: "pipeline" },
+    { label: "Specifications", id: "specifications" },
+  ]) {
+    test(`header "${label}" from /docs routes to /#${id}, clear of the sticky header`, async ({ page }) => {
       await page.goto("/docs");
-      await page.evaluate((hash) => {
-        const a = document.createElement("a");
-        a.href = `/#${hash}`;
-        document.body.appendChild(a);
-        a.click();
-      }, id);
+      await page.getByRole("navigation", { name: "Primary Navigation" }).getByRole("link", { name: label }).click();
 
       await expect(page).toHaveURL(new RegExp(`/#${id}$`));
+      await expectBelowStickyHeader(page, id);
+    });
+  }
+
+  for (const id of ["thesis", "pipeline", "specifications", "architecture", "faq"]) {
+    test(`direct load of /#${id} lands on the section`, async ({ page }) => {
+      await page.goto(`/#${id}`);
       await expectBelowStickyHeader(page, id);
     });
   }

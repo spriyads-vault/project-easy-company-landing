@@ -35,12 +35,12 @@ const Num = ({ children }: { children: ReactNode }) => <span className="text-amb
 
 export default function Pipeline() {
   return (
-    <section id="pipeline" className="scroll-mt-(--header-h) border-t border-rule bg-mint">
+    <section className="border-t border-rule bg-mint">
       <div className="mx-auto flex max-w-[1264px] flex-col gap-16 px-8 py-24">
         <h2 className="m-0 font-display text-[clamp(48px,7.4vw,112px)] leading-[0.95] font-bold tracking-[-0.05em] text-ink">
           3x Faster. Zero Regressions.
         </h2>
-        <div className="flex flex-wrap gap-8 border-t border-ink pt-8">
+        <div id="thesis" className="flex scroll-mt-32 flex-wrap gap-8 border-t border-ink pt-8">
           <h3 className="m-0 max-w-[14ch] flex-[1_1_380px] font-display text-[clamp(30px,3vw,36px)] leading-[1.05] font-bold tracking-[-0.05em] text-ink">
             Engineered for Certainty, Not Probability.
           </h3>
@@ -52,8 +52,9 @@ export default function Pipeline() {
           </p>
         </div>
         <div
+          id="pipeline"
           aria-hidden="true"
-          className="flex flex-wrap gap-6 font-mono tabular-nums [font-variant-ligatures:none]"
+          className="flex scroll-mt-32 flex-wrap gap-6 font-mono tabular-nums [font-variant-ligatures:none]"
         >
           <CodePanel
             label="[01] UNSTRUCTURED EXTRACTION"

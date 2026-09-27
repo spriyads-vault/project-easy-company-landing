@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 flex h-(--header-h) w-full items-center justify-between gap-6 border-b border-ink bg-night px-6">
       <CalEmbed />
-      <Link href="/#thesis" aria-label="Crado home" className="flex">
+      <Link href="/" aria-label="Crado home" className="flex">
         <Image
           src="/assets/crado-logo.png"
           alt="Crado - Enterprise Hardware Compliance Automation Logo"
