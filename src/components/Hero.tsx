@@ -120,12 +120,11 @@ export default function Hero() {
           id="hero-title"
           className="m-0 max-w-[11ch] font-display text-[clamp(52px,5.6vw,72px)] leading-[1.05] font-bold tracking-[-0.05em] text-balance text-ink"
         >
-          Hardware compliance in engineering loops.
+          The Deterministic Verification Engine.
         </h1>
         <p className="mt-6 max-w-[32rem] text-lg leading-7 text-pretty text-muted">
-          We abstract the regulatory layer so your team can focus on physical architecture. Crado
-          parses unstructured chamber logs and maps them rigidly to hard regulatory
-          clauses—compressing EMC cycles by 3x.
+          Resolving chaotic test data into strict regulatory logic&#8288;—bringing hardware compliance
+          directly into the engineering loop.
         </p>
         <div className="mt-10 flex">
           <BookPilotButton

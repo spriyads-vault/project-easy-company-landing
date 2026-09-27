@@ -28,7 +28,7 @@ test.describe("Crado landing page", () => {
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle(/Crado — Deterministic Hardware Compliance Engine/);
     await expect(
-      page.getByRole("heading", { level: 1, name: "Hardware compliance in engineering loops." }),
+      page.getByRole("heading", { level: 1, name: "The Deterministic Verification Engine." }),
     ).toBeVisible();
     await expect(page.getByRole("img", { name: /Crado - Enterprise Hardware/ })).toBeVisible();
   });
