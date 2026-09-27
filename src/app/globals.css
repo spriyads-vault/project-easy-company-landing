@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  --color-ink: #2a3441;
+  --color-paper: #f4f2ec;
+  --color-paper-light: #fbfaf6;
+  --color-mint: #b2eca1;
+  --color-mint-hover: #a3dd92;
+  --color-moss: #46743d;
+  --color-blush: #f1a4ab;
+  --color-butter: #f7df8c;
+  --color-lilac: #a7a6da;
+  --color-steel: #526171;
+  --color-steel-dark: #354353;
+  --color-grid: #3b4757;
+  --color-night: #151b23;
+  --color-night-2: #1a222c;
+  --color-night-3: #1e2630;
+  --color-night-4: #222b36;
+  --color-fog: #bdc8d0;
+  --color-mist: #8f9ba7;
+  --color-muted: #4a5563;
+  --color-muted-2: #616b75;
+  --color-dim: #7d8996;
+  --color-rule: #cbcbc2;
+  --color-plum: #665c99;
+  --color-amber: #885d17;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: #f4f2ec;
+  color: #2a3441;
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  a {
+    color: #2a3441;
+  }
+
+  a:hover {
+    color: #46743d;
+  }
+}
+
+[id] {
+  scroll-margin-top: 0;
+}
+
+@keyframes crado-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Dotted halo behind the specs table: a dot grid faded out by a radial mask. */
+.dot-halo {
+  background-image: radial-gradient(#526171 1px, transparent 1px);
+  background-size: 8px 8px;
+  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.grid-lines {
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
 }
