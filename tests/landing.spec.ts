@@ -44,8 +44,8 @@ test.describe("Crado landing page", () => {
       const nav = page.getByRole("navigation", { name: "Primary Navigation" });
       await nav.getByRole("link", { name: label }).click();
 
-      await expect(page).toHaveURL(new RegExp(`/#${id}$`));
       await expectBelowStickyHeader(page, id);
+      await expect(page).toHaveURL(/\/$/);
     });
   }
 
@@ -58,15 +58,16 @@ test.describe("Crado landing page", () => {
       await page.goto("/docs");
       await page.getByRole("navigation", { name: "Primary Navigation" }).getByRole("link", { name: label }).click();
 
-      await expect(page).toHaveURL(new RegExp(`/#${id}$`));
       await expectBelowStickyHeader(page, id);
+      await expect(page).toHaveURL(/\/$/);
     });
   }
 
   for (const id of ["thesis", "pipeline", "specifications", "architecture", "faq"]) {
-    test(`direct load of /#${id} lands on the section`, async ({ page }) => {
+    test(`direct load of /#${id} lands on the section and cleans the URL`, async ({ page }) => {
       await page.goto(`/#${id}`);
       await expectBelowStickyHeader(page, id);
+      await expect(page).toHaveURL(/\/$/);
     });
   }
 
@@ -141,8 +142,8 @@ test.describe("Legal pages", () => {
   test("header nav on a legal page returns to the home section", async ({ page }) => {
     await page.goto("/privacy");
     await page.getByRole("navigation", { name: "Primary Navigation" }).getByRole("link", { name: "System" }).click();
-    await expect(page).toHaveURL(/\/#pipeline$/);
     await expectBelowStickyHeader(page, "pipeline");
+    await expect(page).toHaveURL(/\/$/);
   });
 });
 

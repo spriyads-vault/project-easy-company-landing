@@ -5,11 +5,13 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Pipeline from "@/components/Pipeline";
+import SectionScroller from "@/components/SectionScroller";
 import Specifications from "@/components/Specifications";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-paper">
+      <SectionScroller />
       <AnnouncementBar />
       <Header />
       <main>

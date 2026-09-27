@@ -1,25 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import type { MouseEvent } from "react";
+import { SCROLL_TARGET_KEY, clearHash, scrollToSection } from "@/lib/scroll";
 
 const LINK =
   "whitespace-nowrap font-mono text-xs leading-4 tracking-[0.1em] uppercase no-underline transition-colors duration-200";
 
-// Absolute root hashes so the links work from /docs, /privacy and /terms too.
+// hrefs stay absolute ("/#id") so they still work without JS, open in new tabs, etc.
 const SECTION_LINKS = [
-  { href: "/#thesis", label: "Thesis" },
-  { href: "/#pipeline", label: "System" },
-  { href: "/#specifications", label: "Specifications" },
+  { id: "thesis", label: "Thesis" },
+  { id: "pipeline", label: "System" },
+  { id: "specifications", label: "Specifications" },
 ];
 
 export default function NavLinks() {
-  const onDocs = usePathname()?.startsWith("/docs") ?? false;
+  const pathname = usePathname();
+  const router = useRouter();
+  const onDocs = pathname?.startsWith("/docs") ?? false;
+
+  // Scroll to the section without leaving "#id" in the address bar.
+  const goToSection = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    if (pathname === "/") {
+      scrollToSection(id);
+      clearHash();
+      return;
+    }
+    try {
+      sessionStorage.setItem(SCROLL_TARGET_KEY, id);
+    } catch {}
+    router.push("/", { scroll: false });
+  };
 
   return (
     <>
-      {SECTION_LINKS.map(({ href, label }) => (
-        <Link key={href} href={href} className={`${LINK} text-muted-2 hover:text-paper`}>
+      {SECTION_LINKS.map(({ id, label }) => (
+        <Link
+          key={id}
+          href={`/#${id}`}
+          onClick={(e) => goToSection(e, id)}
+          className={`${LINK} text-muted-2 hover:text-paper`}
+        >
           {label}
         </Link>
       ))}
