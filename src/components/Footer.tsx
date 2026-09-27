@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -15,14 +16,14 @@ export default function Footer() {
           hello@crado.io
         </a>
         <div className="flex items-center gap-6 text-sm leading-5">
-          <a href="#" className="text-fog no-underline hover:text-paper">
+          <Link href="/privacy" className="text-fog no-underline hover:text-paper hover:underline">
             Privacy
-          </a>
-          <a href="#" className="text-fog no-underline hover:text-paper">
+          </Link>
+          <Link href="/terms" className="text-fog no-underline hover:text-paper hover:underline">
             Terms
-          </a>
+          </Link>
           <a
-            href="https://www.linkedin.com/company/crado"
+            href="https://www.linkedin.com/company/crado-io/"
             aria-label="Crado on LinkedIn"
             className="flex text-fog hover:text-mint"
           >

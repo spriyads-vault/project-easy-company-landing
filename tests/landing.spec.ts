@@ -78,3 +78,27 @@ test.describe("Crado landing page", () => {
     });
   }
 });
+
+test.describe("Legal pages", () => {
+  for (const { link, path, title } of [
+    { link: "Privacy", path: "/privacy", title: "Privacy Policy" },
+    { link: "Terms", path: "/terms", title: "Terms and Conditions" },
+  ]) {
+    test(`footer "${link}" link opens ${path}`, async ({ page }) => {
+      await page.goto("/");
+      await page.locator("footer").getByRole("link", { name: link }).click();
+      await expect(page).toHaveURL(new RegExp(`${path}$`));
+      await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 2 }).first()).toHaveText("1. Introduction");
+      await expect(page.locator("header")).toBeVisible();
+      await expect(page.locator("footer")).toBeVisible();
+    });
+  }
+
+  test("header nav on a legal page returns to the home section", async ({ page }) => {
+    await page.goto("/privacy");
+    await page.getByRole("navigation", { name: "Primary Navigation" }).getByRole("link", { name: "Specifications" }).click();
+    await expect(page).toHaveURL(/\/#specifications$/);
+    await expect(page.locator("#specifications")).toBeInViewport();
+  });
+});

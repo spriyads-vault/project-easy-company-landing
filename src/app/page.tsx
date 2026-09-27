@@ -1,6 +1,5 @@
 import AnnouncementBar from "@/components/AnnouncementBar";
 import Architecture from "@/components/Architecture";
-import CalEmbed from "@/components/CalEmbed";
 import Faq from "@/components/Faq";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -11,7 +10,6 @@ import Specifications from "@/components/Specifications";
 export default function Home() {
   return (
     <div className="min-h-screen bg-paper">
-      <CalEmbed />
       <AnnouncementBar />
       <Header />
       <main>
