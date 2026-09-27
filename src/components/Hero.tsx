@@ -123,7 +123,7 @@ export default function Hero() {
           The Deterministic Verification Engine.
         </h1>
         <p className="mt-6 max-w-[32rem] text-lg leading-7 text-pretty text-muted">
-          Resolving chaotic test data into strict regulatory logic&#8288;—bringing hardware compliance
+          Resolving chaotic test data into strict regulatory logic, bringing hardware compliance
           directly into the engineering loop.
         </p>
         <div className="mt-10 flex">

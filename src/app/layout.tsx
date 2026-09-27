@@ -21,11 +21,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Crado — Deterministic Hardware Compliance Engine for EMC & FCC Part 15",
+  title: "Crado | Deterministic Hardware Compliance Engine for EMC & FCC Part 15",
   description:
     "Crado parses unstructured chamber logs, datasheets and revision history, and maps them deterministically to FCC Part 15 clauses with source-cited evidence. Book a pilot.",
   openGraph: {
-    title: "Crado — Deterministic Hardware Compliance Engine",
+    title: "Crado | Deterministic Hardware Compliance Engine",
     description:
       "Map EMC chamber failures to FCC Part 15 clauses with source-cited, deterministic results.",
     type: "website",

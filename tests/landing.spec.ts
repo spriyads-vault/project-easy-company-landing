@@ -26,7 +26,7 @@ test.describe("Crado landing page", () => {
   test("loads successfully", async ({ page }) => {
     const response = await page.goto("/");
     expect(response?.status()).toBe(200);
-    await expect(page).toHaveTitle(/Crado — Deterministic Hardware Compliance Engine/);
+    await expect(page).toHaveTitle(/Crado \| Deterministic Hardware Compliance Engine/);
     await expect(
       page.getByRole("heading", { level: 1, name: "The Deterministic Verification Engine." }),
     ).toBeVisible();

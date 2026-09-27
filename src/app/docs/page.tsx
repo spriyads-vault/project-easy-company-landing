@@ -8,10 +8,10 @@ import Header from "@/components/Header";
 import { JSON_LINES } from "@/lib/docs";
 
 export const metadata: Metadata = {
-  title: "Crado Docs — System Architecture, Regulatory Coverage & Security",
+  title: "Crado Docs | System Architecture, Regulatory Coverage & Security",
   description:
     "Technical documentation for Crado: neuro-symbolic ingestion, deterministic rule gates, supported EMC standards, the verification payload schema and tenant isolation.",
-  openGraph: { title: "Crado Docs — Deterministic Hardware Compliance", type: "website" },
+  openGraph: { title: "Crado Docs | Deterministic Hardware Compliance", type: "website" },
 };
 
 const PRIMITIVES = [
