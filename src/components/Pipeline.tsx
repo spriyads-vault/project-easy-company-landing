@@ -35,7 +35,7 @@ const Num = ({ children }: { children: ReactNode }) => <span className="text-amb
 
 export default function Pipeline() {
   return (
-    <section id="pipeline" className="border-t border-rule bg-mint">
+    <section id="pipeline" className="scroll-mt-(--header-h) border-t border-rule bg-mint">
       <div className="mx-auto flex max-w-[1264px] flex-col gap-16 px-8 py-24">
         <h2 className="m-0 font-display text-[clamp(48px,7.4vw,112px)] leading-[0.95] font-bold tracking-[-0.05em] text-ink">
           3x Faster. Zero Regressions.

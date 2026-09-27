@@ -6,34 +6,30 @@ import NavLinks from "./NavLinks";
 
 export default function Header() {
   return (
-    <header className="flex justify-center border-b border-ink bg-ink py-5">
+    <header className="sticky top-0 z-50 flex h-(--header-h) w-full items-center justify-between gap-6 border-b border-ink bg-night px-6">
       <CalEmbed />
-      <div className="relative z-20 flex w-full max-w-[1280px] flex-wrap items-center justify-between gap-x-6 gap-y-4 px-6">
-        <Link href="/" aria-label="Crado home" className="flex">
-          <Image
-            src="/assets/crado-logo.png"
-            alt="Crado - Enterprise Hardware Compliance Automation Logo"
-            width={882}
-            height={1000}
-            priority
-            className="block h-6 w-auto"
-          />
-        </Link>
-        <nav
-          aria-label="Primary Navigation"
-          className="flex items-center justify-center gap-6 rounded-full border border-steel bg-[rgba(53,67,83,0.4)] px-8 py-2 text-sm leading-5 font-medium backdrop-blur-md max-md:order-3 max-md:basis-full"
-        >
-          <NavLinks />
-        </nav>
-        <div className="flex items-center gap-5 text-sm leading-5 font-medium">
-          <BookPilotButton
-            aria-label="Book a compliance pilot scoping call"
-            className="inline-flex cursor-pointer items-center whitespace-nowrap rounded-full border-0 bg-mint px-4 py-1.5 text-sm leading-5 font-medium text-ink hover:bg-mint-hover"
-          >
-            Book a pilot
-          </BookPilotButton>
-        </div>
-      </div>
+      <Link href="/#thesis" aria-label="Crado home" className="flex">
+        <Image
+          src="/assets/crado-logo.png"
+          alt="Crado - Enterprise Hardware Compliance Automation Logo"
+          width={882}
+          height={1000}
+          priority
+          className="block h-6 w-auto"
+        />
+      </Link>
+      <nav
+        aria-label="Primary Navigation"
+        className="hidden items-center gap-8 border-x border-ink px-8 min-[720px]:flex"
+      >
+        <NavLinks />
+      </nav>
+      <BookPilotButton
+        aria-label="Book a compliance pilot scoping call"
+        className="inline-flex cursor-pointer items-center rounded-none border-0 bg-mint px-4 py-2 font-mono text-xs leading-4 tracking-[0.1em] whitespace-nowrap text-ink uppercase transition-colors duration-200 hover:bg-mint/80"
+      >
+        Book a pilot
+      </BookPilotButton>
     </header>
   );
 }

@@ -28,7 +28,7 @@ export default function Faq() {
     <section
       id="faq"
       aria-labelledby="faq-title"
-      className="flex w-full flex-col items-center border-t border-ink bg-paper px-4 py-32"
+      className="scroll-mt-(--header-h) flex w-full flex-col items-center border-t border-ink bg-paper px-4 py-32"
     >
       <h2
         id="faq-title"

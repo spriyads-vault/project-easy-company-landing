@@ -27,7 +27,7 @@ export default function Specifications() {
     <section
       id="specifications"
       aria-labelledby="specs-title"
-      className="relative flex w-full flex-col items-center overflow-hidden border-t border-ink bg-night px-8 py-32"
+      className="scroll-mt-(--header-h) relative flex w-full flex-col items-center overflow-hidden border-t border-ink bg-night px-8 py-32"
     >
       <div aria-hidden="true" className="dot-halo pointer-events-none absolute top-1/2 -left-20 size-[600px] -translate-y-1/2" />
       <div aria-hidden="true" className="dot-halo pointer-events-none absolute top-1/2 -right-20 size-[600px] -translate-y-1/2" />

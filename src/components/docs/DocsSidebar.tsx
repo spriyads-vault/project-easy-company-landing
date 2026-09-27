@@ -28,7 +28,7 @@ export default function DocsSidebar() {
   return (
     <nav
       aria-label="Documentation"
-      className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col gap-8 self-start overflow-y-auto border-r border-ink p-8 font-mono text-xs leading-4 lg:flex"
+      className="sticky top-(--header-h) hidden h-[calc(100vh-var(--header-h))] w-64 shrink-0 flex-col gap-8 self-start overflow-y-auto border-r border-ink p-8 font-mono text-xs leading-4 lg:flex"
     >
       {SIDEBAR.map(([label, ids]) => (
         <div key={label} className="flex flex-col gap-1">

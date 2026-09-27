@@ -1,4 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+// The section's top edge should sit flush under the sticky header, not behind it.
+async function expectBelowStickyHeader(page: Page, id: string) {
+  const section = page.locator(`#${id}`);
+  await expect(section).toBeInViewport();
+  await expect
+    .poll(async () => {
+      const header = await page.locator("header").boundingBox();
+      const target = await section.boundingBox();
+      return header && target ? Math.abs(target.y - (header.y + header.height)) : Infinity;
+    })
+    .toBeLessThanOrEqual(1);
+}
 
 test.describe("Crado landing page", () => {
   test("loads successfully", async ({ page }) => {
@@ -12,18 +25,32 @@ test.describe("Crado landing page", () => {
   });
 
   for (const { label, id } of [
-    { label: "Architecture", id: "architecture" },
-    { label: "Pipeline", id: "pipeline" },
-    { label: "Specifications", id: "specifications" },
+    { label: "Thesis", id: "thesis" },
+    { label: "System", id: "pipeline" },
   ]) {
     test(`nav link "${label}" scrolls to #${id}`, async ({ page }) => {
       await page.goto("/");
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
       const nav = page.getByRole("navigation", { name: "Primary Navigation" });
       await nav.getByRole("link", { name: label }).click();
 
-      await expect(page).toHaveURL(new RegExp(`#${id}$`));
-      await expect(page.locator(`#${id}`)).toBeInViewport();
-      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+      await expect(page).toHaveURL(new RegExp(`/#${id}$`));
+      await expectBelowStickyHeader(page, id);
+    });
+  }
+
+  for (const id of ["thesis", "pipeline", "architecture", "specifications", "faq"]) {
+    test(`/#${id} from /docs lands on the section, clear of the sticky header`, async ({ page }) => {
+      await page.goto("/docs");
+      await page.evaluate((hash) => {
+        const a = document.createElement("a");
+        a.href = `/#${hash}`;
+        document.body.appendChild(a);
+        a.click();
+      }, id);
+
+      await expect(page).toHaveURL(new RegExp(`/#${id}$`));
+      await expectBelowStickyHeader(page, id);
     });
   }
 
@@ -97,9 +124,9 @@ test.describe("Legal pages", () => {
 
   test("header nav on a legal page returns to the home section", async ({ page }) => {
     await page.goto("/privacy");
-    await page.getByRole("navigation", { name: "Primary Navigation" }).getByRole("link", { name: "Specifications" }).click();
-    await expect(page).toHaveURL(/\/#specifications$/);
-    await expect(page.locator("#specifications")).toBeInViewport();
+    await page.getByRole("navigation", { name: "Primary Navigation" }).getByRole("link", { name: "System" }).click();
+    await expect(page).toHaveURL(/\/#pipeline$/);
+    await expectBelowStickyHeader(page, "pipeline");
   });
 });
 

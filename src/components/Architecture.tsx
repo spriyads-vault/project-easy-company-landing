@@ -135,7 +135,7 @@ function PeaksTable() {
 
 export default function Architecture() {
   return (
-    <section id="architecture" className="relative overflow-hidden border-t border-ink bg-ink text-paper">
+    <section id="architecture" className="scroll-mt-(--header-h) relative overflow-hidden border-t border-ink bg-ink text-paper">
       <div
         aria-hidden="true"
         className="grid-lines absolute inset-0 bg-[length:32px_32px] opacity-35 [--grid-color:#526171]"

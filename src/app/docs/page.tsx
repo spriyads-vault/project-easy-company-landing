@@ -55,7 +55,7 @@ const PIPELINE = [
   ["[Immutable Audit Artifact]", null],
 ] as const;
 
-const ANCHOR = "scroll-mt-6";
+const ANCHOR = "scroll-mt-[calc(var(--header-h)+24px)]";
 const BODY = "m-0 max-w-[68ch] text-base leading-[26px] text-pretty text-fog";
 const SUBHEAD = "m-0 font-mono text-sm leading-5 font-medium tracking-[0.08em] text-paper uppercase";
 const TABLE_HEAD = "bg-ink text-[11px] tracking-[0.06em] text-paper uppercase";
