@@ -1,36 +1,39 @@
-import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import BookingManager from "@/components/site/BookingManager";
+import { HOME_DESCRIPTION, HOME_TITLE, OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["400", "500", "600"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "Crado | Deterministic Hardware Compliance Engine for EMC & FCC Part 15",
-  description:
-    "Crado parses unstructured chamber logs, datasheets and revision history, and maps them deterministically to FCC Part 15 clauses with source-cited evidence. Book a pilot.",
-  openGraph: {
-    title: "Crado | Deterministic Hardware Compliance Engine",
-    description:
-      "Map EMC chamber failures to FCC Part 15 clauses with source-cited, deterministic results.",
-    type: "website",
-  },
-  twitter: { card: "summary_large_image" },
+  metadataBase: new URL(SITE_URL),
+  title: HOME_TITLE,
+  description: HOME_DESCRIPTION,
+  applicationName: SITE_NAME,
+  robots: { index: true, follow: true },
+  openGraph: { type: "website", siteName: SITE_NAME, images: [OG_IMAGE] },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE] },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#F4F2EC",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -38,9 +41,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <BookingManager />
+      </body>
     </html>
   );
 }
