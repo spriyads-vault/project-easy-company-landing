@@ -41,7 +41,6 @@ export default function DocsPage({ group }: { group: DocGroup }) {
             inLanguage: "en",
             isPartOf: { "@id": `${SITE_URL}/#website` },
             publisher: { "@id": `${SITE_URL}/#organization` },
-            breadcrumb: { "@id": `${url}#breadcrumb` },
           },
           {
             "@type": "BreadcrumbList",
