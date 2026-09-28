@@ -32,7 +32,8 @@ export default function Direction() {
       role: "button",
       tabIndex: 0,
       "aria-pressed": id === cur,
-      "aria-label": `${n.kicker}: ${n.title}${n.sub ? `, ${n.sub}` : ""}`,
+      // The review marker shows only "!", so it needs a label; other nodes are named by their visible text.
+      "aria-label": id === "rm" ? `${n.kicker}: ${n.title}` : undefined,
       onClick: () => setSel(id),
       onKeyDown: (e: KeyboardEvent) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -169,6 +170,7 @@ export default function Direction() {
                         textAnchor="middle"
                         className="font-mono text-[12px] font-medium"
                         fill="#2A3441"
+                        aria-hidden="true"
                       >
                         !
                       </text>

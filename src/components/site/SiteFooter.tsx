@@ -12,8 +12,8 @@ export default function SiteFooter() {
             <Image
               src="/assets/crado-mark-black.png"
               alt="Crado"
-              width={882}
-              height={1001}
+              width={35}
+              height={40}
               className="block h-10 w-auto"
             />
           </Link>
@@ -46,8 +46,8 @@ export default function SiteFooter() {
         <Image
           src="/assets/nvidia-inception-badge.png"
           alt="NVIDIA Inception Program"
-          width={501}
-          height={217}
+          width={139}
+          height={60}
           className="block h-[60px] w-auto"
         />
         <span className="text-sm text-muted">Member of NVIDIA Inception</span>

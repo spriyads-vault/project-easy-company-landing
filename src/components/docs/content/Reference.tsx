@@ -55,7 +55,7 @@ export default function Reference() {
             </tbody>
           </table>
         </div>
-        <h3 className="m-0 mb-2.5 text-lg font-semibold">Not covered</h3>
+        <h2 className="m-0 mb-2.5 font-sans text-lg font-semibold">Not covered</h2>
         <ul className="m-0 pl-[22px] text-[17px] leading-[1.7]">
           <li>Other clauses of FCC Part 15 Subpart B, including conducted emissions.</li>
           <li>CISPR 32 / EN 55032.</li>

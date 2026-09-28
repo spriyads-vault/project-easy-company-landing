@@ -75,3 +75,15 @@ Checked against the product repository (`project-easy-company`, HEAD 34029c0).
 - The design's open gaps remain: full logo lockup and light/SVG variants.
 - Run the Schema.org validator, Rich Results Test and Lighthouse on the deployed pages; submit the sitemap
   in Search Console after deploy.
+
+## Structured data and Lighthouse (2026-09-28)
+
+- Schema.org validator: 0 errors, 0 warnings on `/` and all five docs routes, after removing an invalid
+  `breadcrumb` property from TechArticle.
+- Lighthouse 12 against the production build served locally (the Vercel preview requires Vercel
+  Authentication): accessibility 100 and SEO 100 on every page, CLS 0, desktop performance 100, mobile
+  performance 93 to 100. Fixes made: logo and badge images now request display-size variants, the docs
+  search `aria-controls` is only set when results exist, evidence-map nodes are named by their visible text,
+  and a skipped heading level on `/docs/reference` was corrected.
+- Best practices is 78 to 79 because Cal.com's `embed.js` sets a Cloudflare `__cf_bm` cookie. That comes
+  with the approved embed (the previous site loaded Cal.com the same way) and was left as is.

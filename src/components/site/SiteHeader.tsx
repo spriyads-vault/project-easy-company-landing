@@ -57,8 +57,8 @@ export default function SiteHeader() {
           <Image
             src="/assets/crado-mark-black.png"
             alt="Crado"
-            width={882}
-            height={1001}
+            width={30}
+            height={34}
             priority
             className="block h-[34px] w-auto"
           />

@@ -102,7 +102,7 @@ export default function DocsSearch({ onNavigate }: { onNavigate: () => void }) {
         onKeyDown={onKey}
         autoComplete="off"
         placeholder="e.g. detector, margin"
-        aria-controls="search-results"
+        aria-controls={q.trim() ? "search-results" : undefined}
         className="box-border min-h-11 w-full rounded-[3px] border border-ink bg-oat-light px-3 py-2.5 text-[15px] text-ink"
       />
       {q.trim() && (
