@@ -53,10 +53,25 @@ Checked against the product repository (`project-easy-company`, HEAD 34029c0).
 5. The old "customer data is not used to train models" claim is not in the new copy and is not stated in
    the product repository.
 
+## Release checks (2026-09-28)
+
+- **Privacy policy.** Replit references replaced with Vercel, the verified host (GitHub deployments are
+  created by the Vercel integration). The analytics sentence now states no analytics trackers are used:
+  the repository has no analytics package and the live site loads no `/_vercel/insights` script. The Cal.com
+  entry notes the embed script loads in the background. No retention, location or training commitments
+  were added. Last updated: 28 September 2026.
+- **Worked example A.** Checked against the eCFR: 15.109(a) Class B at 3 m, 216 to 960 MHz is 200 µV/m,
+  which is 20·log10(200) = 46.02 dBµV/m, shown rounded as 46.0; 15.35(a) bases limits at or below 1000 MHz
+  on the CISPR quasi-peak detector. The margin `47.0 − 46.0 = +1.0 dB` follows the product convention. The
+  example stays labelled as illustrative, fictional data.
+- **NVIDIA Inception badge.** Detailed badge specifications are published in NVIDIA's member brand portal,
+  which is not publicly readable. Public NVIDIA pages state that members receive official badges for use on
+  their websites. The site uses the supplied artwork unmodified, at its original proportions, on a light
+  background, with the wording "Member of NVIDIA Inception" and no partnership, endorsement or investment
+  language. Confirm against the member portal or inceptionprogram@nvidia.com if in doubt.
+
 ## Open items
 
-- Privacy policy names Replit as the host; the site is deployed on Vercel. Legal text was not changed.
-- The design's open gaps remain: example limit comes from the public table, NVIDIA badge usage guidelines,
-  full logo lockup and light/SVG variants.
+- The design's open gaps remain: full logo lockup and light/SVG variants.
 - Run the Schema.org validator, Rich Results Test and Lighthouse on the deployed pages; submit the sitemap
   in Search Console after deploy.

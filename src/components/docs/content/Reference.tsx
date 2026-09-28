@@ -10,7 +10,7 @@ distance      3 m
 polarization  horizontal
 source        test report, table 4.2, p. 4
 
-limit         46.0 dBµV/m   216–960 MHz at 3 m
+limit         46.0 dBµV/m   200 µV/m, 216–960 MHz at 3 m, quasi-peak
 margin        47.0 − 46.0 = +1.0 dB
 result        level exceeds limit by 1.0 dB`;
 
