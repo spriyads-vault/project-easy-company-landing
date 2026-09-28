@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import type { LegalDoc } from "@/lib/legal";
-import Footer from "./Footer";
-import Header from "./Header";
+import AnnouncementBar from "./site/AnnouncementBar";
+import SiteFooter from "./site/SiteFooter";
+import SiteHeader from "./site/SiteHeader";
 
 const EMAIL = "hello@crado.io";
 
@@ -23,30 +24,31 @@ function linkify(text: string): ReactNode {
 
 export default function LegalPage({ doc }: { doc: LegalDoc }) {
   return (
-    <div className="min-h-screen bg-[#F4F2EC] text-[#2A3441]">
-      <Header />
-      <main className="mx-auto max-w-3xl px-6 py-32">
-        <h1 className="mb-12 border-b border-[#2A3441] pb-6 font-display text-4xl font-bold tracking-tight md:text-5xl">
+    <div className="min-h-screen bg-oat font-sans text-ink">
+      <AnnouncementBar />
+      <SiteHeader />
+      <main id="main" className="mx-auto max-w-3xl px-gutter py-[clamp(64px,8vw,112px)]">
+        <h1 className="mb-12 border-b border-ink pb-6 font-display text-4xl font-medium tracking-[-0.03em] md:text-5xl">
           {doc.title}
         </h1>
-        <div className="space-y-6 font-sans text-sm leading-relaxed text-[#2A3441]/80 md:text-base">
-          <p className="font-mono text-xs tracking-[0.04em] text-[#2A3441] uppercase">
+        <div className="space-y-6 font-sans text-sm leading-relaxed text-ink/80 md:text-base">
+          <p className="font-mono text-xs tracking-[0.04em] text-ink uppercase">
             Last updated: {doc.lastUpdated}
           </p>
           {doc.sections.map((section) => (
             <section key={section.heading} aria-label={section.heading} className="space-y-6">
-              <h2 className="mt-12 mb-4 font-display text-xl font-bold text-[#2A3441]">
+              <h2 className="mt-12 mb-4 font-display text-xl font-medium text-ink">
                 {section.heading}
               </h2>
               {section.blocks.map((block, i) =>
                 block.type === "p" ? (
                   <p key={i}>{linkify(block.text)}</p>
                 ) : (
-                  <ul key={i} className="list-disc space-y-3 pl-5 marker:text-[#2A3441]">
+                  <ul key={i} className="list-disc space-y-3 pl-5 marker:text-ink">
                     {block.items.map((item) => (
                       <li key={item.text}>
                         {item.label && (
-                          <strong className="font-semibold text-[#2A3441]">{item.label}: </strong>
+                          <strong className="font-semibold text-ink">{item.label}: </strong>
                         )}
                         {linkify(item.text)}
                       </li>
@@ -58,7 +60,7 @@ export default function LegalPage({ doc }: { doc: LegalDoc }) {
           ))}
         </div>
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

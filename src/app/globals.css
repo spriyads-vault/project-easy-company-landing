@@ -2,90 +2,115 @@
 
 @theme inline {
   --font-display: var(--font-space-grotesk), sans-serif;
-  --font-sans: var(--font-inter), sans-serif;
-  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
 }
 
 @theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-white: #ffffff;
+
+  /* Neutrals */
   --color-ink: #2a3441;
-  --color-paper: #f4f2ec;
-  --color-paper-light: #fbfaf6;
-  --color-mint: #b2eca1;
-  --color-mint-hover: #a3dd92;
-  --color-moss: #46743d;
-  --color-blush: #f1a4ab;
-  --color-butter: #f7df8c;
-  --color-lilac: #a7a6da;
-  --color-steel: #526171;
-  --color-steel-dark: #354353;
-  --color-grid: #3b4757;
-  --color-night: #151b23;
-  --color-night-2: #1a222c;
-  --color-night-3: #1e2630;
-  --color-night-4: #222b36;
-  --color-fog: #bdc8d0;
-  --color-mist: #8f9ba7;
-  --color-muted: #4a5563;
-  --color-muted-2: #616b75;
-  --color-dim: #7d8996;
-  --color-rule: #cbcbc2;
-  --color-plum: #665c99;
-  --color-amber: #885d17;
+  --color-ink-deep: #1e2630;
+  --color-oat: #f4f2ec;
+  --color-oat-light: #faf9f5;
+  --color-oat-hover: #ece9e1;
+  --color-oat-active: #e6e3da;
+  --color-line: #d6d3ca;
+  --color-line-soft: #e2dfd6;
+  --color-muted: #4a5463;
+  --color-muted-2: #3e4a5c;
+  --color-gray: #7c8594;
+
+  /* Dark panels */
+  --color-night: #222a35;
+  --color-night-grid: #2e3947;
+  --color-night-line: #56627a;
+  --color-night-edge: #6b7890;
+  --color-fog: #c9d0da;
+  --color-fog-light: #e3e6eb;
+
+  /* Accents */
+  --color-lime: #b6e88e;
+  --color-lime-soft: #cfefb2;
+  --color-slate: #6d85ad;
+  --color-slate-dark: #56698c;
+  --color-slate-mid: #8ea3c6;
+  --color-sky: #cdddf2;
+  --color-sky-pale: #d5deec;
+  --color-butter: #f6e39e;
+  --color-lilac: #bfa3e6;
+  --color-lilac-pale: #e6dcf5;
+  --color-violet: #6e4fb0;
+
+  /* Evidence states */
+  --color-observed: #d5deec;
+  --color-known: #ddf2c9;
+  --color-inferred: #e6dcf5;
+  --color-missing: #fbf4d8;
+  --color-historical: #eceae3;
+
+  --spacing-gutter: clamp(20px, 4vw, 40px);
 }
 
 html {
   scroll-behavior: smooth;
+  /* Sticky header (64px) plus breathing room. */
+  scroll-padding-top: 84px;
+}
+
+body {
+  margin: 0;
+  background: var(--color-oat);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  a {
+    color: var(--color-ink);
+    text-decoration-line: underline;
+  }
+
+  a:hover {
+    color: var(--color-ink-deep);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+}
+
+/* Focus ring for controls on dark panels. */
+.focus-lime:focus-visible {
+  outline-color: var(--color-lime);
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-}
 
-body {
-  margin: 0;
-  background: #f4f2ec;
-  color: #2a3441;
-  font-family: var(--font-inter), sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-@layer base {
-  a {
-    color: #2a3441;
-  }
-
-  a:hover {
-    color: #46743d;
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
   }
 }
 
-/* Height of the sticky site header; anchored sections offset by this much. */
-:root {
-  --header-h: 65px;
-}
-
-@keyframes crado-blink {
-  0%,
-  100% {
-    opacity: 1;
+/* Docs pages add a 52px sticky contents bar below the header on narrow screens. */
+@media (max-width: 819px) {
+  html:has(.docs-shell) {
+    scroll-padding-top: 128px;
   }
-  50% {
-    opacity: 0.4;
-  }
-}
-
-/* Dotted halo behind the specs table: a dot grid faded out by a radial mask. */
-.dot-halo {
-  background-image: radial-gradient(#526171 1px, transparent 1px);
-  background-size: 8px 8px;
-  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
-  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
-}
-
-.grid-lines {
-  background-image:
-    linear-gradient(var(--grid-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
 }

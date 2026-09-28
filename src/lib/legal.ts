@@ -12,7 +12,7 @@ export type LegalDoc = {
 
 export const PRIVACY: LegalDoc = {
   title: "Privacy Policy",
-  lastUpdated: "4 September 2026",
+  lastUpdated: "28 September 2026",
   sections: [
     {
       heading: "1. Introduction",
@@ -37,7 +37,7 @@ export const PRIVACY: LegalDoc = {
           items: [
             { label: "Contact Data", text: "Your email address and correspondence when you contact us via our mailto links." },
             { label: "Scheduling Data", text: "Name, email, and meeting preferences provided directly to Cal.com when you request a pilot." },
-            { label: "Technical Data", text: "Basic network routing data (such as IP addresses) processed transiently by our hosting provider (Replit) to deliver the website." },
+            { label: "Technical Data", text: "Basic network routing data (such as IP addresses) processed by our hosting provider (Vercel) to deliver the website." },
           ],
         },
         { type: "p", text: "This site currently operates as a static informational presentation. It does not include authentication, user accounts, database storage, file uploads, or payment processing." },
@@ -64,12 +64,12 @@ export const PRIVACY: LegalDoc = {
         {
           type: "ul",
           items: [
-            { label: "Hosting & Edge Delivery", text: "Replit provides the runtime and hosting environment for this website." },
-            { label: "Scheduling Integration", text: "Cal.com, Inc. operates the embedded calendar popup. When you interact with the calendar, Cal.com acts as an independent processor of the scheduling data you submit." },
+            { label: "Hosting & Edge Delivery", text: "Vercel Inc. hosts this website and delivers it through its network." },
+            { label: "Scheduling Integration", text: "Cal.com, Inc. operates the embedded calendar popup. The site loads Cal.com's embed script in the background so the calendar can open on the page; the calendar itself loads only when you open it. When you interact with the calendar, Cal.com acts as an independent processor of the scheduling data you submit." },
             { label: "Font Delivery", text: "We request Google Fonts to display our typography. Google may receive your IP address when delivering these font files." },
           ],
         },
-        { type: "p", text: "We do not currently employ additional analytics trackers or marketing subprocessors on this landing page. If Replit analytics are enabled at the platform level, aggregate non-identifying traffic data may be collected." },
+        { type: "p", text: "We do not currently use analytics trackers or marketing subprocessors on this website." },
       ],
     },
     {
