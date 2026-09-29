@@ -8,7 +8,7 @@ const LEGACY: Record<string, string> = {
   thesis: "approach",
   pipeline: "system",
   specifications: "application",
-  architecture: "mechanism",
+  architecture: "evidence",
   faq: "pilot",
 };
 

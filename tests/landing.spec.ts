@@ -56,6 +56,7 @@ test.describe("Home page", () => {
     for (const el of [
       page.getByRole("heading", { level: 1 }),
       page.getByText(/^Crado connects hardware revisions/),
+      page.locator("#main").getByRole("link", { name: "Book a pilot call" }).first(),
       page.getByRole("link", { name: /Explore the system/ }),
       page.getByRole("img", { name: "Revisions drawn as stacked layers" }),
     ]) {
@@ -127,7 +128,7 @@ test.describe("Home page", () => {
 test.describe("Pilot booking", () => {
   test("every Pilot CTA links to the Cal.com event", async ({ page }) => {
     await page.goto("/");
-    for (const name of ["Book a 30-minute call", "Pilot", "Discuss a pilot"]) {
+    for (const name of ["Book a pilot call", "Pilot"]) {
       await expect(page.getByRole("link", { name, exact: true }).first()).toHaveAttribute("href", CAL_URL);
     }
   });
@@ -153,7 +154,7 @@ test.describe("Pilot booking", () => {
 
   test("Escape and repeated opening leave the page usable", async ({ page }) => {
     await page.goto("/");
-    const cta = page.getByRole("link", { name: "Discuss a pilot" });
+    const cta = page.locator("#pilot").getByRole("link", { name: "Book a pilot call" });
     await cta.scrollIntoViewIfNeeded();
     for (let i = 0; i < 2; i++) {
       await openCal(page, cta);
@@ -165,7 +166,7 @@ test.describe("Pilot booking", () => {
   test("a failed embed shows the direct link and closes cleanly", async ({ page }) => {
     await page.route("https://app.cal.com/embed/embed.js", (route) => route.abort());
     await page.goto("/");
-    await page.getByRole("link", { name: "Book a 30-minute call" }).click();
+    await page.getByRole("link", { name: "Book a pilot call" }).first().click();
     const dialog = page.getByRole("dialog", { name: "Book a pilot call" });
     const direct = dialog.getByRole("link", { name: "Open booking page" });
     await expect(direct).toHaveAttribute("href", CAL_URL);

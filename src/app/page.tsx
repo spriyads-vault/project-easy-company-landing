@@ -2,7 +2,6 @@ import Approach from "@/components/home/Approach";
 import Direction from "@/components/home/Direction";
 import EvidenceStates from "@/components/home/EvidenceStates";
 import Hero from "@/components/home/Hero";
-import Mechanism from "@/components/home/Mechanism";
 import Pilot from "@/components/home/Pilot";
 import System from "@/components/home/System";
 import Workbench from "@/components/home/Workbench";
@@ -40,7 +39,6 @@ export default function Home() {
         <Approach />
         <System />
         <Workbench />
-        <Mechanism />
         <EvidenceStates />
         <Direction />
         <Pilot />

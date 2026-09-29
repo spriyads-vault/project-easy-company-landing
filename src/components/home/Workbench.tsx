@@ -6,10 +6,10 @@ import PlayToggle from "./PlayToggle";
 
 const TABS = ["Report", "Investigation", "Test plan", "Retest record"];
 const TITLES = [
-  "Confirm the reported finding",
-  "Connect facts to a candidate explanation",
-  "Propose the next test",
-  "Prepare a revision-specific comparison",
+  "Confirm the finding against the original report.",
+  "Examine possible explanations and the evidence behind them.",
+  "Prepare a next test for engineering review.",
+  "Record the outcome alongside the change and test conditions.",
 ];
 
 const DT = "font-mono text-xs tracking-[0.04em] text-fog";
@@ -280,12 +280,12 @@ export default function Workbench() {
             id="app-h"
             className="m-0 font-display text-[clamp(34px,4.4vw,58px)] leading-[1.04] font-medium tracking-[-0.03em]"
           >
-            From failed finding
+            A failed test needs
             <br />
-            to reviewed next test.
+            a clear next step.
           </h2>
           <p className="m-0 max-w-[30rem] text-[19px] leading-[1.6] text-fog-light">
-            Confirm the evidence. Investigate in context. Decide what to test next.
+            Work through the reported finding, possible explanations and a proposed retest in one investigation.
           </p>
         </div>
 
@@ -353,10 +353,6 @@ export default function Workbench() {
             </div>
           </div>
         </div>
-        <p className="mt-6 mb-0 flex items-center gap-3 text-lg text-oat">
-          <span aria-hidden="true" className="size-3 flex-none bg-butter" />
-          Comparisons depend on compatible test conditions.
-        </p>
       </div>
     </section>
   );

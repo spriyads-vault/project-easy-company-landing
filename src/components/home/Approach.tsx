@@ -180,13 +180,16 @@ export default function Approach() {
             id="approach-h"
             className="m-0 font-display text-[clamp(34px,4vw,54px)] leading-[1.04] font-medium tracking-[-0.03em]"
           >
-            Hardware changes.
+            The hardware changed.
             <br />
-            Keep the evidence connected.
+            What still holds?
           </h2>
           <p className="m-0 max-w-[30rem] text-[19px] leading-[1.6] text-pretty">
-            A test belongs to a specific revision. When the design changes, engineers need to know what the existing
-            evidence still supports.
+            A board revision, firmware update or different test setup can change how a result should be interpreted.
+          </p>
+          <p className="m-0 max-w-[30rem] text-[19px] leading-[1.6] text-pretty">
+            Keep the finding, the tested configuration and the engineering decision connected, so the next
+            investigation starts with the right context.
           </p>
         </div>
 

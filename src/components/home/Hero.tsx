@@ -1,3 +1,4 @@
+import PilotLink from "@/components/site/PilotLink";
 import SectionLink from "@/components/site/SectionLink";
 
 const LABEL = "font-mono text-[16px]";
@@ -92,19 +93,24 @@ export default function Hero() {
             engineering loop.
           </h1>
           <p className="m-0 max-w-[34rem] text-[clamp(17px,1.35vw,20px)] leading-[1.6] text-pretty">
-            Crado connects hardware revisions, regulatory requirements and test evidence so engineers can trace a
-            finding, investigate a failure and review the evidence behind the next decision.
+            Crado connects hardware revisions, test evidence and engineering decisions. Investigate radiated-emissions
+            failures, prepare retest plans and keep the supporting evidence with the revision it belongs to.
           </p>
           <p className="m-0 flex items-center gap-3 font-mono text-sm tracking-[0.02em]">
             <span aria-hidden="true" className="size-3 flex-none border border-ink bg-lime" />
-            <span>Starting with radiated-emissions investigations.</span>
+            <span>Starting with radiated emissions for connected electronics.</span>
           </p>
-          <SectionLink
-            section="system"
-            className="flex items-center gap-2.5 self-start py-2 text-[17px] font-medium text-ink underline-offset-[6px]"
-          >
-            Explore the system <span aria-hidden="true">↓</span>
-          </SectionLink>
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+            <PilotLink className="rounded-[3px] bg-ink px-6 py-3.5 text-[17px] font-medium text-oat no-underline hover:bg-ink-deep hover:text-oat">
+              Book a pilot call
+            </PilotLink>
+            <SectionLink
+              section="system"
+              className="flex items-center gap-2.5 py-2 text-[17px] font-medium text-ink underline-offset-[6px]"
+            >
+              Explore the system <span aria-hidden="true">↓</span>
+            </SectionLink>
+          </div>
         </div>
         <figure className="m-0 min-w-0">
           <RevisionLayers />
