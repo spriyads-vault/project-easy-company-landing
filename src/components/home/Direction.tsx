@@ -69,12 +69,16 @@ export default function Direction() {
             id="dir-h"
             className="m-0 font-display text-[clamp(34px,4.6vw,62px)] leading-[1.02] font-medium tracking-[-0.03em] text-balance"
           >
-            Engineering changes. The record should keep up.
+            Build on what your team has learned.
           </h2>
           <div className="flex max-w-[36rem] flex-col gap-5 pt-2">
             <p className="m-0 text-[19px] leading-[1.65] text-pretty">
-              We are building toward compliance evidence that stays current across hardware revisions and programs,
-              preserving earlier decisions and bringing affected evidence back into review.
+              We are building Crado to carry compliance evidence through the engineering lifecycle, connecting changes
+              to the requirements, tests and decisions they affect.
+            </p>
+            <p className="m-0 text-[19px] leading-[1.65] text-pretty">
+              Our starting point is radiated-emissions investigation. The longer-term goal is to help teams understand
+              what remains supported and what needs fresh evidence as their products evolve.
             </p>
             <p className="m-0 flex items-center gap-2.5 self-start border border-dashed border-ink px-3 py-2 font-mono text-[13px] leading-[1.4]">
               <span aria-hidden="true" className="size-2.5 flex-none border border-ink bg-lilac" />

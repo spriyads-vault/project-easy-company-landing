@@ -21,7 +21,7 @@ const BLOCKS: {
     id: "rev",
     n: "01",
     name: "Revision",
-    line: "The hardware that was tested.",
+    line: "Which version was tested?",
     detail: "Rev B, as tested with the recorded cable set.",
     side: "left",
     area: "[grid-area:rev]",
@@ -47,7 +47,7 @@ const BLOCKS: {
     id: "req",
     n: "02",
     name: "Requirement",
-    line: "The rule and its applicability.",
+    line: "Which requirement is being evaluated?",
     detail: "47 CFR 15.109(a), Class B, applied because of the product’s stated class.",
     side: "right",
     area: "[grid-area:req]",
@@ -72,7 +72,7 @@ const BLOCKS: {
     id: "evi",
     n: "03",
     name: "Evidence",
-    line: "The measurement and its source.",
+    line: "What was measured, and where is the source?",
     detail: "216.8 MHz, quasi-peak, 3 m, from table 4.2 of the test report.",
     side: "left",
     area: "[grid-area:evi]",
@@ -98,7 +98,7 @@ const BLOCKS: {
     id: "dec",
     n: "04",
     name: "Decision",
-    line: "The reviewed next step.",
+    line: "What was concluded, and what needs to happen next?",
     detail: "Near-field scan along the clock net, awaiting engineering review.",
     side: "right",
     area: "[grid-area:dec]",
@@ -139,7 +139,7 @@ export default function System() {
             id="system-h"
             className="m-0 font-display text-[clamp(34px,4.6vw,62px)] leading-[1.02] font-medium tracking-[-0.03em]"
           >
-            Every finding needs context.
+            Know what each finding belongs to.
           </h2>
           <p className="m-0 font-mono text-[13px] text-muted">Select a block</p>
         </div>
@@ -204,7 +204,7 @@ export default function System() {
         </div>
 
         <p className="mt-[clamp(40px,5vw,56px)] mb-0 font-display text-[clamp(22px,2.2vw,28px)] leading-[1.3] tracking-[-0.01em]">
-          Trace the finding to its revision, rule, source and review.
+          Follow the connections from a finding back to its source and forward to the next reviewed step.
         </p>
       </div>
     </section>

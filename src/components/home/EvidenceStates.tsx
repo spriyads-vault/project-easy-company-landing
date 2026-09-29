@@ -1,11 +1,11 @@
 const STATES = [
-  { name: "Observed", swatch: "bg-observed border-solid", text: "Recorded measurements and physical test results." },
-  { name: "Known", swatch: "bg-known border-solid", text: "Confirmed product facts with supporting sources." },
-  { name: "Inferred", swatch: "bg-inferred border-solid", text: "Candidate explanations requiring investigation." },
+  { name: "Inspect the source", swatch: "bg-observed border-solid", text: "Check reported values against the original evidence." },
+  { name: "Check the calculation", swatch: "bg-known border-solid", text: "Review supported calculations and the inputs they use." },
+  { name: "Test the explanation", swatch: "bg-inferred border-solid", text: "Treat a possible cause as a question to investigate." },
   {
-    name: "Missing",
+    name: "Keep the unknowns visible",
     swatch: "bg-missing border-dashed",
-    text: "Information needed before a check or decision can proceed.",
+    text: "See which missing details prevent a supported conclusion.",
   },
 ];
 
@@ -17,7 +17,7 @@ export default function EvidenceStates() {
           id="ev-h"
           className="m-0 mb-[clamp(40px,6vw,72px)] max-w-[18ch] font-display text-[clamp(34px,4.6vw,62px)] leading-[1.02] font-medium tracking-[-0.03em] text-balance"
         >
-          Show what is known. Keep uncertainty visible.
+          See what supports the next step.
         </h2>
         <dl className="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))] gap-x-6 gap-y-10">
           {STATES.map((s) => (
@@ -28,6 +28,10 @@ export default function EvidenceStates() {
             </div>
           ))}
         </dl>
+        <p className="mt-[clamp(40px,6vw,64px)] mb-0 max-w-[40ch] font-display text-[clamp(22px,2.2vw,28px)] leading-[1.3] tracking-[-0.01em] text-pretty">
+          Crado supports the investigation. Engineers review the proposed next step, and physical tests establish what
+          happened.
+        </p>
       </div>
     </section>
   );
