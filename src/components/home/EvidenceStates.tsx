@@ -1,37 +1,51 @@
 const STATES = [
-  { name: "Inspect the source", swatch: "bg-observed border-solid", text: "Check reported values against the original evidence." },
-  { name: "Check the calculation", swatch: "bg-known border-solid", text: "Review supported calculations and the inputs they use." },
-  { name: "Test the explanation", swatch: "bg-inferred border-solid", text: "Treat a possible cause as a question to investigate." },
+  { name: "Observed", rule: "bg-slate", mark: "size-2.5 rounded-[2px] bg-slate", text: "An emissions test recorded a result above the limit.", status: "MEASURED" },
+  { name: "Known", rule: "bg-[#6FA84A]", mark: "size-[11px] rounded-full bg-[#6FA84A]", text: "The board’s clock frequency is documented.", status: "SOURCE-BACKED" },
+  { name: "Inferred", rule: "bg-[#8A6CC7]", mark: "size-[9px] rotate-45 bg-[#8A6CC7]", text: "The clock could explain the emission.", status: "UNCONFIRMED" },
   {
-    name: "Keep the unknowns visible",
-    swatch: "bg-missing border-dashed",
-    text: "See which missing details prevent a supported conclusion.",
+    name: "Missing",
+    rule: "bg-[#D9B74A]",
+    mark: "box-border size-2.5 rounded-[2px] border-[1.5px] border-[#B8932A]",
+    text: "A follow-up test is needed to investigate the cause.",
+    status: "NOT YET TESTED",
   },
 ];
 
 export default function EvidenceStates() {
   return (
-    <section id="evidence" aria-labelledby="ev-h" className="border-b border-line">
-      <div className="mx-auto box-content max-w-[1280px] px-gutter py-[clamp(72px,10vw,136px)]">
-        <h2
-          id="ev-h"
-          className="m-0 mb-[clamp(40px,6vw,72px)] max-w-[18ch] font-display text-[clamp(34px,4.6vw,62px)] leading-[1.02] font-medium tracking-[-0.03em] text-balance"
-        >
-          See what supports the next step.
-        </h2>
-        <dl className="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))] gap-x-6 gap-y-10">
+    <section id="evidence" aria-labelledby="ev-h" className="border-b border-ink/15">
+      <div className="mx-auto box-content grid max-w-[1280px] grid-cols-1 items-start gap-[clamp(32px,5vw,96px)] px-gutter py-[clamp(64px,8vw,112px)] min-[1000px]:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
+        <div className="flex max-w-[26rem] flex-col gap-5">
+          <h2
+            id="ev-h"
+            className="m-0 font-display text-[clamp(34px,3.6vw,50px)] leading-[1.06] font-medium tracking-[-0.025em] text-balance"
+          >
+            Show what is known. Keep uncertainty visible.
+          </h2>
+          <p className="m-0 text-[19px] leading-[1.55] text-pretty">
+            See the facts, possible explanations and open questions separately.
+          </p>
+        </div>
+        <ul className="m-0 min-w-0 list-none border-t border-ink/15 p-0">
           {STATES.map((s) => (
-            <div key={s.name} className="flex flex-col gap-3.5">
-              <span aria-hidden="true" className={`h-10 border border-ink ${s.swatch}`} />
-              <dt className="font-display text-[28px] font-medium">{s.name}</dt>
-              <dd className="m-0 text-[17px] leading-[1.55]">{s.text}</dd>
-            </div>
+            <li
+              key={s.name}
+              className="relative grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-[clamp(16px,2.4vw,32px)] gap-y-1.5 border-b border-ink/15 py-[22px] pl-[18px] [grid-template-areas:'cat_st'_'ex_ex'] min-[720px]:grid-cols-[172px_minmax(0,1fr)_120px] min-[720px]:[grid-template-areas:'cat_ex_st']"
+            >
+              <span aria-hidden="true" className={`absolute top-[22px] bottom-[22px] left-0 w-0.5 rounded-[1px] opacity-85 ${s.rule}`} />
+              <span className="flex items-center gap-3 [grid-area:cat]">
+                <span aria-hidden="true" className="grid size-3.5 flex-none translate-y-px place-items-center">
+                  <span className={s.mark} />
+                </span>
+                <span className="font-display text-2xl leading-[1.2] font-medium tracking-[-0.01em] text-navy">{s.name}</span>
+              </span>
+              <span className="text-[17px] leading-[1.5] text-pretty [grid-area:ex]">{s.text}</span>
+              <span className="justify-self-end font-mono text-xs leading-[1.5] tracking-[0.06em] whitespace-nowrap text-muted-2 [grid-area:st]">
+                {s.status}
+              </span>
+            </li>
           ))}
-        </dl>
-        <p className="mt-[clamp(40px,6vw,64px)] mb-0 max-w-[40ch] font-display text-[clamp(22px,2.2vw,28px)] leading-[1.3] tracking-[-0.01em] text-pretty">
-          Crado supports the investigation. Engineers review the proposed next step, and physical tests establish what
-          happened.
-        </p>
+        </ul>
       </div>
     </section>
   );

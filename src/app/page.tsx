@@ -2,6 +2,7 @@ import Approach from "@/components/home/Approach";
 import Direction from "@/components/home/Direction";
 import EvidenceStates from "@/components/home/EvidenceStates";
 import Hero from "@/components/home/Hero";
+import Mechanism from "@/components/home/Mechanism";
 import Pilot from "@/components/home/Pilot";
 import System from "@/components/home/System";
 import Workbench from "@/components/home/Workbench";
@@ -28,7 +29,7 @@ const WEBPAGE = {
 
 export default function Home() {
   return (
-    <div id="top" className="min-h-screen bg-oat font-sans text-ink">
+    <div id="top" className="min-h-screen bg-oat font-sans leading-[normal] text-ink">
       <JsonLd nodes={[WEBPAGE]} />
       <SectionScroller />
       <SkipLink target="main" />
@@ -39,6 +40,7 @@ export default function Home() {
         <Approach />
         <System />
         <Workbench />
+        <Mechanism />
         <EvidenceStates />
         <Direction />
         <Pilot />

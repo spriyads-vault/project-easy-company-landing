@@ -1,210 +1,105 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type ComponentType } from "react";
+import { BoardIcon, DecisionIcon, ReportIcon, RuleIcon } from "./art";
 
-type BlockId = "rev" | "req" | "evi" | "dec";
+type CardId = "rev" | "evi" | "req" | "dec";
 
-const MONO = "font-mono";
-
-const BLOCKS: {
-  id: BlockId;
-  n: string;
-  name: string;
-  line: string;
-  detail: string;
-  side: "left" | "right";
+const CARDS: {
+  id: CardId;
+  kicker: string;
+  title: string;
+  more: string;
+  Icon: ComponentType<{ className?: string }>;
   area: string;
-  bg: string;
-  art: ReactNode;
+  /** Which side the connector to the finding leaves from, on wide screens. */
+  stub: "right" | "left";
 }[] = [
-  {
-    id: "rev",
-    n: "01",
-    name: "Revision",
-    line: "Which version was tested?",
-    detail: "Rev B, as tested with the recorded cable set.",
-    side: "left",
-    area: "[grid-area:rev]",
-    bg: "bg-sky",
-    art: (
-      <svg viewBox="0 0 240 120" aria-hidden="true" className="block h-auto w-full max-w-[280px]">
-        <rect x="52" y="20" width="160" height="56" fill="#6D85AD" stroke="#2A3441" />
-        <rect x="36" y="36" width="160" height="56" fill="#9AB0D3" stroke="#2A3441" />
-        <rect x="20" y="52" width="160" height="56" fill="#F4F2EC" stroke="#2A3441" />
-        <rect x="64" y="6" width="24" height="14" fill="#F4F2EC" stroke="#2A3441" />
-        <text x="72" y="17" className={`${MONO} text-[10px]`} fill="#2A3441">A</text>
-        <rect x="104" y="22" width="24" height="14" fill="#2A3441" stroke="#2A3441" />
-        <text x="112" y="33" className={`${MONO} text-[10px]`} fill="#F4F2EC">B</text>
-        <rect x="144" y="38" width="24" height="14" fill="#F4F2EC" stroke="#2A3441" />
-        <text x="152" y="49" className={`${MONO} text-[10px]`} fill="#2A3441">C</text>
-        <polyline points="34,72 80,72 92,84 150,84" fill="none" stroke="#2A3441" strokeWidth="1.25" />
-        <polyline points="34,96 118,96" fill="none" stroke="#2A3441" strokeWidth="1.25" />
-        <rect x="128" y="62" width="22" height="14" fill="#CDDDF2" stroke="#2A3441" />
-      </svg>
-    ),
-  },
-  {
-    id: "req",
-    n: "02",
-    name: "Requirement",
-    line: "Which requirement is being evaluated?",
-    detail: "47 CFR 15.109(a), Class B, applied because of the product’s stated class.",
-    side: "right",
-    area: "[grid-area:req]",
-    bg: "bg-butter",
-    art: (
-      <svg viewBox="0 0 240 120" aria-hidden="true" className="block h-auto w-full max-w-[280px]">
-        <rect x="30" y="6" width="150" height="108" fill="#F4F2EC" stroke="#2A3441" />
-        <rect x="30" y="6" width="150" height="20" fill="#2A3441" />
-        <text x="40" y="20" className={`${MONO} text-[11px]`} fill="#F4F2EC">15.109(a)</text>
-        <rect x="38" y="46" width="134" height="40" fill="#F6E39E" stroke="#2A3441" strokeDasharray="3 3" />
-        <rect x="44" y="38" width="110" height="3" fill="#7C8594" />
-        <rect x="44" y="52" width="120" height="3" fill="#2A3441" />
-        <rect x="44" y="64" width="96" height="3" fill="#2A3441" />
-        <rect x="44" y="76" width="108" height="3" fill="#2A3441" />
-        <rect x="44" y="96" width="90" height="3" fill="#7C8594" />
-        <polyline points="188,46 196,46 196,86 188,86" fill="none" stroke="#2A3441" strokeWidth="2" />
-        <text x="202" y="70" className={`${MONO} text-[10px]`} fill="#2A3441">SCOPE</text>
-      </svg>
-    ),
-  },
-  {
-    id: "evi",
-    n: "03",
-    name: "Evidence",
-    line: "What was measured, and where is the source?",
-    detail: "216.8 MHz, quasi-peak, 3 m, from table 4.2 of the test report.",
-    side: "left",
-    area: "[grid-area:evi]",
-    bg: "bg-slate",
-    art: (
-      <svg viewBox="0 0 250 120" aria-hidden="true" className="block h-auto w-full max-w-[280px]">
-        <rect x="12" y="8" width="130" height="104" fill="#FFFFFF" stroke="#2A3441" />
-        <text x="22" y="26" className={`${MONO} text-[10px]`} fill="#2A3441">TABLE 4.2</text>
-        <rect x="22" y="38" width="100" height="3" fill="#7C8594" />
-        <rect x="22" y="48" width="84" height="3" fill="#7C8594" />
-        <rect x="18" y="58" width="118" height="16" fill="#CDDDF2" stroke="#2A3441" />
-        <rect x="24" y="64" width="80" height="3" fill="#2A3441" />
-        <rect x="22" y="84" width="96" height="3" fill="#7C8594" />
-        <rect x="22" y="94" width="70" height="3" fill="#7C8594" />
-        <line x1="136" y1="66" x2="164" y2="66" stroke="#2A3441" strokeWidth="1.5" />
-        <circle cx="136" cy="66" r="3" fill="#2A3441" />
-        <rect x="164" y="53" width="80" height="26" fill="#2A3441" />
-        <text x="172" y="70" className={`${MONO} text-[11px]`} fill="#F4F2EC">216.8 MHz</text>
-      </svg>
-    ),
-  },
+  { id: "rev", kicker: "Hardware tested", title: "Rev B", more: "The configuration the test describes.", Icon: BoardIcon, area: "[grid-area:rev]", stub: "right" },
+  { id: "req", kicker: "Applicable rule", title: "Emissions limit", more: "47 CFR 15.109(a), Class B.", Icon: RuleIcon, area: "[grid-area:req]", stub: "left" },
+  { id: "evi", kicker: "Original source", title: "Test report", more: "216.8 MHz, quasi-peak, 3 m. Table 4.2.", Icon: ReportIcon, area: "[grid-area:evi]", stub: "right" },
   {
     id: "dec",
-    n: "04",
-    name: "Decision",
-    line: "What was concluded, and what needs to happen next?",
-    detail: "Near-field scan along the clock net, awaiting engineering review.",
-    side: "right",
+    kicker: "Engineering decision",
+    title: "Next test proposed",
+    more: "Near-field scan along the clock net. Awaiting engineering review.",
+    Icon: DecisionIcon,
     area: "[grid-area:dec]",
-    bg: "bg-lilac",
-    art: (
-      <svg viewBox="0 0 240 120" aria-hidden="true" className="block h-auto w-full max-w-[280px]">
-        <rect x="16" y="8" width="150" height="104" fill="#F4F2EC" stroke="#2A3441" />
-        <text x="26" y="26" className={`${MONO} text-[10px]`} fill="#2A3441">NEXT TEST</text>
-        <rect x="26" y="38" width="10" height="10" fill="none" stroke="#2A3441" />
-        <rect x="44" y="41" width="100" height="3" fill="#2A3441" />
-        <rect x="26" y="60" width="10" height="10" fill="none" stroke="#2A3441" />
-        <rect x="44" y="63" width="84" height="3" fill="#7C8594" />
-        <rect x="26" y="82" width="10" height="10" fill="none" stroke="#2A3441" />
-        <rect x="44" y="85" width="92" height="3" fill="#7C8594" />
-        <line x1="150" y1="42" x2="186" y2="42" stroke="#2A3441" strokeDasharray="2 3" />
-        <polygon points="198,30 210,42 198,54 186,42" fill="#2A3441" />
-        <text x="176" y="74" className={`${MONO} text-[10px]`} fill="#2A3441">REVIEW</text>
-      </svg>
-    ),
+    stub: "left",
   },
 ];
 
-// Connector from each block toward the finding: 50px across the wide gap, 30px to the left rail when stacked.
-const STUB = {
-  left: "left-[-30px] w-[30px] min-[900px]:left-auto min-[900px]:right-[-50px] min-[900px]:w-[50px]",
-  right: "left-[-30px] w-[30px] min-[900px]:left-[-50px] min-[900px]:w-[50px]",
-};
+const GRID =
+  "grid grid-cols-1 items-stretch gap-x-4 gap-y-4 [grid-template-areas:'fin'_'rev'_'req'_'evi'_'dec'] min-[640px]:grid-cols-2 min-[640px]:[grid-template-areas:'fin_fin'_'rev_req'_'evi_dec'] min-[1080px]:grid-cols-[minmax(0,1fr)_minmax(240px,0.72fr)_minmax(0,1fr)] min-[1080px]:gap-x-14 min-[1080px]:[grid-template-areas:'rev_fin_req'_'evi_fin_dec']";
 
 export default function System() {
-  const [sel, setSel] = useState<BlockId>("rev");
-  const selName = BLOCKS.find((b) => b.id === sel)!.name;
+  const [hovered, setHovered] = useState<CardId | null>(null);
+  const [selected, setSelected] = useState<CardId | null>(null);
+  const active = hovered ?? selected;
 
   return (
     <section id="system" aria-labelledby="system-h" className="bg-oat">
-      <div className="mx-auto box-content max-w-[1280px] px-gutter py-[clamp(80px,11vw,144px)]">
-        <div className="mb-[clamp(40px,6vw,64px)] flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <h2
-            id="system-h"
-            className="m-0 font-display text-[clamp(34px,4.6vw,62px)] leading-[1.02] font-medium tracking-[-0.03em]"
-          >
-            Know what each finding belongs to.
-          </h2>
-          <p className="m-0 font-mono text-[13px] text-muted">Select a block</p>
-        </div>
-
-        <div className="relative grid grid-cols-1 gap-y-7 pl-7 [grid-template-areas:'fin'_'rev'_'req'_'evi'_'dec'] min-[900px]:grid-cols-[minmax(0,1fr)_minmax(240px,0.8fr)_minmax(0,1fr)] min-[900px]:gap-x-12 min-[900px]:pl-0 min-[900px]:[grid-template-areas:'rev_fin_req'_'evi_fin_dec']">
-          <span aria-hidden="true" className="absolute top-0 bottom-0 left-0 w-[3px] bg-ink min-[900px]:hidden" />
-
-          <div className="box-content flex min-h-[200px] flex-col justify-center gap-2.5 border-[1.5px] border-ink bg-ink px-6 py-7 text-oat shadow-[8px_8px_0_#6D85AD] [grid-area:fin]">
-            <span className="font-mono text-xs tracking-[0.08em] text-fog">FINDING</span>
-            <span className="font-display text-[30px] leading-[1.1] font-medium">Emission above limit</span>
-            <span className="font-mono text-[13px] text-fog">Rev B · 216.8 MHz</span>
-            <span aria-hidden="true" className="my-2.5 h-px bg-night-line" />
-            <span className="text-sm text-fog">Tracing to</span>
-            <span aria-live="polite" className="flex items-center gap-2.5 text-lg font-medium">
-              <span aria-hidden="true" className="size-3 flex-none bg-lime" />
-              {selName}
+      <div className="mx-auto box-content max-w-[1280px] px-gutter py-[clamp(64px,8vw,112px)]">
+        <h2
+          id="system-h"
+          className="m-0 mb-[clamp(32px,4.5vw,56px)] font-display text-[clamp(34px,4.6vw,62px)] leading-[1.04] font-medium tracking-[-0.025em]"
+        >
+          Every finding needs context.
+        </h2>
+        <div className={`relative ${GRID}`}>
+          <div className="relative z-[1] box-border flex flex-col justify-center gap-3 self-center rounded-xl bg-navy p-7 text-oat shadow-[0_1px_2px_rgba(31,39,50,0.2),0_20px_40px_-28px_rgba(31,39,50,0.55)] [grid-area:fin] min-[1080px]:min-h-[200px]">
+            <span className="flex items-center gap-2.5 font-mono text-xs tracking-[0.1em] text-fog">
+              <span aria-hidden="true" className="size-2 flex-none rotate-45 bg-butter" />
+              FINDING
             </span>
+            <span className="font-display text-[clamp(26px,2.4vw,32px)] leading-[1.1] font-medium tracking-[-0.015em]">
+              Emission above limit
+            </span>
+            <span className="self-start rounded border border-oat/30 px-[9px] py-[3px] font-mono text-[13px]">Rev B</span>
           </div>
 
-          {BLOCKS.map((b) => {
-            const on = b.id === sel;
-            const head = (
-              <span className="flex items-baseline justify-between gap-3">
-                <span className="font-display text-[28px] font-medium tracking-[-0.01em]">{b.name}</span>
-                <span className="font-mono text-xs">{b.n}</span>
-              </span>
-            );
-            const body = (
-              <>
-                {head}
-                {b.art}
-                <span className="text-[17px] leading-[1.5]">{b.line}</span>
-                {on && (
-                  <span className="block border-t border-ink pt-3 text-[15px] leading-[1.5]">{b.detail}</span>
-                )}
-              </>
-            );
+          {CARDS.map(({ id, kicker, title, more, Icon, area, stub }) => {
+            const on = active === id;
             return (
               <button
-                key={b.id}
+                key={id}
                 type="button"
-                aria-pressed={on}
-                onClick={() => setSel(b.id)}
-                className={`relative flex cursor-pointer flex-col gap-3.5 border-[1.5px] border-ink text-left font-sans text-ink transition-[box-shadow,transform] duration-150 ${b.area} ${b.bg} ${
-                  b.id === "evi" ? "p-3" : "p-6"
-                } ${on ? "-translate-x-0.5 -translate-y-0.5 shadow-[8px_8px_0_#2A3441]" : "shadow-[4px_4px_0_#2A3441]"}`}
+                aria-expanded={on}
+                onClick={() => setSelected((s) => (s === id ? null : id))}
+                onMouseEnter={() => setHovered(id)}
+                onMouseLeave={() => setHovered((h) => (h === id ? null : h))}
+                onFocus={() => setHovered(id)}
+                onBlur={() => setHovered((h) => (h === id ? null : h))}
+                className={`relative box-border flex min-h-[104px] cursor-pointer items-center gap-4 rounded-[10px] border bg-oat-light py-3.5 pr-[18px] pl-3.5 text-left font-sans text-navy transition-[border-color,box-shadow] duration-150 ${area} ${
+                  on
+                    ? "border-navy shadow-[0_1px_2px_rgba(31,39,50,0.06),0_14px_28px_-20px_rgba(31,39,50,0.4)]"
+                    : "border-ink/15 shadow-[0_1px_2px_rgba(31,39,50,0.04)]"
+                }`}
               >
                 <span
                   aria-hidden="true"
-                  className={`absolute top-1/2 -translate-y-1/2 bg-ink transition-[height] duration-150 ${STUB[b.side]} ${
-                    on ? "h-1" : "h-[1.5px]"
-                  }`}
+                  className={`absolute top-1/2 hidden w-[57px] -translate-y-1/2 transition-colors duration-150 min-[1080px]:block ${
+                    stub === "right" ? "-right-[57px]" : "-left-[57px]"
+                  } ${on ? "h-0.5 bg-navy" : "h-px bg-[#9AA3B0]"}`}
                 />
-                {b.id === "evi" ? (
-                  <span className="flex flex-col gap-3.5 border border-ink bg-oat p-5">{body}</span>
-                ) : (
-                  body
-                )}
+                <Icon className="block h-[60px] w-20 flex-none" />
+                <span className="flex min-w-0 flex-col gap-[3px]">
+                  <span className="text-[13px] leading-[1.3] text-muted">{kicker}</span>
+                  <span className="text-lg leading-[1.3] font-semibold tracking-[-0.005em]">{title}</span>
+                  <span
+                    className={`overflow-hidden text-sm leading-[1.45] text-[#3A4556] transition-opacity duration-150 ${
+                      on ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    {more}
+                  </span>
+                </span>
               </button>
             );
           })}
         </div>
-
-        <p className="mt-[clamp(40px,5vw,56px)] mb-0 font-display text-[clamp(22px,2.2vw,28px)] leading-[1.3] tracking-[-0.01em]">
-          Follow the connections from a finding back to its source and forward to the next reviewed step.
+        <p className="mt-[clamp(28px,3.5vw,40px)] mb-0 text-[17px] leading-[1.5] text-[#3A4556]">
+          Keep the hardware, rule, source and decision connected.
         </p>
       </div>
     </section>

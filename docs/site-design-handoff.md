@@ -1,13 +1,58 @@
 # Marketing site: design implementation notes
 
-Source: Claude Design project "Landing page and docs prototype" (`Home.dc.html`, `Docs.dc.html`,
-`SiteNav.dc.html`, `SiteFooter.dc.html`, `cal-booking.js`, `HANDOFF.md`), implemented 2026-09-28.
+Source: Claude Design project "Landing page and docs prototype"
+(`https://claude.ai/design/p/a953810b-4df9-49f3-97b1-dfc8bfb9184f`).
+
+## Design authority
+
+| Page | Reference | Implemented |
+| --- | --- | --- |
+| `/` (Home) | `Home v3.dc.html` | 2026-10-01 |
+| `/docs/*` | `Docs.dc.html` (content), with Home v3's shared typography, nav and footer | 2026-09-28, typography 2026-10-01 |
+| Header, footer, announcement | `SiteNav.dc.html`, `SiteFooter.dc.html`, Home v3 | 2026-10-01 |
+
+This covers the public marketing site only. It does not replace design references for the authenticated
+Crado application.
+
+`Home v3.dc.html` supersedes `Home.dc.html`, `Home v2.dc.html` and every `Home v3 (before …)` snapshot.
+Those files, `uploads/` and `screenshots/` are historical and are not shipped. The earlier implementation
+(2026-09-28) followed `Home.dc.html`.
+
+### Home v3 implementation (2026-10-01)
+
+- Typography: Funnel Display replaces Space Grotesk as the display face site-wide (`--font-display`), with
+  IBM Plex Sans and Mono unchanged. The Home page uses `line-height: normal` as a base, matching the design.
+- Sections, in order: hero, Approach (Rev B tested / Rev D enclosure changed), System ("Every finding needs
+  context"), Workbench (four stages), Mechanism, Evidence (Observed / Known / Inferred / Missing), Direction
+  (engineering-record terminal, "In development"), Pilot. The interactive evidence map from `Home.dc.html`
+  is gone; `nodeData` in Home v3's script is unused leftover code and was not ported.
+- SVG artwork is copied from Home v3 (`src/components/home/art.tsx`).
+- Terminal (`Direction.tsx`): the design's timeline (lines at 250, 900, 1450, 2000 and 2700 ms, complete
+  record held to 8700 ms, 9100 ms loop). It runs only while at least half of it is visible and the tab is
+  visible, using a single interval that exists only while running. Under reduced motion it starts paused
+  on the complete record. Focus inside the record holds it complete. Pause and Play resume from the
+  complete record. All lines stay rendered, so the height never changes, and the no-JS render shows the
+  full record.
+- Announcement and CTAs: "Book a 30-minute call" and "Discuss a pilot", all opening the same Cal.com
+  event. The footer adds "© 2026 Crado".
+- The booking module is unchanged. The design's `cal-booking.js` leaves the scroll lock entirely to Cal;
+  `src/lib/booking.ts` also locks `<html>`, which the regression tests cover. Both are one behaviour, owned by
+  `booking.ts`.
+
+### Deliberate deviations from Home v3 (product accuracy)
+
+1. Mechanism, model-assisted layer: the design says "Extract information and propose explanations from the
+   available material." It keeps "Interpret the available material and propose explanations." because report
+   extraction is deterministic (correction 2 below).
+2. Workbench retest checklist: the design lists Cable layout. It keeps Frequency, because cable arrangement
+   is not a gated comparison condition (correction 3 below). The Rev B and Rev C record cards keep "Cables",
+   which is a recorded field, not a gate.
 
 ## Routes
 
 | Route | Content |
 | --- | --- |
-| `/` | Home: hero, Approach, System, Workbench (application), Mechanism, Evidence, Direction, Pilot |
+| `/` | Home: hero, Approach, System, Workbench (application), Mechanism, Evidence, Direction (terminal), Pilot |
 | `/docs` | Get started (Introduction, First investigation, Scope and limitations) |
 | `/docs/core-concepts` | Products and revisions, requirements, evidence, observations, reviews |
 | `/docs/evaluation` | Report confirmation, rule evaluation, comparisons, missing conditions |

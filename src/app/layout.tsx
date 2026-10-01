@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { Funnel_Display, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import BookingManager from "@/components/site/BookingManager";
 import { HOME_DESCRIPTION, HOME_TITLE, OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const funnelDisplay = Funnel_Display({
+  variable: "--font-funnel-display",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
 });
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${spaceGrotesk.variable} ${plexSans.variable} ${plexMono.variable}`}
+      className={`${funnelDisplay.variable} ${plexSans.variable} ${plexMono.variable}`}
     >
       <body>
         {children}
