@@ -56,7 +56,7 @@ test.describe("Home page", () => {
     for (const el of [
       page.getByRole("heading", { level: 1 }),
       page.getByText(/^Crado connects hardware revisions/),
-      page.locator("#main").getByRole("link", { name: "Book a pilot call" }).first(),
+      page.locator("#main").getByRole("link", { name: "Discuss a pilot" }).first(),
       page.getByRole("link", { name: /Explore the system/ }),
       page.getByRole("img", { name: "Revisions drawn as stacked layers" }),
     ]) {
@@ -115,20 +115,81 @@ test.describe("Home page", () => {
     await expect(tab("Report")).toBeFocused();
   });
 
-  test("reduced motion starts the sequences paused", async ({ browser }) => {
+  test("reduced motion starts the sequences paused on a readable state", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce" });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByRole("button", { name: "Play automatic revision sequence" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Play automatic stage sequence" })).toBeVisible();
+    const term = page.locator("#dir-term");
+    await term.scrollIntoViewIfNeeded();
+    await expect(term.getByRole("button", { name: "Play the presentation sequence" })).toBeVisible();
+    await expect(term.getByText("Rev C needs review. Rev B’s record stays intact.")).toBeVisible();
     await context.close();
+  });
+
+  test("engineering-record terminal loops, holds the result and pauses from the keyboard", async ({ page }) => {
+    await page.clock.install();
+    await page.goto("/");
+    const term = page.locator("#dir-term");
+    const first = term.getByText("Review the clock-routing change in Rev C.");
+    const result = term.getByText("Rev C needs review. Rev B’s record stays intact.");
+    // Lines stay rendered and only change opacity, so test the target state rather than a mid-transition value.
+    const shown = (l: typeof first) => l.evaluate((el) => !el.parentElement!.className.includes("opacity-0"));
+
+    // Server render and pre-scroll state show the complete record.
+    await expect(result).toBeVisible();
+    await term.scrollIntoViewIfNeeded();
+    const height = (await term.boundingBox())!.height;
+
+    // Starts from blank once it is in view, then builds the record line by line.
+    await expect
+      .poll(async () => {
+        await page.clock.runFor(50);
+        return shown(first);
+      })
+      .toBe(false);
+    await page.clock.runFor(1_000);
+    expect(await shown(first)).toBe(true);
+    expect(await shown(result)).toBe(false);
+    await page.clock.runFor(2_000);
+    expect(await shown(result)).toBe(true);
+    // The result holds, readable, then the loop clears and restarts.
+    await page.clock.runFor(5_000);
+    expect(await shown(result)).toBe(true);
+    await page.clock.runFor(1_000);
+    expect(await shown(first)).toBe(false);
+    // Two more loops keep the same timing: no duplicate timers.
+    await page.clock.runFor(9_100 * 2);
+    expect(await shown(first)).toBe(false);
+    await page.clock.runFor(1_000);
+    expect(await shown(first)).toBe(true);
+    expect((await term.boundingBox())!.height).toBe(height);
+
+    // Pause with the keyboard: the complete record stays put.
+    const pause = term.getByRole("button", { name: "Pause the presentation sequence" });
+    await pause.focus();
+    await page.keyboard.press("Enter");
+    const play = term.getByRole("button", { name: "Play the presentation sequence" });
+    await expect(play).toBeFocused();
+    await page.clock.runFor(20_000);
+    expect(await shown(result)).toBe(true);
+    expect(await shown(first)).toBe(true);
+    await page.keyboard.press("Space");
+    await expect(term.getByRole("button", { name: "Pause the presentation sequence" })).toBeVisible();
+  });
+
+  test("section order follows the approved Home v3 design", async ({ page }) => {
+    await page.goto("/");
+    const ids = await page.locator("#main > section").evaluateAll((els) => els.map((e) => e.id || "hero"));
+    expect(ids).toEqual(["hero", "approach", "system", "application", "mechanism", "evidence", "direction", "pilot"]);
+    await expect(page.locator("#evidence li")).toHaveText([/^Observed/, /^Known/, /^Inferred/, /^Missing/]);
   });
 });
 
 test.describe("Pilot booking", () => {
   test("every Pilot CTA links to the Cal.com event", async ({ page }) => {
     await page.goto("/");
-    for (const name of ["Book a pilot call", "Pilot"]) {
+    for (const name of ["Book a 30-minute call", "Discuss a pilot", "Pilot"]) {
       await expect(page.getByRole("link", { name, exact: true }).first()).toHaveAttribute("href", CAL_URL);
     }
   });
@@ -154,7 +215,7 @@ test.describe("Pilot booking", () => {
 
   test("Escape and repeated opening leave the page usable", async ({ page }) => {
     await page.goto("/");
-    const cta = page.locator("#pilot").getByRole("link", { name: "Book a pilot call" });
+    const cta = page.locator("#pilot").getByRole("link", { name: "Discuss a pilot" });
     await cta.scrollIntoViewIfNeeded();
     for (let i = 0; i < 2; i++) {
       await openCal(page, cta);
@@ -166,7 +227,7 @@ test.describe("Pilot booking", () => {
   test("a failed embed shows the direct link and closes cleanly", async ({ page }) => {
     await page.route("https://app.cal.com/embed/embed.js", (route) => route.abort());
     await page.goto("/");
-    await page.getByRole("link", { name: "Book a pilot call" }).first().click();
+    await page.getByRole("link", { name: "Book a 30-minute call" }).click();
     const dialog = page.getByRole("dialog", { name: "Book a pilot call" });
     const direct = dialog.getByRole("link", { name: "Open booking page" });
     await expect(direct).toHaveAttribute("href", CAL_URL);

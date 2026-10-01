@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-display: var(--font-funnel-display), sans-serif;
   --font-sans: var(--font-plex-sans), system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), monospace;
 }
@@ -14,6 +14,7 @@
   /* Neutrals */
   --color-ink: #2a3441;
   --color-ink-deep: #1e2630;
+  --color-navy: #1f2732;
   --color-oat: #f4f2ec;
   --color-oat-light: #faf9f5;
   --color-oat-hover: #ece9e1;
@@ -35,6 +36,7 @@
   /* Accents */
   --color-lime: #b6e88e;
   --color-lime-soft: #cfefb2;
+  --color-sage: #c6e3a6;
   --color-slate: #6d85ad;
   --color-slate-dark: #56698c;
   --color-slate-mid: #8ea3c6;
@@ -82,6 +84,7 @@ body {
   :focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 3px;
+    border-radius: 4px;
   }
 
   ::selection {
@@ -91,8 +94,15 @@ body {
 }
 
 /* Focus ring for controls on dark panels. */
-.focus-lime:focus-visible {
+.focus-lime:focus-visible,
+#application :focus-visible,
+#mechanism :focus-visible {
   outline-color: var(--color-lime);
+}
+
+#approach :focus-visible {
+  outline-color: var(--color-navy);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

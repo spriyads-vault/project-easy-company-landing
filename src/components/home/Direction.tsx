@@ -1,255 +1,193 @@
 "use client";
 
-import { useState, type KeyboardEvent } from "react";
-import { DASH, FILL, POS, borderStyle, nodeData, type NodeId, type Rev } from "./evidenceMap";
+import { useEffect, useRef, useState, useSyncExternalStore, type FocusEvent } from "react";
 
-const LEGEND: [string, string][] = [
-  ["Observed", "bg-observed border-solid"],
-  ["Known", "bg-known border-solid"],
-  ["Inferred", "bg-inferred border-solid"],
-  ["Missing", "bg-missing border-dashed"],
-  ["Suggested test", "bg-white border-dotted"],
-  ["Historical", "bg-historical border-dashed"],
-];
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
-const GROUPS: { label: string; ids: (rev: Rev) => NodeId[] }[] = [
-  { label: "REVISION FACTS", ids: () => ["k1", "k3", "k2"] },
-  { label: "EVIDENCE", ids: () => ["f1", "src", "e2"] },
-  { label: "INVESTIGATION", ids: (rev) => (rev === "C" ? ["rm", "h1", "t1", "c1"] : ["h1", "t1", "c1"]) },
-];
+// One loop of the presentation sequence, in milliseconds (from the approved Home v3 design):
+// lines appear at these marks, the full record holds until BLANK_AT, then clears and repeats.
+const MARKS = [250, 900, 1450, 2000, 2700];
+const BLANK_AT = 8700;
+const LOOP = 9100;
+const TICK = 100;
+const ALL = MARKS.length;
 
-const NODE_FOCUS = "cursor-pointer outline-none focus-visible:[&>rect]:stroke-violet";
+function stepAt(t: number) {
+  if (t >= BLANK_AT) return 0;
+  return MARKS.filter((m) => t >= m).length;
+}
 
-export default function Direction() {
-  const [rev, setRev] = useState<Rev>("B");
-  const [sel, setSel] = useState<NodeId>("f1");
-  const cur: NodeId = rev === "C" || sel !== "rm" ? sel : "f1";
-  const d = nodeData(cur, rev);
+function subscribeReducedMotion(onChange: () => void) {
+  const mq = window.matchMedia(REDUCED_MOTION);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
 
-  const nodeProps = (id: NodeId) => {
-    const n = nodeData(id, rev);
-    return {
-      role: "button",
-      tabIndex: 0,
-      "aria-pressed": id === cur,
-      // The review marker shows only "!", so it needs a label; other nodes are named by their visible text.
-      "aria-label": id === "rm" ? `${n.kicker}: ${n.title}` : undefined,
-      onClick: () => setSel(id),
-      onKeyDown: (e: KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          setSel(id);
-        }
-      },
+/**
+ * Timeline for the engineering-record terminal.
+ *
+ * Runs only while at least half the terminal is on screen and the tab is visible. Under reduced
+ * motion it starts paused on the complete record. Focus inside the record holds it complete.
+ * Every line is always rendered, so the terminal never changes height.
+ */
+function useTerminalLoop() {
+  const [choice, setChoice] = useState<"auto" | "playing" | "paused">("auto");
+  const reduced = useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false,
+  );
+  const paused = choice === "paused" || (choice === "auto" && reduced);
+  // null until the sequence first starts: the server and no-JS render show the complete record.
+  const [step, setStep] = useState<number | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [docHidden, setDocHidden] = useState(false);
+  const [focusHold, setFocusHold] = useState(false);
+  const t = useRef(0);
+  const started = useRef(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.intersectionRatio >= 0.5), { threshold: [0, 0.5, 1] });
+    io.observe(el);
+    const onVis = () => setDocHidden(document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
     };
+  }, []);
+
+  const running = visible && !docHidden && !paused && !focusHold;
+
+  // A single interval exists only while the sequence is running.
+  useEffect(() => {
+    if (!running) return;
+    if (!started.current) {
+      started.current = true;
+      t.current = 0;
+      setStep(0);
+    }
+    const id = setInterval(() => {
+      t.current = (t.current + TICK) % LOOP;
+      setStep(stepAt(t.current));
+    }, TICK);
+    return () => clearInterval(id);
+  }, [running]);
+
+  // Resume from the complete record so a visitor never returns to a blank terminal.
+  const resumeFull = () => {
+    t.current = MARKS[ALL - 1];
+    started.current = true;
+    setStep(ALL);
   };
 
-  const revButton = (r: Rev, label: string, sub: string, last = false) => (
-    <button
-      type="button"
-      aria-pressed={rev === r}
-      onClick={() => {
-        setRev(r);
-        if (r === "C") setSel("rm");
-      }}
-      className={`flex min-h-11 cursor-pointer flex-col items-start gap-0.5 border-0 px-4 py-2 font-sans text-[15px] font-medium text-ink ${
-        last ? "" : "border-r border-r-ink"
-      } ${rev === r ? "bg-lime" : "bg-transparent"}`}
-    >
-      <span>{label}</span>
-      <span className="text-[13px] font-normal">{sub}</span>
-    </button>
-  );
+  const toggle = () => {
+    if (paused) resumeFull();
+    else setStep(ALL);
+    setChoice(paused ? "playing" : "paused");
+  };
+
+  const regionProps = {
+    onFocus: (e: FocusEvent<HTMLElement>) => {
+      if (!(e.target as HTMLElement).dataset.termCtl) setFocusHold(true);
+    },
+    onBlur: (e: FocusEvent<HTMLElement>) => {
+      const next = e.relatedTarget as HTMLElement | null;
+      if (!e.currentTarget.contains(next) || next?.dataset.termCtl) {
+        resumeFull();
+        setFocusHold(false);
+      }
+    },
+  };
+
+  const shown = paused || focusHold || step === null ? ALL : step;
+  return { ref, shown, paused, toggle, regionProps };
+}
+
+const LINE = "flex items-baseline gap-3.5 transition-[opacity,transform] duration-[320ms] ease-[ease]";
+const DETAILS = ["Earlier test found · Rev B", "Related investigation linked", "Affected evidence needs review"];
+
+export default function Direction() {
+  const { ref, shown, paused, toggle, regionProps } = useTerminalLoop();
+  const lineState = (i: number) => (i < shown ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0");
 
   return (
     <section id="direction" aria-labelledby="dir-h">
-      <div className="mx-auto box-content max-w-[1280px] px-gutter py-[clamp(72px,10vw,136px)]">
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] gap-[clamp(32px,6vw,96px)]">
+      <div className="mx-auto box-content max-w-[1280px] px-gutter py-[clamp(64px,8vw,112px)]">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] items-end gap-x-[clamp(32px,6vw,96px)] gap-y-5">
           <h2
             id="dir-h"
-            className="m-0 font-display text-[clamp(34px,4.6vw,62px)] leading-[1.02] font-medium tracking-[-0.03em] text-balance"
+            className="m-0 font-display text-[clamp(34px,4.6vw,62px)] leading-[1.04] font-medium tracking-[-0.025em] text-balance"
           >
-            Build on what your team has learned.
+            Engineering changes. The record should keep up.
           </h2>
-          <div className="flex max-w-[36rem] flex-col gap-5 pt-2">
-            <p className="m-0 text-[19px] leading-[1.65] text-pretty">
-              We are building Crado to carry compliance evidence through the engineering lifecycle, connecting changes
-              to the requirements, tests and decisions they affect.
-            </p>
-            <p className="m-0 text-[19px] leading-[1.65] text-pretty">
-              Our starting point is radiated-emissions investigation. The longer-term goal is to help teams understand
-              what remains supported and what needs fresh evidence as their products evolve.
-            </p>
-            <p className="m-0 flex items-center gap-2.5 self-start border border-dashed border-ink px-3 py-2 font-mono text-[13px] leading-[1.4]">
-              <span aria-hidden="true" className="size-2.5 flex-none border border-ink bg-lilac" />
-              <span>Product direction. Not a description of current functionality.</span>
-            </p>
-          </div>
+          <p className="m-0 max-w-[34rem] text-[19px] leading-[1.6] text-pretty">
+            We’re building Crado to bring affected evidence back into view when hardware changes, while preserving
+            earlier results and decisions.
+          </p>
         </div>
 
         <div
+          ref={ref}
+          id="dir-term"
           role="region"
-          aria-labelledby="ex-h"
-          className="mt-[clamp(56px,8vw,96px)] border border-ink bg-oat-light"
+          aria-label="Crado engineering record, in development"
+          {...regionProps}
+          className="mt-[clamp(36px,5vw,56px)] overflow-hidden rounded-xl border border-[#2E3948] bg-navy text-[#E9EBEE] shadow-[0_1px_2px_rgba(31,39,50,0.18),0_24px_48px_-32px_rgba(31,39,50,0.55)]"
         >
-          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-b border-ink px-[clamp(16px,2.4vw,28px)] py-5">
-            <h3 id="ex-h" className="m-0 font-display text-[22px] font-medium">
-              A revision changes
-            </h3>
-            <div role="group" aria-label="Select revision" className="flex border border-ink">
-              {revButton("B", "Rev B", "as tested")}
-              {revButton("C", "Rev C", "CLK_54M changed", true)}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 min-[900px]:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-            <div className="border-b border-ink p-[clamp(12px,2vw,24px)] min-[900px]:border-r min-[900px]:border-b-0">
-              <div className="hidden min-[900px]:block">
-                <svg
-                  role="group"
-                  viewBox="0 0 800 400"
-                  className="block h-auto w-full"
-                  aria-label={`Evidence map for Rev ${rev}. Use the buttons to inspect each item.`}
-                >
-                  <g className="font-mono text-[12px] tracking-[0.06em]" fill="#4A5463">
-                    <text x="20" y="28">REVISION FACTS</text>
-                    <text x="300" y="28">EVIDENCE</text>
-                    <text x="580" y="28">INVESTIGATION</text>
-                  </g>
-                  <g fill="none" strokeWidth="1.25" stroke="#2A3441">
-                    <line x1="120" y1="180" x2="120" y2="126" />
-                    <line x1="400" y1="180" x2="400" y2="126" />
-                    <line x1="400" y1="256" x2="400" y2="310" />
-                    <line x1="220" y1="348" x2="300" y2="348" />
-                    <line x1="500" y1="88" x2="580" y2="88" />
-                    <line x1="680" y1="126" x2="680" y2="180" />
-                    <line x1="680" y1="256" x2="680" y2="310" strokeDasharray="3 4" />
-                    <line
-                      x1="220"
-                      y1="88"
-                      x2="300"
-                      y2="88"
-                      stroke={rev === "C" ? "#6E4FB0" : "#2A3441"}
-                      strokeWidth={rev === "C" ? 2.5 : 1.25}
-                      strokeDasharray={rev === "C" ? "6 4" : undefined}
-                    />
-                  </g>
-                  {(Object.keys(POS) as (keyof typeof POS)[]).map((id) => {
-                    const n = nodeData(id, rev);
-                    const [x, y] = POS[id];
-                    return (
-                      <g key={id} {...nodeProps(id)} className={NODE_FOCUS}>
-                        <rect
-                          x={x}
-                          y={y}
-                          width="200"
-                          height="76"
-                          fill={FILL[n.state]}
-                          stroke="#2A3441"
-                          strokeWidth={id === cur ? 3 : 1.25}
-                          strokeDasharray={DASH[n.state]}
-                        />
-                        <foreignObject x={x + 14} y={y + 9} width="180" height="62" className="pointer-events-none">
-                          <div className="flex flex-col gap-[3px] font-sans leading-[1.2] text-ink">
-                            <span className="font-mono text-[11px] whitespace-nowrap text-muted-2">{n.kicker}</span>
-                            <span className="text-base font-semibold whitespace-nowrap">{n.title}</span>
-                            <span className="text-[13px] whitespace-nowrap text-muted-2">{n.sub}</span>
-                          </div>
-                        </foreignObject>
-                      </g>
-                    );
-                  })}
-                  {rev === "C" && (
-                    <g {...nodeProps("rm")} className="cursor-pointer outline-none focus-visible:[&>polygon]:stroke-violet">
-                      <rect x="236" y="64" width="48" height="48" fill="transparent" />
-                      <polygon
-                        points="260,72 276,88 260,104 244,88"
-                        fill="#BFA3E6"
-                        stroke="#2A3441"
-                        strokeWidth={cur === "rm" ? 3 : 1.25}
-                      />
-                      <text
-                        x="260"
-                        y="92"
-                        textAnchor="middle"
-                        className="font-mono text-[12px] font-medium"
-                        fill="#2A3441"
-                        aria-hidden="true"
-                      >
-                        !
-                      </text>
-                    </g>
-                  )}
-                </svg>
-                <p className="mt-3 mb-0 text-sm text-muted">
-                  Select any item to inspect it. Items are keyboard focusable; press Enter to select.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-5 min-[900px]:hidden">
-                {GROUPS.map((g) => (
-                  <div key={g.label} className="flex flex-col gap-2">
-                    <span className="font-mono text-xs tracking-[0.06em] text-muted">{g.label}</span>
-                    {g.ids(rev).map((id) => {
-                      const n = nodeData(id, rev);
-                      const on = id === cur;
-                      return (
-                        <button
-                          key={id}
-                          type="button"
-                          aria-pressed={on}
-                          onClick={() => setSel(id)}
-                          className="flex min-h-14 cursor-pointer flex-col gap-0.5 px-3.5 py-2.5 text-left font-sans text-ink"
-                          style={{
-                            background: FILL[n.state],
-                            border: `${on ? 3 : 1}px ${borderStyle(n.state)} #2A3441`,
-                          }}
-                        >
-                          <span className="font-mono text-[11px] text-muted-2">{n.kicker}</span>
-                          <span className="text-base font-semibold">{n.title}</span>
-                          {n.sub && <span className="text-sm text-muted-2">{n.sub}</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div aria-live="polite" className="flex flex-col gap-4 p-[clamp(20px,2.4vw,28px)]">
-              <span
-                className="self-start px-2.5 py-1 font-mono text-xs tracking-[0.04em]"
-                style={{ background: FILL[d.state], border: `1px ${DASH[d.state] ? "dashed" : "solid"} #2A3441` }}
-              >
-                {d.state === "Suggested" ? "SUGGESTED TEST" : d.state.toUpperCase()}
-              </span>
-              <h4 className="m-0 font-display text-2xl leading-[1.2] font-medium">{d.title}</h4>
-              <p className="m-0 text-base leading-[1.6]">{d.body}</p>
-              <dl className="m-0 flex flex-col border-t border-line">
-                {d.meta.map(([k, v]) => (
-                  <div
-                    key={k}
-                    className="grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)] gap-3 border-b border-line py-2.5"
-                  >
-                    <dt className="pt-0.5 font-mono text-xs text-muted">{k}</dt>
-                    <dd className="m-0 text-[15px] leading-[1.45]">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-x-[22px] gap-y-2.5 border-t border-ink px-[clamp(16px,2.4vw,28px)] py-4 text-sm">
-            {LEGEND.map(([label, cls]) => (
-              <span key={label} className="flex items-center gap-2">
-                <span aria-hidden="true" className={`size-3.5 border border-ink ${cls}`} />
-                {label}
-              </span>
-            ))}
-            <span className="flex items-center gap-2">
-              <span aria-hidden="true" className="size-3 rotate-45 border border-ink bg-lilac" />
-              Review marker
+          <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-2.5 border-b border-[#313C4C] px-[clamp(18px,2.6vw,32px)] py-3">
+            <span className="font-mono text-[13px] tracking-[0.02em] text-fog">
+              crado <span className="text-[#7F8A9A]">/</span> engineering record
             </span>
+            <div className="flex items-center gap-3.5">
+              <span className="rounded border border-[#46526A] px-2 py-[3px] font-mono text-xs tracking-[0.06em] text-fog">
+                In development
+              </span>
+              <button
+                type="button"
+                data-term-ctl="1"
+                onClick={toggle}
+                aria-label={paused ? "Play the presentation sequence" : "Pause the presentation sequence"}
+                className="inline-flex min-h-9 min-w-[84px] cursor-pointer items-center justify-center gap-2 rounded-md border border-[#46526A] bg-transparent px-3 font-mono text-xs tracking-[0.04em] text-[#E9EBEE] transition-[border-color,background-color] duration-150 hover:border-lime hover:bg-lime/5 focus-visible:outline-lime"
+              >
+                <span aria-hidden="true" className="w-3 text-center text-[11px]">
+                  {paused ? "▶" : "❚❚"}
+                </span>
+                {paused ? "Play" : "Pause"}
+              </button>
+            </div>
+          </div>
+          <div
+            tabIndex={0}
+            className="flex flex-col gap-3.5 px-[clamp(18px,2.6vw,32px)] pt-[clamp(22px,3vw,36px)] pb-[clamp(24px,3vw,32px)] font-mono text-[clamp(15px,1.25vw,17px)] leading-[1.6] outline-none focus-visible:rounded-lg focus-visible:outline-2 focus-visible:-outline-offset-[6px] focus-visible:outline-lime"
+          >
+            <div className={`${LINE} ${lineState(0)}`}>
+              <span aria-hidden="true" className="w-4 flex-none text-lime">
+                ›
+              </span>
+              <span className="min-w-0 [overflow-wrap:anywhere] text-oat">Review the clock-routing change in Rev C.</span>
+            </div>
+            <div className="flex flex-col gap-2 pl-[30px] text-fog">
+              {DETAILS.map((d, i) => (
+                <div key={d} className={`${LINE} ${lineState(i + 1)}`}>
+                  <span aria-hidden="true" className="w-4 flex-none text-[#7F8A9A]">
+                    –
+                  </span>
+                  <span className="min-w-0 [overflow-wrap:anywhere]">{d}</span>
+                </div>
+              ))}
+            </div>
+            <div
+              className={`mt-2.5 flex items-baseline gap-3.5 border-t border-[#313C4C] pt-5 transition-[opacity,transform] duration-[360ms] ${lineState(4)}`}
+            >
+              <span aria-hidden="true" className="size-2.5 flex-none -translate-y-px rounded-[2px] bg-lime" />
+              <span className="font-sans text-[clamp(19px,1.8vw,23px)] leading-[1.4] font-medium text-pretty text-oat">
+                Rev C needs review. Rev B’s record stays intact.
+              </span>
+            </div>
           </div>
         </div>
       </div>
