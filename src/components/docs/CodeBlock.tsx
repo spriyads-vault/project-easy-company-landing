@@ -4,7 +4,7 @@ export default function CodeBlock({
   id,
   label,
   children,
-  size = "text-[15px] leading-[1.6]",
+  size = "text-sm leading-[1.7]",
 }: {
   id: string;
   label: string;
@@ -12,12 +12,12 @@ export default function CodeBlock({
   size?: string;
 }) {
   return (
-    <div className="border border-ink bg-oat-light">
-      <div className="flex items-center justify-between gap-3 border-b border-ink py-2 pr-2 pl-4">
-        <span className="font-mono text-xs tracking-[0.04em]">{label}</span>
+    <div className="overflow-hidden rounded-2xl bg-ink text-[#EEF1F5]">
+      <div className="flex items-center justify-between gap-3 pt-3 pr-3 pl-5">
+        <span className="text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase">{label}</span>
         <CopyButton target={id} label={label.toLowerCase()} />
       </div>
-      <pre id={id} className={`m-0 overflow-x-auto p-4 font-mono ${size}`}>
+      <pre id={id} className={`m-0 overflow-x-auto px-5 pt-4 pb-5 font-mono ${size}`}>
         {children}
       </pre>
     </div>

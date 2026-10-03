@@ -7,16 +7,67 @@ Source: Claude Design project "Landing page and docs prototype"
 
 | Page | Reference | Implemented |
 | --- | --- | --- |
-| `/` (Home) | `Home v3.dc.html` | 2026-10-01 |
-| `/docs/*` | `Docs.dc.html` (content), with Home v3's shared typography, nav and footer | 2026-09-28, typography 2026-10-01 |
-| Header, footer, announcement | `SiteNav.dc.html`, `SiteFooter.dc.html`, Home v3 | 2026-10-01 |
+| `/` (Home) | `Home v5.dc.html` | 2026-10-03 |
+| `/docs/*` | `Docs.dc.html` (content and the v5 neutral styling) | content 2026-09-28, styling 2026-10-03 |
+| Header, footer, announcement | `SiteNav.dc.html`, `SiteFooter.dc.html`, Home v5 | 2026-10-03 |
+| `/privacy`, `/terms`, 404 | Home v5 tokens (no dedicated design) | 2026-10-03 |
 
 This covers the public marketing site only. It does not replace design references for the authenticated
 Crado application.
 
-`Home v3.dc.html` supersedes `Home.dc.html`, `Home v2.dc.html` and every `Home v3 (before …)` snapshot.
+`Home v5.dc.html` is the current authority and supersedes every earlier Home file, including `Home v3.dc.html`.
+The Home v3 notes below are kept as history.
+
+`Home v3.dc.html` superseded `Home.dc.html`, `Home v2.dc.html` and every `Home v3 (before …)` snapshot.
 Those files, `uploads/` and `screenshots/` are historical and are not shipped. The earlier implementation
 (2026-09-28) followed `Home.dc.html`.
+
+### Home v5 implementation (2026-10-03)
+
+- Typography (next/font): Inter for all text; Space Grotesk for h1, h2, headings 24px and above, and the
+  wordmark; IBM Plex Mono only for docs code blocks and the hero board's silkscreen labels. Funnel Display and
+  IBM Plex Sans are removed. Headings use weight 400.
+- Palette: neutral tokens in `globals.css` (`fg #18181B`, `fg-muted #52525B`, `fg-subtle #71717A`, `line #E4E4E7`,
+  `line-soft #F4F4F5`, page `#FAFAF9`, ink `#2A3441`). The `oat*` token names are kept and remapped so docs and
+  legal pages pick up the new palette.
+- Sections, in order: hero (centred, layout 1a), Approach, System (`#system` wraps Evaluate, Investigate,
+  Maintain), Where it fits (`#fit`, cards and walkthrough), Time (`#time`), Pilot. Legacy anchors (`#thesis`,
+  `#pipeline`, `#application`, `#mechanism`, `#evidence`, `#direction`, `#specifications`, `#architecture`,
+  `#faq`) map to their closest new section in `SectionScroller.tsx`.
+- Logo: `src/components/site/CradoMark.tsx` is the only reference to the mark. It renders
+  `crado-mark-black.png` through next/image at a fixed size (1x and 2x sources). Swapping in the SVG is a
+  change to `SRC` in that file.
+- Motion: native scrolling only (Lenis is not used). Everything animates opacity or transform, except
+  stroke-dashoffset on SVG line drawings (hero traces and connectors, pilot illustrations). Changes from the
+  design: the button pulse is a fixed shadow ring that fades; walkthrough progress bars use `scaleX`; the
+  switch knob uses `translateX` and the track colour changes instantly; the changed clock trace is a lime copy
+  that fades in over the grey one; the header's frosted background fades in as a layer; the comparison
+  card's green border is an overlay that fades; the `heroGrad` background-position animation is removed.
+  Under `prefers-reduced-motion` every element renders in its finished state and nothing autoplays.
+- The hero headline and paragraph rise into place without fading, so the headline is the LCP element straight
+  away (mobile Lighthouse went from 86 to 95). The badge, CTAs and footnote keep the design's fade.
+- Demo data: every product mockup and the hero device carry a 12px "Illustrative example" caption.
+- Integrations: `src/lib/integrations.ts` holds `LIVE_INTEGRATIONS` (Slack and WhatsApp, both `false`). Until
+  one is confirmed working, demos show a neutral chat line icon in its place. The official marks are in
+  `public/assets/marks/` unchanged. Gmail is never shown; the lab email uses a plain mail line icon.
+- Time section: headline "From scattered context to a prepared assessment." The Without/With table has no
+  time figures, and the design's timing footnote is removed because it referred to them.
+
+### Deviations from Home v5
+
+1. The Maintain copy still names "Slack discussions, and WhatsApp updates". It is the design's copy, but
+   neither integration is confirmed. Revise it if they are not live at launch.
+2. The Rev C record mockup's text alternative says "lab and team updates" instead of "lab, Slack and
+   WhatsApp updates", for the same reason.
+3. The mockups' status links ("View evidence", "View test plan", "Rev B history", "Open draft") are buttons
+   that replay the sequence, rather than links to `#system` that also replay.
+4. Grey text on the mockups' tinted first row, and on the dashed status pills, uses `#52525B` instead of
+   `#71717A`, to meet 4.5:1 contrast.
+5. The "Illustrative example" caption on the `#fit` walkthrough uses `#52525B`, because `#71717A` on `#F4F4F5`
+   is 4.4:1.
+6. The docs sidebar keeps a transparent background on desktop. The design's full-height `#F4F4F5` panel is
+   used only in the mobile drawer. The docs search drops the design's keyboard badge.
+7. The design's unused assets (Geist Pixel font, photos, pixel SVGs, `hero-field.jpg`) are not shipped.
 
 ### Home v3 implementation (2026-10-01)
 
@@ -117,6 +168,15 @@ Checked against the product repository (`project-easy-company`, HEAD 34029c0).
 
 ## Open items
 
+- Social card: `/og/crado-og-1200x630.png` still shows the earlier design. Regenerate it for Home v5.
+- Logo SVG: `src/app/icon0.svg` wraps a PNG and is not a vector. When a real SVG mark exists, point
+  `CradoMark.tsx` at it.
+- Confirm which of Slack and WhatsApp work today, then set `LIVE_INTEGRATIONS` and revisit the Maintain copy.
+- NVIDIA wording "Member of NVIDIA Inception" has not been re-checked against the current Inception
+  guidelines in this round.
+- The time comparison's "With Crado" column shows a faint (18% opacity) preview until it switches on, as
+  designed. Lighthouse flags that state for contrast (desktop accessibility 97).
+- `src/lib/booking.ts`'s fallback dialog still uses the earlier oat and hard-shadow styling.
 - The design's open gaps remain: full logo lockup and light/SVG variants.
 - Run the Schema.org validator, Rich Results Test and Lighthouse on the deployed pages; submit the sitemap
   in Search Console after deploy.

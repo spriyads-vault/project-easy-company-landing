@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-display: var(--font-funnel-display), sans-serif;
-  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), monospace;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  /* Headings 24px and above, and the wordmark. */
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  /* Docs code blocks and the hero board's silkscreen labels only. */
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 @theme {
@@ -11,43 +13,36 @@
   --color-transparent: transparent;
   --color-white: #ffffff;
 
-  /* Neutrals */
+  /* Text */
+  --color-fg: #18181b;
+  --color-fg-muted: #52525b;
+  --color-fg-subtle: #71717a;
+
+  /* Brand ink */
   --color-ink: #2a3441;
   --color-ink-deep: #1e2630;
-  --color-navy: #1f2732;
-  --color-oat: #f4f2ec;
-  --color-oat-light: #faf9f5;
-  --color-oat-hover: #ece9e1;
-  --color-oat-active: #e6e3da;
-  --color-line: #d6d3ca;
-  --color-line-soft: #e2dfd6;
-  --color-muted: #4a5463;
-  --color-muted-2: #3e4a5c;
-  --color-gray: #7c8594;
+  --color-navy: #171d25;
 
-  /* Dark panels */
-  --color-night: #222a35;
-  --color-night-grid: #2e3947;
-  --color-night-line: #56627a;
-  --color-night-edge: #6b7890;
-  --color-fog: #c9d0da;
-  --color-fog-light: #e3e6eb;
+  /* Surfaces. The oat names are kept so docs and legal pages pick up the new palette. */
+  --color-oat: #fafaf9;
+  --color-oat-light: #ffffff;
+  --color-oat-hover: #f4f4f5;
+  --color-oat-active: #eef1f5;
+  --color-line: #e4e4e7;
+  --color-line-soft: #f4f4f5;
+  --color-muted: #52525b;
+  --color-muted-2: #52525b;
+  --color-gray: #71717a;
 
   /* Accents */
   --color-lime: #b6e88e;
-  --color-lime-soft: #cfefb2;
-  --color-sage: #c6e3a6;
   --color-slate: #6d85ad;
-  --color-slate-dark: #56698c;
-  --color-slate-mid: #8ea3c6;
   --color-sky: #cdddf2;
-  --color-sky-pale: #d5deec;
   --color-butter: #f6e39e;
   --color-lilac: #bfa3e6;
-  --color-lilac-pale: #e6dcf5;
-  --color-violet: #6e4fb0;
+  --color-slate-mid: #8ea3c6;
 
-  /* Evidence states */
+  /* Evidence states (docs) */
   --color-observed: #d5deec;
   --color-known: #ddf2c9;
   --color-inferred: #e6dcf5;
@@ -60,49 +55,65 @@
 html {
   scroll-behavior: smooth;
   /* Sticky header (64px) plus breathing room. */
-  scroll-padding-top: 84px;
+  scroll-padding-top: 72px;
 }
 
 body {
   margin: 0;
   background: var(--color-oat);
-  color: var(--color-ink);
+  color: var(--color-fg);
   font-family: var(--font-sans);
+  font-feature-settings: "cv05";
   -webkit-font-smoothing: antialiased;
 }
 
 @layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong,
+  b,
+  th {
+    font-weight: 400;
+  }
+
+  h1,
+  h2,
+  [data-wordmark] {
+    font-family: var(--font-display);
+  }
+
   a {
     color: var(--color-ink);
     text-decoration-line: underline;
   }
 
   a:hover {
-    color: var(--color-ink-deep);
+    color: #15191f;
+  }
+
+  button {
+    font-family: inherit;
   }
 
   :focus-visible {
     outline: 2px solid var(--color-ink);
-    outline-offset: 3px;
-    border-radius: 4px;
+    outline-offset: 2px;
   }
 
   ::selection {
-    background: var(--color-lime);
-    color: var(--color-ink);
+    background: #e4e4e7;
+    color: var(--color-fg);
   }
 }
 
-/* Focus ring for controls on dark panels. */
-.focus-lime:focus-visible,
-#application :focus-visible,
-#mechanism :focus-visible {
-  outline-color: var(--color-lime);
-}
-
-#approach :focus-visible {
-  outline-color: var(--color-navy);
-  outline-offset: 2px;
+@keyframes barIn {
+  from {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

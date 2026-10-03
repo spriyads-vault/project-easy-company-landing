@@ -26,7 +26,7 @@ export default function CopyButton({ target, label }: { target: string; label: s
       type="button"
       onClick={copy}
       aria-label={`Copy ${label}`}
-      className="min-h-9 cursor-pointer rounded-[3px] border border-ink bg-transparent px-3 text-[13px] font-medium text-ink"
+      className="h-7 cursor-pointer rounded-full border border-[rgba(255,255,255,0.18)] bg-[rgba(255,255,255,0.1)] px-3 text-[13px] leading-[1.5] font-medium text-[#EEF1F5] hover:bg-[rgba(255,255,255,0.16)] focus-visible:outline-white"
     >
       <span aria-live="polite">{state === "copied" ? "Copied" : state === "failed" ? "Copy failed" : "Copy"}</span>
     </button>

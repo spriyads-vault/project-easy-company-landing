@@ -96,10 +96,8 @@ export default function DocsShell({ children }: { children: ReactNode }) {
             aria-current={on ? "location" : undefined}
             className={
               rail
-                ? `-ml-px block border-l-2 px-3 py-[7px] text-sm leading-[1.4] text-ink no-underline ${
-                    on ? "border-ink font-semibold" : "border-transparent"
-                  }`
-                : `block py-[9px] text-[15px] text-ink ${on ? "font-semibold" : ""}`
+                ? `block py-2 text-[13px] leading-[1.5] no-underline hover:text-fg ${on ? "text-fg" : "text-fg-muted"}`
+                : `block py-2 text-base leading-[1.7] tracking-[-0.015em] text-ink no-underline ${on ? "font-medium" : ""}`
             }
           >
             {t}
@@ -110,18 +108,18 @@ export default function DocsShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="docs-shell">
-      <div className="sticky top-16 z-40 flex h-[52px] items-center gap-3 border-b border-line bg-oat px-[clamp(16px,4vw,32px)] min-[820px]:hidden">
+      <div className="sticky top-16 z-40 flex h-[52px] items-center gap-3 border-b border-line bg-line-soft px-[clamp(16px,4vw,32px)] min-[820px]:hidden">
         <button
           ref={drawerButton}
           type="button"
           onClick={() => setDrawer(true)}
           aria-expanded={drawer}
           aria-controls="docs-sidebar"
-          className="min-h-11 cursor-pointer rounded-[3px] border border-ink bg-transparent px-3.5 text-[15px] font-medium text-ink"
+          className="min-h-11 cursor-pointer rounded-full border border-line bg-transparent px-4 text-base leading-[1.7] font-medium tracking-[-0.015em] text-ink"
         >
           Contents
         </button>
-        <span className="truncate font-mono text-[13px] text-muted">
+        <span className="truncate text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">
           {group.label} / {activeTitle}
         </span>
       </div>
@@ -137,17 +135,17 @@ export default function DocsShell({ children }: { children: ReactNode }) {
         <aside
           id="docs-sidebar"
           aria-label="Documentation"
-          className={`fixed top-0 left-0 z-[70] box-border h-screen w-[min(340px,88vw)] overflow-y-auto border-r border-ink bg-oat px-5 pt-4 pb-8 transition-transform duration-200 ${
+          className={`fixed top-0 left-0 z-[70] box-border h-screen w-[min(340px,88vw)] overflow-y-auto border-r border-line bg-line-soft px-5 pt-4 pb-8 transition-transform duration-200 ${
             drawer ? "visible translate-x-0" : "invisible -translate-x-[105%]"
-          } min-[820px]:visible min-[820px]:sticky min-[820px]:top-16 min-[820px]:z-[1] min-[820px]:h-[calc(100vh-64px)] min-[820px]:w-auto min-[820px]:translate-x-0 min-[820px]:border-line min-[820px]:py-10 min-[820px]:pr-5 min-[820px]:pl-0 min-[820px]:transition-none`}
+          } min-[820px]:visible min-[820px]:sticky min-[820px]:top-16 min-[820px]:z-[1] min-[820px]:h-[calc(100vh-64px)] min-[820px]:w-auto min-[820px]:translate-x-0 min-[820px]:border-line min-[820px]:bg-transparent min-[820px]:py-10 min-[820px]:pr-5 min-[820px]:pl-0 min-[820px]:transition-none`}
         >
           <div className="mb-4 flex items-center justify-between min-[820px]:hidden">
-            <span className="font-display text-xl font-medium">Documentation</span>
+            <span className="text-lg leading-[1.4] tracking-[-0.015em]">Documentation</span>
             <button
               ref={closeButton}
               type="button"
               onClick={() => closeDrawer()}
-              className="min-h-11 min-w-11 cursor-pointer rounded-[3px] border border-ink bg-transparent text-[15px] font-medium text-ink"
+              className="min-h-11 min-w-11 cursor-pointer rounded-full border border-line bg-transparent px-4 text-base font-medium text-ink"
             >
               Close
             </button>
@@ -161,17 +159,11 @@ export default function DocsShell({ children }: { children: ReactNode }) {
               return (
                 <div key={g.slug} className="mb-6">
                   <p
-                    className={`m-0 mb-1.5 flex items-center gap-2 font-mono text-xs tracking-[0.08em] uppercase ${
-                      current ? "text-ink" : "text-muted"
-                    }`}
+                    className={`m-0 mb-2 px-3 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase ${current ? "text-fg" : "text-fg-muted"}`}
                   >
-                    <span
-                      aria-hidden="true"
-                      className={`size-2 border border-ink ${current ? "bg-lime" : "bg-transparent"}`}
-                    />
                     {g.label}
                   </p>
-                  <ul className="m-0 list-none border-l border-line p-0">
+                  <ul className="m-0 flex list-none flex-col gap-0.5 p-0">
                     {g.items.map(([id, t], i) => {
                       const on = current && id === active;
                       return (
@@ -180,8 +172,8 @@ export default function DocsShell({ children }: { children: ReactNode }) {
                             href={itemHref(g.path, id, i === 0)}
                             onClick={() => closeDrawer(false)}
                             aria-current={on ? "location" : undefined}
-                            className={`-ml-px block border-l-2 px-3 py-[9px] text-[15px] leading-[1.35] text-ink no-underline hover:bg-oat-hover ${
-                              on ? "border-ink bg-oat-active font-semibold" : "border-transparent"
+                            className={`block rounded-full px-3 py-2 text-sm leading-[1.5] tracking-[-0.01em] no-underline hover:bg-[rgba(42,52,65,0.05)] ${
+                              on ? "bg-[rgba(42,52,65,0.08)] text-fg" : "text-fg-muted"
                             }`}
                           >
                             {t}
@@ -197,8 +189,8 @@ export default function DocsShell({ children }: { children: ReactNode }) {
         </aside>
 
         <main id="doc-main" tabIndex={-1} className="min-w-0 pt-[clamp(32px,5vw,64px)] pb-24 outline-none">
-          <details className="mb-8 border border-ink bg-oat-light min-[1180px]:hidden">
-            <summary className="cursor-pointer px-4 py-3 font-mono text-[13px] tracking-[0.04em]">ON THIS PAGE</summary>
+          <details className="mb-8 rounded-2xl border border-line bg-white min-[1180px]:hidden">
+            <summary className="cursor-pointer px-4 py-3 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase">On this page</summary>
             <ul className="m-0 list-none px-4 pb-3">{toc(false)}</ul>
           </details>
 
@@ -206,21 +198,21 @@ export default function DocsShell({ children }: { children: ReactNode }) {
 
           <nav
             aria-label="Previous and next"
-            className="grid max-w-[44rem] grid-cols-2 gap-4 border-t border-ink pt-6"
+            className="grid max-w-[720px] grid-cols-2 gap-4 pt-6"
           >
             <div>
               {prev && (
-                <Link href={flatHref(prev)} className="flex flex-col gap-1 py-2 text-ink no-underline">
-                  <span className="font-mono text-xs text-muted">← PREVIOUS</span>
-                  <span className="text-[17px] font-medium">{prev.t}</span>
+                <Link href={flatHref(prev)} className="flex flex-col gap-1 rounded-2xl border border-line bg-white p-5 text-ink no-underline hover:border-ink">
+                  <span className="text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">Previous</span>
+                  <span className="text-base leading-[1.7] tracking-[-0.015em]">{prev.t}</span>
                 </Link>
               )}
             </div>
             <div className="text-right">
               {next && (
-                <Link href={flatHref(next)} className="flex flex-col items-end gap-1 py-2 text-ink no-underline">
-                  <span className="font-mono text-xs text-muted">NEXT →</span>
-                  <span className="text-[17px] font-medium">{next.t}</span>
+                <Link href={flatHref(next)} className="flex flex-col items-end gap-1 rounded-2xl border border-line bg-white p-5 text-ink no-underline hover:border-ink">
+                  <span className="text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">Next</span>
+                  <span className="text-base leading-[1.7] tracking-[-0.015em]">{next.t}</span>
                 </Link>
               )}
             </div>
@@ -231,9 +223,9 @@ export default function DocsShell({ children }: { children: ReactNode }) {
           aria-label="On this page"
           className="sticky top-16 hidden self-start pt-[clamp(32px,5vw,64px)] pb-8 min-[1180px]:block"
         >
-          <p className="m-0 mb-2.5 font-mono text-xs tracking-[0.08em] text-muted">ON THIS PAGE</p>
-          <ul className="m-0 list-none border-l border-line p-0">{toc(true)}</ul>
-          <a href="mailto:hello@crado.io" className="mt-7 block text-sm text-ink">
+          <p className="m-0 mb-2 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">On this page</p>
+          <ul className="m-0 list-none p-0">{toc(true)}</ul>
+          <a href="mailto:hello@crado.io" className="mt-7 block text-sm leading-[1.5] tracking-[-0.01em] text-ink">
             Questions? hello@crado.io
           </a>
         </aside>

@@ -49,13 +49,13 @@ export default function Evaluation() {
         </p>
         <ul className="m-0 pl-[22px] text-[17px] leading-[1.7]">
           <li>
-            <strong className="font-semibold">Confirm</strong> a value that matches the source.
+            <strong className="font-medium">Confirm</strong> a value that matches the source.
           </li>
           <li>
-            <strong className="font-semibold">Correct</strong> a value that was misread, keeping the source reference.
+            <strong className="font-medium">Correct</strong> a value that was misread, keeping the source reference.
           </li>
           <li>
-            <strong className="font-semibold">Reject</strong> a value that cannot be supported by the source.
+            <strong className="font-medium">Reject</strong> a value that cannot be supported by the source.
           </li>
         </ul>
       </Section>
@@ -66,13 +66,13 @@ export default function Evaluation() {
           Each supported check is a fixed, versioned rule. It holds no learned weights, so a result can be reproduced
           from its inputs and rule version.
         </p>
-        <ol className="m-0 mb-8 list-none border-t border-ink p-0">
+        <ol className="m-0 mb-8 list-none border-t border-line p-0">
           {GATES.map(([step, text]) => (
             <li
               key={step}
               className="grid grid-cols-[110px_minmax(0,1fr)] gap-3 border-b border-line py-3.5"
             >
-              <span className="pt-0.5 font-mono text-[13px]">{step}</span>
+              <span className="pt-0.5 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase">{step}</span>
               <span className="text-base leading-[1.6]">{text}</span>
             </li>
           ))}
@@ -122,10 +122,10 @@ export default function Evaluation() {
 
       <Section id="missing-and-incompatible-conditions" title="Missing and incompatible conditions">
         <h2 className={H2}>Missing and incompatible conditions</h2>
-        <dl className="m-0 mb-6 border-t border-ink">
+        <dl className="m-0 mb-6 border-t border-line">
           {BLOCKERS.map(([term, text]) => (
             <div key={term} className="border-b border-line py-4">
-              <dt className="mb-1.5 text-[17px] font-semibold">{term}</dt>
+              <dt className="mb-1.5 text-base font-medium">{term}</dt>
               <dd className="m-0 text-base leading-[1.65]">{text}</dd>
             </div>
           ))}
