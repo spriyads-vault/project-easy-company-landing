@@ -3,12 +3,16 @@
 import { useEffect } from "react";
 import { SCROLL_TARGET_KEY, clearHash, scrollToSection } from "@/lib/scroll";
 
-// Anchors from the previous home page, mapped to their closest replacement.
+// Anchors from earlier home pages, mapped to their closest replacement.
 const LEGACY: Record<string, string> = {
   thesis: "approach",
   pipeline: "system",
-  specifications: "application",
-  architecture: "evidence",
+  specifications: "investigate",
+  application: "investigate",
+  mechanism: "evaluate",
+  architecture: "maintain",
+  evidence: "maintain",
+  direction: "maintain",
   faq: "pilot",
 };
 

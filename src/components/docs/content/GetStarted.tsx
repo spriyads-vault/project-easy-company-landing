@@ -88,14 +88,14 @@ export default function GetStarted() {
           How the work is divided
         </h2>
         <p className={P}>Crado uses three layers, each with a defined responsibility.</p>
-        <div className="border-t border-ink">
+        <div className="border-t border-line">
           {LAYERS.map((l) => (
             <div
               key={l.name}
               className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,200px),1fr))] gap-x-6 gap-y-1.5 border-b border-line py-4"
             >
-              <span className="flex items-center gap-2.5 text-base font-semibold">
-                <span aria-hidden="true" className={`size-3 flex-none border border-ink ${l.color}`} />
+              <span className="flex items-center gap-2.5 text-base font-medium">
+                <span aria-hidden="true" className={`size-3 flex-none border border-line ${l.color}`} />
                 {l.name}
               </span>
               <span className="text-base leading-[1.6]">{l.text}</span>
@@ -122,9 +122,9 @@ export default function GetStarted() {
                 i === STEPS.length - 1 ? "border-b" : ""
               }`}
             >
-              <span className="pt-[3px] font-mono text-sm">{String(i + 1).padStart(2, "0")}</span>
+              <span className="pt-[3px] text-sm leading-[1.5] text-fg-muted">{String(i + 1).padStart(2, "0")}</span>
               <div>
-                <h3 className="m-0 mb-1.5 text-lg font-semibold">{title}</h3>
+                <h3 className="m-0 mb-2 text-lg leading-[1.4] tracking-[-0.015em]">{title}</h3>
                 <p className="m-0 text-base leading-[1.65]">{text}</p>
               </div>
             </li>

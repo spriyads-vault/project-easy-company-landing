@@ -84,11 +84,8 @@ export default function DocsSearch({ onNavigate }: { onNavigate: () => void }) {
 
   return (
     <div role="search" className="relative mb-6">
-      <label
-        htmlFor="docs-search"
-        className="mb-1.5 block font-mono text-xs tracking-[0.06em] text-muted"
-      >
-        SEARCH DOCUMENTATION
+      <label htmlFor="docs-search" className="sr-only">
+        Search documentation
       </label>
       <input
         id="docs-search"
@@ -101,13 +98,13 @@ export default function DocsSearch({ onNavigate }: { onNavigate: () => void }) {
         }}
         onKeyDown={onKey}
         autoComplete="off"
-        placeholder="e.g. detector, margin"
+        placeholder="Search the docs"
         aria-controls={q.trim() ? "search-results" : undefined}
-        className="box-border min-h-11 w-full rounded-[3px] border border-ink bg-oat-light px-3 py-2.5 text-[15px] text-ink"
+        className="box-border h-10 w-full rounded-full border border-line bg-white px-4 text-sm leading-[1.5] tracking-[-0.01em] text-fg"
       />
       {q.trim() && (
-        <div id="search-results" aria-live="polite" className="mt-2 border border-ink bg-oat-light">
-          <p className="m-0 border-b border-line px-3 py-2 font-mono text-xs text-muted">
+        <div id="search-results" aria-live="polite" className="mt-2 overflow-hidden rounded-2xl border border-line bg-white">
+          <p className="m-0 border-b border-line px-3 py-2 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">
             {!entries
               ? "Searching…"
               : results.length
@@ -123,11 +120,11 @@ export default function DocsSearch({ onNavigate }: { onNavigate: () => void }) {
                 e.preventDefault();
                 go(r.href);
               }}
-              className="block border-b border-line-soft px-3 py-2.5 text-ink no-underline hover:bg-oat-hover"
+              className="block border-b border-line px-3 py-3 text-ink no-underline hover:bg-line-soft"
             >
-              <span className="block text-sm font-semibold">{r.title}</span>
-              <span className="mt-0.5 mb-1 block font-mono text-[11px] text-muted">{r.group}</span>
-              <span className="block text-[13px] leading-[1.45] text-muted-2">{r.snippet}</span>
+              <span className="block text-sm leading-[1.5] tracking-[-0.01em]">{r.title}</span>
+              <span className="mt-0.5 mb-1 block text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">{r.group}</span>
+              <span className="block text-[13px] leading-[1.5] text-fg-muted">{r.snippet}</span>
             </a>
           ))}
         </div>

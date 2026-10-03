@@ -39,8 +39,9 @@ test.describe("Home page", () => {
     const response = await page.goto("/");
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle("Crado | Hardware Compliance Inside the Engineering Loop");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Compliance,\s*inside the\s*engineering loop\./);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Hardware changes\.\s*Evidence stays connected\./);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /^https:\/\/www\.crado\.io\/?$/);
+    await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "Crado");
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
       "https://www.crado.io/og/crado-og-1200x630.png",
@@ -50,25 +51,27 @@ test.describe("Home page", () => {
     expect(ld["@graph"].map((n: { "@type": string }) => n["@type"])).toEqual(["Organization", "WebSite", "WebPage"]);
   });
 
-  test("hero message, action and illustration fit a 1366x768 laptop screen", async ({ page }) => {
+  test("hero message and actions fit a 1366x768 laptop screen", async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await page.goto("/");
     for (const el of [
       page.getByRole("heading", { level: 1 }),
-      page.getByText(/^Crado connects hardware revisions/),
+      page.getByText(/^Crado helps hardware teams evaluate a change/),
       page.locator("#main").getByRole("link", { name: "Discuss a pilot" }).first(),
-      page.getByRole("link", { name: /Explore the system/ }),
-      page.getByRole("img", { name: "Revisions drawn as stacked layers" }),
+      page.getByRole("link", { name: "See how it works" }),
     ]) {
       const box = await el.boundingBox();
       expect(box && box.y + box.height).toBeLessThanOrEqual(768);
     }
+    await expect(page.getByRole("img", { name: /^Gateway board Rev C line drawing/ })).toBeAttached();
   });
 
-  test("primary navigation is Approach, System, Docs, Pilot", async ({ page }) => {
+  test("primary navigation is Approach, System, Docs and the pilot call", async ({ page }) => {
     await page.goto("/");
     const header = page.locator("header");
-    await expect(header.getByRole("link")).toHaveText(["", "Approach", "System", "Docs", "Pilot"]);
+    for (const name of ["Crado home", "Approach", "System", "Docs", "Discuss a pilot"]) {
+      await expect(header.getByRole("link", { name, exact: true })).toBeVisible();
+    }
     await header.getByRole("link", { name: "System" }).click();
     await expect(page.locator("#system")).toBeInViewport();
     await expect(page).toHaveURL(/\/$/);
@@ -85,120 +88,110 @@ test.describe("Home page", () => {
     await page.goto("/#pipeline");
     await expect(page.locator("#system")).toBeInViewport();
     await expect(page).toHaveURL(/\/$/);
+    await page.goto("about:blank");
+    await page.goto("/#application");
+    await expect(page.locator("#investigate")).toBeInViewport();
   });
 
-  test("investigation tabs advance, pause on hover and stop after manual selection", async ({ page }) => {
+  test("section order follows the approved Home v5 design", async ({ page }) => {
+    await page.goto("/");
+    const ids = await page.locator("#main section").evaluateAll((els) => els.map((e) => e.id || "hero"));
+    expect(ids).toEqual(["hero", "approach", "evaluate", "investigate", "maintain", "fit", "time", "pilot"]);
+    await expect(page.locator("#system > section")).toHaveCount(3);
+  });
+
+  test("the time comparison carries no time figures", async ({ page }) => {
+    await page.goto("/");
+    const time = page.locator("#time");
+    await expect(time.getByRole("heading", { level: 2 })).toHaveText(/From scattered context\s*to a prepared assessment\./);
+    expect(await time.textContent()).not.toMatch(/\b(minutes?|hours?|days?|weeks?)\b/i);
+  });
+
+  test("demos label their data and use neutral icons for unconfirmed integrations", async ({ page }) => {
+    await page.goto("/");
+    // Hero device, three outcome mockups and the walkthrough.
+    await expect(page.getByText("Illustrative example", { exact: true })).toHaveCount(5);
+    await expect(page.locator('img[src*="slack"], img[src*="whatsapp"], img[src*="gmail"]')).toHaveCount(0);
+  });
+
+  test("a mockup builds its rows once in view and replays on request", async ({ page }) => {
     await page.clock.install();
     await page.goto("/");
-    const panel = page.locator("#application");
-    await panel.scrollIntoViewIfNeeded();
-    await page.mouse.move(0, 0);
-    const tab = (name: string) => page.getByRole("tab", { name });
-    await expect(tab("Report")).toHaveAttribute("aria-selected", "true");
-
-    await page.clock.runFor(7_500);
-    await expect(tab("Investigation")).toHaveAttribute("aria-selected", "true");
-
-    await page.locator("#bench-panel").hover();
-    await page.clock.runFor(15_000);
-    await expect(tab("Investigation")).toHaveAttribute("aria-selected", "true");
-    await page.mouse.move(0, 0);
-
-    await tab("Retest record").click();
-    await expect(page.getByRole("button", { name: "Play automatic stage sequence" })).toBeVisible();
-    await page.mouse.move(0, 0);
-    await page.clock.runFor(20_000);
-    await expect(tab("Retest record")).toHaveAttribute("aria-selected", "true");
-
-    await tab("Retest record").press("ArrowRight");
-    await expect(tab("Report")).toHaveAttribute("aria-selected", "true");
-    await expect(tab("Report")).toBeFocused();
+    const frame = page.locator("#evaluate [role=group]");
+    const row = frame.getByRole("row").nth(1);
+    await expect(row).toHaveClass(/opacity-0/);
+    await frame.scrollIntoViewIfNeeded();
+    await expect
+      .poll(async () => {
+        await page.clock.runFor(200);
+        return frame.getByRole("cell", { name: "Linked", exact: true }).count();
+      })
+      .toBe(3);
+    await frame.getByRole("button", { name: "Replay" }).click();
+    await expect(frame.getByRole("cell", { name: "Linking…" })).toHaveCount(3);
   });
 
-  test("reduced motion starts the sequences paused on a readable state", async ({ browser }) => {
+  test("walkthrough advances, pauses on hover and stops after a tab is chosen", async ({ page }) => {
+    await page.clock.install();
+    await page.goto("/");
+    const fit = page.locator("#fit");
+    const tab = (name: string) => fit.getByRole("tab", { name });
+    await fit.getByRole("tablist").scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+    await expect(tab("Evaluate")).toHaveAttribute("aria-selected", "true");
+
+    await page.clock.runFor(5_500);
+    await expect(tab("Investigate")).toHaveAttribute("aria-selected", "true");
+
+    await fit.getByRole("tabpanel").hover();
+    await page.clock.runFor(12_000);
+    await expect(tab("Investigate")).toHaveAttribute("aria-selected", "true");
+    await page.mouse.move(0, 0);
+
+    await tab("Maintain").click();
+    await expect(fit.getByRole("button", { name: "Play walkthrough" })).toBeVisible();
+    await page.mouse.move(0, 0);
+    await page.clock.runFor(20_000);
+    await expect(tab("Maintain")).toHaveAttribute("aria-selected", "true");
+
+    await tab("Maintain").press("ArrowRight");
+    await expect(tab("Evaluate")).toHaveAttribute("aria-selected", "true");
+    await expect(tab("Evaluate")).toBeFocused();
+  });
+
+  test("reduced motion shows finished states without autoplay", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce" });
     const page = await context.newPage();
     await page.goto("/");
-    await expect(page.getByRole("button", { name: "Play automatic stage sequence" })).toBeVisible();
-    const term = page.locator("#dir-term");
-    await term.scrollIntoViewIfNeeded();
-    await expect(term.getByRole("button", { name: "Play the presentation sequence" })).toBeVisible();
-    await expect(term.getByText("Rev C needs review. Rev B’s record stays intact.")).toBeVisible();
+    await expect(page.locator("#evaluate").getByRole("cell", { name: "Linked", exact: true })).toHaveCount(3);
+    await expect(page.locator("#fit").getByRole("button", { name: /walkthrough/ })).toHaveCount(0);
+    await expect(page.locator("html")).not.toHaveClass(/\bfx\b/);
     await context.close();
   });
 
-  test("engineering-record terminal loops, holds the result and pauses from the keyboard", async ({ page }) => {
-    await page.clock.install();
-    await page.goto("/");
-    const term = page.locator("#dir-term");
-    const first = term.getByText("Review the clock-routing change in Rev C.");
-    const result = term.getByText("Rev C needs review. Rev B’s record stays intact.");
-    // Lines stay rendered and only change opacity, so test the target state rather than a mid-transition value.
-    const shown = (l: typeof first) => l.evaluate((el) => !el.parentElement!.className.includes("opacity-0"));
-
-    // Server render and pre-scroll state show the complete record.
-    await expect(result).toBeVisible();
-    await term.scrollIntoViewIfNeeded();
-    const height = (await term.boundingBox())!.height;
-
-    // Starts from blank once it is in view, then builds the record line by line.
-    await expect
-      .poll(async () => {
-        await page.clock.runFor(50);
-        return shown(first);
-      })
-      .toBe(false);
-    await page.clock.runFor(1_000);
-    expect(await shown(first)).toBe(true);
-    expect(await shown(result)).toBe(false);
-    await page.clock.runFor(2_000);
-    expect(await shown(result)).toBe(true);
-    // The result holds, readable, then the loop clears and restarts.
-    await page.clock.runFor(5_000);
-    expect(await shown(result)).toBe(true);
-    await page.clock.runFor(1_000);
-    expect(await shown(first)).toBe(false);
-    // Two more loops keep the same timing: no duplicate timers.
-    await page.clock.runFor(9_100 * 2);
-    expect(await shown(first)).toBe(false);
-    await page.clock.runFor(1_000);
-    expect(await shown(first)).toBe(true);
-    expect((await term.boundingBox())!.height).toBe(height);
-
-    // Pause with the keyboard: the complete record stays put.
-    const pause = term.getByRole("button", { name: "Pause the presentation sequence" });
-    await pause.focus();
-    await page.keyboard.press("Enter");
-    const play = term.getByRole("button", { name: "Play the presentation sequence" });
-    await expect(play).toBeFocused();
-    await page.clock.runFor(20_000);
-    expect(await shown(result)).toBe(true);
-    expect(await shown(first)).toBe(true);
-    await page.keyboard.press("Space");
-    await expect(term.getByRole("button", { name: "Pause the presentation sequence" })).toBeVisible();
-  });
-
-  test("section order follows the approved Home v3 design", async ({ page }) => {
-    await page.goto("/");
-    const ids = await page.locator("#main > section").evaluateAll((els) => els.map((e) => e.id || "hero"));
-    expect(ids).toEqual(["hero", "approach", "system", "application", "mechanism", "evidence", "direction", "pilot"]);
-    await expect(page.locator("#evidence li")).toHaveText([/^Observed/, /^Known/, /^Inferred/, /^Missing/]);
+  test("no horizontal scroll at 390px", async ({ page }) => {
+    for (const path of ["/", "/docs", "/privacy"]) {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(path);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+    }
   });
 });
 
 test.describe("Pilot booking", () => {
   test("every Pilot CTA links to the Cal.com event", async ({ page }) => {
     await page.goto("/");
-    for (const name of ["Book a 30-minute call", "Discuss a pilot", "Pilot"]) {
-      await expect(page.getByRole("link", { name, exact: true }).first()).toHaveAttribute("href", CAL_URL);
-    }
+    await expect(page.getByRole("region", { name: "Announcement" }).getByRole("link")).toHaveAttribute("href", CAL_URL);
+    const ctas = page.getByRole("link", { name: "Discuss a pilot", exact: true });
+    await expect(ctas).toHaveCount(3);
+    for (const href of await ctas.evaluateAll((els) => els.map((e) => e.getAttribute("href")))) expect(href).toBe(CAL_URL);
   });
 
   test("dismissing by clicking the backdrop restores page scrolling", async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => window.scrollTo(0, 1500));
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(1500);
-    const cta = page.locator("header").getByRole("link", { name: "Pilot" });
+    const cta = page.locator("header").getByRole("link", { name: "Discuss a pilot" });
     await openCal(page, cta);
 
     // While open the page must not scroll.
@@ -227,7 +220,7 @@ test.describe("Pilot booking", () => {
   test("a failed embed shows the direct link and closes cleanly", async ({ page }) => {
     await page.route("https://app.cal.com/embed/embed.js", (route) => route.abort());
     await page.goto("/");
-    await page.getByRole("link", { name: "Book a 30-minute call" }).click();
+    await page.locator("header").getByRole("link", { name: "Discuss a pilot" }).click();
     const dialog = page.getByRole("dialog", { name: "Book a pilot call" });
     const direct = dialog.getByRole("link", { name: "Open booking page" });
     await expect(direct).toHaveAttribute("href", CAL_URL);
@@ -245,7 +238,7 @@ test.describe("Pilot booking", () => {
     await page.goto("/");
     await page.locator("header").getByRole("link", { name: "Docs" }).click();
     await expect(page).toHaveURL(/\/docs$/);
-    await page.locator("header").getByRole("link", { name: "Pilot" }).click();
+    await page.locator("header").getByRole("link", { name: "Discuss a pilot" }).click();
     await expect(page.getByRole("dialog", { name: "Book a pilot call" })).toBeVisible();
     await page.goBack();
     await expect(page).toHaveURL(/\/$/);
@@ -256,9 +249,9 @@ test.describe("Pilot booking", () => {
     await page.route("https://app.cal.com/embed/embed.js", (route) => route.abort());
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const menu = page.getByRole("button", { name: "Menu" });
+    const menu = page.getByRole("button", { name: "Open menu" });
     await menu.click();
-    await page.locator("#site-menu").getByRole("link", { name: "Pilot" }).click();
+    await page.locator("#site-menu").getByRole("link", { name: "Discuss a pilot" }).click();
     await expect(page.locator("#site-menu")).toHaveCount(0);
     await page.keyboard.press("Escape");
     await expectUnlocked(page);
@@ -394,7 +387,7 @@ test.describe("Site files", () => {
     const footer = page.locator("footer");
     await expect(footer.getByRole("img", { name: "NVIDIA Inception Program" })).toBeAttached();
     await expect(footer.getByText("Member of NVIDIA Inception")).toBeVisible();
-    await footer.getByRole("link", { name: "Privacy" }).click();
+    await footer.getByRole("link", { name: "Privacy", exact: true }).click();
     await expect(page.getByRole("heading", { level: 1, name: "Privacy Policy" })).toBeVisible();
   });
 });

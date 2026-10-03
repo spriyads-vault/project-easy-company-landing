@@ -1,25 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Funnel_Display, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import BookingManager from "@/components/site/BookingManager";
 import { HOME_DESCRIPTION, HOME_TITLE, OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const funnelDisplay = Funnel_Display({
-  variable: "--font-funnel-display",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
 });
 
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-plex-sans",
+// Headings 24px and above, and the wordmark.
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
 });
 
+// Docs code blocks and the hero board's silkscreen labels only.
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400"],
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -33,16 +35,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F4F2EC",
+  themeColor: "#FAFAF9",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      data-scroll-behavior="smooth"
-      className={`${funnelDisplay.variable} ${plexSans.variable} ${plexMono.variable}`}
-    >
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.variable} ${spaceGrotesk.variable} ${plexMono.variable}`}>
       <body>
         {children}
         <BookingManager />

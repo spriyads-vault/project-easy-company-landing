@@ -49,7 +49,6 @@ export default function CoreConcepts() {
         <DataTable
           className="mb-5"
           minWidth={520}
-          shadedHead={false}
           caption="TYPICAL RADIATED-EMISSIONS EVIDENCE"
           head={["Field", "Meaning"]}
           rows={[
@@ -73,21 +72,21 @@ export default function CoreConcepts() {
           Every item in an investigation carries one of four states. The states describe how something is known. They
           are not a verdict.
         </p>
-        <dl className="m-0 mb-8 border-t border-ink">
+        <dl className="m-0 mb-8 border-t border-line">
           {STATES.map(([name, swatch, text]) => (
             <div
               key={name}
               className="grid grid-cols-[minmax(0,9rem)_minmax(0,1fr)] gap-3 border-b border-line py-3.5"
             >
-              <dt className="flex items-center gap-2.5 font-semibold">
-                <span aria-hidden="true" className={`size-3 flex-none border border-ink ${swatch}`} />
+              <dt className="flex items-center gap-2.5 font-medium">
+                <span aria-hidden="true" className={`size-3 flex-none border border-line ${swatch}`} />
                 {name}
               </dt>
               <dd className="m-0 text-base leading-[1.6]">{text}</dd>
             </div>
           ))}
         </dl>
-        <h3 id="tests-and-causes" className="m-0 mb-3 text-xl font-semibold">
+        <h3 id="tests-and-causes" className="m-0 mb-3 text-lg leading-[1.4] tracking-[-0.015em]">
           Suggested tests, completed tests and confirmed causes
         </h3>
         <p className={P}>These three are kept separate throughout.</p>

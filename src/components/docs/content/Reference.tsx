@@ -14,7 +14,7 @@ limit         46.0 dBµV/m   200 µV/m, 216–960 MHz at 3 m, quasi-peak
 margin        47.0 − 46.0 = +1.0 dB
 result        level exceeds limit by 1.0 dB`;
 
-const RESULT = "font-semibold";
+const RESULT = "font-medium";
 
 export default function Reference() {
   return (
@@ -30,12 +30,12 @@ export default function Reference() {
           . Implementation in source, availability in production and independent validation are separate states and are
           reported separately.
         </p>
-        <div className="mb-6 overflow-x-auto border border-ink">
+        <div className="mb-6 overflow-x-auto border border-line">
           <table className="w-full min-w-[680px] border-collapse text-[15px] leading-[1.5]">
             <thead>
               <tr className="bg-oat-hover text-left">
                 {["Clause", "Conditions", "Implemented", "Availability", "Independent validation"].map((h) => (
-                  <th key={h} scope="col" className="border-b border-ink px-3.5 py-2.5 font-semibold">
+                  <th key={h} scope="col" className="h-12 border-b border-line px-4 text-[13px] leading-[1.5] text-fg-muted">
                     {h}
                   </th>
                 ))}
@@ -43,7 +43,7 @@ export default function Reference() {
             </thead>
             <tbody>
               <tr>
-                <td className="px-3.5 py-3 align-top font-mono text-sm">47 CFR 15.109(a)</td>
+                <td className="px-4 py-3 align-top text-sm">47 CFR 15.109(a)</td>
                 <td className="px-3.5 py-3 align-top">
                   Class B radiated emission limits. Bounded checks for supported inputs: stated frequency, level, unit,
                   detector and a 3 m measurement distance, for an unintentional radiator of stated class.
@@ -55,7 +55,7 @@ export default function Reference() {
             </tbody>
           </table>
         </div>
-        <h2 className="m-0 mb-2.5 font-sans text-lg font-semibold">Not covered</h2>
+        <h2 className="m-0 mb-2.5 font-sans text-lg leading-[1.4] tracking-[-0.015em]">Not covered</h2>
         <ul className="m-0 pl-[22px] text-[17px] leading-[1.7]">
           <li>Other clauses of FCC Part 15 Subpart B, including conducted emissions.</li>
           <li>CISPR 32 / EN 55032.</li>
@@ -85,11 +85,11 @@ export default function Reference() {
       </Section>
 
       <Section id="worked-examples" title="Worked examples">
-        <h2 className="m-0 mb-3 font-display text-[34px] font-medium tracking-[-0.02em]">Worked examples</h2>
-        <p className="m-0 mb-6 inline-flex border border-dashed border-ink px-2.5 py-1.5 font-mono text-[13px]">
+        <h2 className="m-0 mb-4 font-display text-2xl leading-[1.2] tracking-[-0.03em]">Worked examples</h2>
+        <p className="m-0 mb-6 inline-flex border border-dashed border-ink px-3 py-2 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase">
           Illustrative · fictional product and measurements
         </p>
-        <h3 id="example-supported" className="m-0 mb-3 text-[22px] font-semibold">
+        <h3 id="example-supported" className="m-0 mb-3 text-lg leading-[1.4] tracking-[-0.015em]">
           A · Supported evaluation
         </h3>
         <p className="m-0 mb-4 text-[17px] leading-[1.7]">
@@ -110,7 +110,7 @@ export default function Reference() {
           cause, and it says nothing about other revisions.
         </p>
 
-        <h3 id="example-blocked" className="m-0 mb-3 text-[22px] font-semibold">
+        <h3 id="example-blocked" className="m-0 mb-3 text-lg leading-[1.4] tracking-[-0.015em]">
           B · Blocked comparison
         </h3>
         <p className="m-0 mb-4 text-[17px] leading-[1.7]">

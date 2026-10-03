@@ -24,31 +24,31 @@ function linkify(text: string): ReactNode {
 
 export default function LegalPage({ doc }: { doc: LegalDoc }) {
   return (
-    <div className="min-h-screen bg-oat font-sans text-ink">
+    <div className="min-h-screen bg-oat font-sans text-fg">
       <AnnouncementBar />
       <SiteHeader />
       <main id="main" className="mx-auto max-w-3xl px-gutter py-[clamp(64px,8vw,112px)]">
-        <h1 className="mb-12 border-b border-ink pb-6 font-display text-4xl font-medium tracking-[-0.03em] md:text-5xl">
+        <h1 className="mb-12 border-b border-line pb-6 font-display text-[clamp(32px,2.92vw,42px)] leading-[1.1] tracking-[-0.045em]">
           {doc.title}
         </h1>
-        <div className="space-y-6 font-sans text-sm leading-relaxed text-ink/80 md:text-base">
-          <p className="font-mono text-xs tracking-[0.04em] text-ink uppercase">
+        <div className="space-y-6 font-sans text-base leading-[1.7] tracking-[-0.015em] text-fg-muted">
+          <p className="text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg">
             Last updated: {doc.lastUpdated}
           </p>
           {doc.sections.map((section) => (
             <section key={section.heading} aria-label={section.heading} className="space-y-6">
-              <h2 className="mt-12 mb-4 font-display text-xl font-medium text-ink">
+              <h2 className="mt-12 mb-4 font-display text-2xl leading-[1.2] tracking-[-0.03em] text-fg">
                 {section.heading}
               </h2>
               {section.blocks.map((block, i) =>
                 block.type === "p" ? (
                   <p key={i}>{linkify(block.text)}</p>
                 ) : (
-                  <ul key={i} className="list-disc space-y-3 pl-5 marker:text-ink">
+                  <ul key={i} className="list-disc space-y-3 pl-5 marker:text-fg-muted">
                     {block.items.map((item) => (
                       <li key={item.text}>
                         {item.label && (
-                          <strong className="font-semibold text-ink">{item.label}: </strong>
+                          <strong className="font-medium text-fg">{item.label}: </strong>
                         )}
                         {linkify(item.text)}
                       </li>
