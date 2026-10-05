@@ -143,7 +143,7 @@ function removeOverlay() {
 }
 
 const BUTTON =
-  "min-height:44px;padding:0 16px;background:transparent;border:1px solid #2A3441;border-radius:3px;color:#2A3441;font:500 15px var(--font-plex-sans),system-ui,sans-serif;cursor:pointer;margin-left:auto";
+  "min-height:44px;padding:0 16px;background:transparent;border:1px solid #2A3441;border-radius:3px;color:#2A3441;font:500 15px var(--font-space-grotesk),system-ui,sans-serif;cursor:pointer;margin-left:auto";
 
 function buildOverlay(fallback: boolean) {
   removeOverlay();
@@ -153,7 +153,7 @@ function buildOverlay(fallback: boolean) {
   o.setAttribute("aria-label", "Book a pilot call");
   o.dataset.booking = fallback ? "fallback" : "loading";
   o.style.cssText =
-    "position:fixed;inset:0;z-index:2147483000;background:rgba(42,52,65,0.55);display:flex;align-items:center;justify-content:center;padding:20px;font-family:var(--font-plex-sans),system-ui,sans-serif";
+    "position:fixed;inset:0;z-index:2147483000;background:rgba(42,52,65,0.55);display:flex;align-items:center;justify-content:center;padding:20px;font-family:var(--font-space-grotesk),system-ui,sans-serif";
   const box = document.createElement("div");
   box.style.cssText =
     "background:#F4F2EC;color:#2A3441;border:1.5px solid #2A3441;box-shadow:8px 8px 0 #2A3441;padding:24px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:16px";

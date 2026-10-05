@@ -5,12 +5,22 @@ import { ArrowIcon, CheckIcon } from "@/components/site/icons";
 import SectionLink from "@/components/site/SectionLink";
 import DemoChangeReview from "./DemoChangeReview";
 import DemoInvestigation from "./DemoInvestigation";
+import BrandMark, { type BrandKind } from "./BrandMark";
 import DemoRecord from "./DemoRecord";
 import { backdrop } from "./Outcome";
 
-const CARDS = [
+const CARDS: {
+  gradient: string;
+  eyebrow: string;
+  item: string;
+  state: string;
+  solid: boolean;
+  mark?: BrandKind;
+  title: string;
+  body: string;
+}[] = [
   {
-    gradient: "linear-gradient(160deg, #CDDDF2 0%, #E7E2F2 55%, #BFA3E6 100%)",
+    gradient: "linear-gradient(160deg, #D2E3FC 0%, #AECBFA 55%, #8AB4F8 100%)",
     eyebrow: "Proposed change",
     item: "Rev C clock-routing review",
     state: "Ready for review",
@@ -19,7 +29,7 @@ const CARDS = [
     body: "Review a layout or component change against earlier evidence before you commit to a build.",
   },
   {
-    gradient: "linear-gradient(160deg, #EEF2F8 0%, #E4DAF3 60%, #C8B2EA 100%)",
+    gradient: "linear-gradient(160deg, #FEF7E0 0%, #FDE293 55%, #FBBC04 130%)",
     eyebrow: "Investigation",
     item: "Clock harmonic on USB cable",
     state: "Unconfirmed",
@@ -28,11 +38,12 @@ const CARDS = [
     body: "Bring the report, setup notes and team discussion into one investigation and plan the next check.",
   },
   {
-    gradient: "linear-gradient(160deg, #E6EEF8 0%, #CDDDF2 55%, #8FA3C8 100%)",
+    gradient: "linear-gradient(160deg, #E6F4EA 0%, #CEEAD6 55%, #81C995 100%)",
     eyebrow: "Evidence",
     item: "Rev C report.pdf",
     state: "Linked",
     solid: true,
+    mark: "pdf",
     title: "Evolving evidence",
     body: "Keep results tied to the revision they were measured on as the hardware moves forward.",
   },
@@ -245,17 +256,20 @@ export default function Capabilities() {
               <div
                 aria-hidden="true"
                 style={{ background: card.gradient }}
-                className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-3xl p-6"
+                className="relative grid aspect-[4/3] place-items-center overflow-hidden p-6"
               >
                 <div
                   data-rv="glass"
                   style={{ "--rv-d": `${i * 80}ms` } as CSSProperties}
-                  className="box-border w-full max-w-[260px] rounded-2xl border border-[rgba(24,24,27,0.08)] bg-[rgba(255,255,255,0.7)] px-[18px] py-4 text-left shadow-[0_16px_40px_rgba(24,24,27,0.10)] backdrop-blur-[20px]"
+                  className="box-border w-full max-w-[260px] border border-[rgba(24,24,27,0.08)] bg-[rgba(255,255,255,0.7)] px-[18px] py-4 text-left shadow-[0_16px_40px_rgba(24,24,27,0.10)] backdrop-blur-[20px]"
                 >
-                  <span className="block text-[11px] leading-[1.4] font-medium tracking-[0.08em] text-ink uppercase">{card.eyebrow}</span>
+                  <span className="flex items-center justify-between gap-2 text-[11px] leading-[1.4] font-medium tracking-[0.08em] text-ink uppercase">
+                    {card.eyebrow}
+                    {card.mark && <BrandMark kind={card.mark} size={14} />}
+                  </span>
                   <span className="mt-2 block text-base leading-[1.65] tracking-[-0.015em] text-ink">{card.item}</span>
                   <span
-                    className={`mt-3 inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-xs leading-[1.5] ${
+                    className={`mt-3 inline-flex h-6 items-center gap-1.5 px-2.5 text-xs leading-[1.5] ${
                       card.solid ? "bg-[#F2F2F1] text-[#111111]" : "border border-dashed border-[rgba(42,52,65,0.4)] text-ink"
                     }`}
                   >
