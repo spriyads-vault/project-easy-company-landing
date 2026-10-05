@@ -1,22 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
 import BookingManager from "@/components/site/BookingManager";
 import { HOME_DESCRIPTION, HOME_TITLE, OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-// Headings 24px and above, and the wordmark.
+// Every label and every line of text on the site.
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-// Docs code blocks and the hero board's silkscreen labels only.
+// Docs code blocks only.
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
@@ -40,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${inter.variable} ${spaceGrotesk.variable} ${plexMono.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${spaceGrotesk.variable} ${plexMono.variable}`}>
       <body>
         {children}
         <BookingManager />

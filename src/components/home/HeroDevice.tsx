@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { CheckIcon } from "@/components/site/icons";
-import SourceIcon from "./SourceIcon";
+import BrandMark from "./BrandMark";
 
 // Connector lines draw in turn once the board has assembled (ms from page load).
 const L = ["2400ms", "2700ms", "3000ms", "3600ms"];
@@ -44,7 +44,8 @@ const CARDS: Card[] = [
 ];
 
 function CardIcon({ icon }: { icon: Card["icon"] }) {
-  if (icon === "report" || icon === "mail") return <SourceIcon kind={icon} stroke="#2A3441" />;
+  if (icon === "report") return <BrandMark kind="pdf" />;
+  if (icon === "mail") return <BrandMark kind="gmail" />;
   return (
     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="#2A3441" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className="block flex-none">
       {icon === "requirement" ? (
@@ -69,7 +70,7 @@ function GlassCard({ card }: { card: Card }) {
   return (
     <div
       style={vars}
-      className="hx-card box-border rounded-2xl border border-[rgba(24,24,27,0.08)] bg-[rgba(255,255,255,0.7)] p-4 text-left shadow-[0_16px_40px_rgba(24,24,27,0.10)] backdrop-blur-[20px]"
+      className="hx-card box-border border border-[rgba(24,24,27,0.08)] bg-[rgba(255,255,255,0.7)] p-4 text-left shadow-[0_16px_40px_rgba(24,24,27,0.10)] backdrop-blur-[20px]"
     >
       <span className="flex items-start gap-2">
         <span className="mt-0.5">
@@ -78,7 +79,7 @@ function GlassCard({ card }: { card: Card }) {
         <span className="text-sm leading-[1.4] tracking-[-0.01em] whitespace-nowrap text-fg">
           {card.title}
           {card.sub && <span className="block text-[13px] text-fg-muted">{card.sub}</span>}
-          <span className="mt-2 grid h-[22px] w-max items-center rounded-full border border-[rgba(24,24,27,0.08)] bg-[rgba(255,255,255,0.7)] px-2 text-[11px] leading-[1.4]">
+          <span className="mt-2 grid h-[22px] w-max items-center border border-[rgba(24,24,27,0.08)] bg-[rgba(255,255,255,0.7)] px-2 text-[11px] leading-[1.4]">
             <span className="hx-pending col-start-1 row-start-1 text-fg-muted" aria-hidden="true">
               {card.pending}
             </span>
@@ -217,43 +218,43 @@ export default function HeroDevice() {
       <path d="M762.8 476.3L768.4 478.2L762.8 480.2L757.3 478.2Z" fill="#18181B" fillOpacity="0.55" stroke="none" />
       <path d="M735.1 478.7L740.6 480.7L735.1 482.7L729.6 480.7Z" fill="#18181B" fillOpacity="0.55" stroke="none" />
       <path d="M745.5 482.5L751.0 484.4L745.5 486.4L739.9 484.4Z" fill="#18181B" fillOpacity="0.55" stroke="none" />
-      <text x="617.3" y="361.7" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="617.3" y="361.7" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       U1
       </text>
-      <text x="558.4" y="345.6" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="558.4" y="345.6" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       Y1
       </text>
-      <text x="534.2" y="336.9" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="534.2" y="336.9" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C1
       </text>
-      <text x="489.2" y="353.0" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="489.2" y="353.0" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C2
       </text>
-      <text x="641.6" y="358.0" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="641.6" y="358.0" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C3
       </text>
-      <text x="690.1" y="375.3" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="690.1" y="375.3" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C4
       </text>
-      <text x="707.4" y="406.3" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="707.4" y="406.3" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C5
       </text>
-      <text x="665.8" y="421.2" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="665.8" y="421.2" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C6
       </text>
-      <text x="395.6" y="374.1" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="395.6" y="374.1" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       U2
       </text>
-      <text x="399.1" y="405.1" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="399.1" y="405.1" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C7
       </text>
-      <text x="340.2" y="384.0" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="340.2" y="384.0" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       C8
       </text>
-      <text x="468.4" y="439.8" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="468.4" y="439.8" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       J1
       </text>
-      <text x="859.8" y="428.6" fontFamily="var(--font-plex-mono), monospace" fontSize="9" fill="#71717A" stroke="none">
+      <text x="859.8" y="428.6" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="9" fill="#71717A" stroke="none">
       J2
       </text>
       <path d="M542.8 344.9L558.4 350.5L558.4 353.0L561.9 354.2" pathLength="1" strokeDasharray="1" fill="none" stroke="rgba(24,24,27,0.55)" strokeWidth="1" className="hx-trace" />
@@ -307,12 +308,12 @@ export default function HeroDevice() {
       <g className="hx-chip">
       <path d="M555.1 295.3L555.1 343.3" stroke="#A1A1AA" strokeWidth="1" />
       <rect x="473.1" y="271.3" width="164" height="24" rx="12" fill="#FFFFFF" stroke="#E4E4E7" />
-      <text x="555.1" y="287.3" textAnchor="middle" fontFamily="var(--font-plex-mono), monospace" fontSize="11" fill="#18181B" stroke="none">
+      <text x="555.1" y="287.3" textAnchor="middle" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="11" fill="#18181B" stroke="none">
       Changed: clock routing
       </text>
       </g>
       </g>
-      <text x="214" y="336" fontFamily="var(--font-plex-mono), monospace" fontSize="11" fill="#71717A" className="hx-asm">
+      <text x="214" y="336" fontFamily="var(--font-space-grotesk), system-ui, sans-serif" fontSize="11" fill="#71717A" className="hx-asm">
       Gateway board · Rev C
       </text>
       <g className="max-[1099px]:hidden">
