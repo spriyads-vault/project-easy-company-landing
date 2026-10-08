@@ -5,7 +5,7 @@ import MotionRegion from "./MotionRegion";
 import s from "./HeroCollage.module.css";
 
 const COLLAGE_LABEL =
-  "Product illustration: the Change reviewer agent set to trace changes to Sense Hub against Rev C and Rev D evidence";
+  "Product illustration: the Change reviewer agent set to trace changes to the sensor hub against Rev C and Rev D evidence";
 
 /** Inline style carrying CSS custom properties for the motion module. */
 const vars = (v: Record<string, string | number>) => v as CSSProperties;
@@ -133,8 +133,8 @@ function Window() {
         <div className="flex flex-col gap-2.5">
           <span className="text-[12px] font-medium text-fg-6">Context and instructions</span>
           <div className="rounded-md border border-line-4 bg-surface-2 px-3.5 py-3 text-[13px] leading-[1.65] text-pretty text-fg-3">
-            When a change to <Chip>Sense Hub</Chip> lands, trace it to <Chip>Rev C</Chip> and <Chip>Rev D</Chip> evidence, flag
-            anything at risk and post a summary to <Chip>#hw-compliance</Chip>. Ask before sending.
+            When a change to <Chip>Sensor hub</Chip> lands, trace it to <Chip>Rev C</Chip> and <Chip>Rev D</Chip> evidence, flag
+            anything at risk and post a summary to <Chip>team channel</Chip>. Ask before sending.
           </div>
           <div className="flex items-center gap-2 text-[12px] text-fg-6">
             <Icon d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM9 12l2 2 4-4" size={13} />
@@ -220,7 +220,7 @@ export default function HeroCollage() {
                 </span>
                 <div className={`${CARD} mt-5 flex w-[184px] flex-col gap-[3px] px-[11px] py-2.5`}>
                   <span className="text-[11.5px] font-semibold">Re: Rev E samples</span>
-                  <span className="text-[11px] text-fg-muted">Halden EMC Lab · 9:16 AM</span>
+                  <span className="text-[11px] text-fg-muted">Test lab · 9:16 AM</span>
                 </div>
               </div>
             </div>

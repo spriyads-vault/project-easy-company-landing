@@ -25,7 +25,7 @@ const icon = (d: string) => (
 
 const PRODUCT: ProductItem[] = [
   { id: "change-review", title: "Change review", sub: "See what a design change does to your evidence.", earlyAccess: true, icon: icon("M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7") },
-  { id: "failure-investigation", title: "Failure investigation", sub: "Ranked likely causes for failed emissions tests.", earlyAccess: false, icon: icon("M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-4.3-4.3") },
+  { id: "failure-investigation", title: "Failure investigation", sub: "Ranked likely causes for failed radiated-emissions tests.", earlyAccess: false, icon: icon("M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-4.3-4.3") },
   { id: "evidence", title: "Evidence and communications", sub: "Lab emails and Slack decisions, filed with each revision.", earlyAccess: true, icon: icon("M3 13h5l2 3h4l2-3h5M5 5h14l2 8v6H3v-6z") },
   { id: "agents", title: "Agents", sub: "Agents that work in the background and ask before acting.", earlyAccess: true, icon: icon("M12 8V4M8 4h8M5 8h14v11H5zM9 13h.01M15 13h.01") },
 ];

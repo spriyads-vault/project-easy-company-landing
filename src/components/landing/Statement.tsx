@@ -1,6 +1,6 @@
 import StatementFrame from "./diagrams/StatementFrame";
 
-/** "Your engineers, minus the evidence hunt": statement and the Sense Hub change review window. */
+/** "Your engineers, minus the evidence hunt": statement and the change review window. */
 export default function Statement() {
   return (
     <section aria-labelledby="statement-title" className="mx-auto max-w-page px-(--space-gutter) pt-(--space-section)">
@@ -12,8 +12,8 @@ export default function Statement() {
           Your engineers, minus the evidence hunt
         </h2>
         <p className="mt-4 max-w-[600px] text-[15px] leading-[1.6] text-pretty text-fg-6">
-          Crado&apos;s agents read lab reports, keep every finding tied to its revision and cite the source it came from. In
-          early access, they also trace changes and file email and Slack decisions with each case.
+          Crado reads lab reports, keeps every finding tied to its revision and cites the source it came from. In early
+          access, agents also trace changes and file email and Slack decisions with each case.
         </p>
       </div>
       <StatementFrame />

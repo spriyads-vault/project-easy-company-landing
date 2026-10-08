@@ -33,7 +33,9 @@ test.describe("landing page", () => {
       expect(text, word).not.toContain(word);
     }
     expect(text).not.toContain("—");
-    expect(text).not.toContain("sam lee");
+    for (const name of ["sam lee", "sense hub", "halden", "gmail", "outlook", "microsoft teams", "jira"]) {
+      expect(text, name).not.toContain(name);
+    }
   });
 
   test("FAQ JSON-LD matches the visible answers word for word", async ({ page }) => {

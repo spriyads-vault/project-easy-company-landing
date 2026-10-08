@@ -151,7 +151,7 @@ export default function Concepts() {
         reasoning behind a past next step can still be read.
       </P>
       <P>A historical result stays attached to the revision it was measured on. It is not overwritten by a later retest on a different revision.</P>
-      <Callout tone="violet" label="PRODUCT DIRECTION">
+      <Callout tone="violet" label="ROADMAP">
         Automatically returning affected evidence to review when a revision changes is part of where Crado is heading. It is not described here as current
         functionality.
       </Callout>

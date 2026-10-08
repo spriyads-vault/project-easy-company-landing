@@ -12,10 +12,10 @@ const TRACK_LABEL =
 
 const TAGS: { text: string; live?: boolean }[] = [
   { text: "RADIATED EMISSIONS (LIVE)", live: true },
-  { text: "CONDUCTED" },
-  { text: "IMMUNITY" },
-  { text: "RADIO" },
-  { text: "ELECTRICAL SAFETY" },
+  { text: "CONDUCTED (ROADMAP)" },
+  { text: "IMMUNITY (ROADMAP)" },
+  { text: "RADIO (ROADMAP)" },
+  { text: "ELECTRICAL SAFETY (ROADMAP)" },
   { text: "CYBERSECURITY (ROADMAP)" },
 ];
 

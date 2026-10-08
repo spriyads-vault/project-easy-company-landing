@@ -41,8 +41,8 @@ interface Thread {
 }
 
 const THREADS: Thread[] = [
-  { icon: "mail", from: "Halden EMC Lab", when: "9:16 AM", text: "Re: Rev E samples. Retest slot moved to Thursday." },
-  { icon: "chat", from: "#hw-compliance", when: "Yesterday", text: "EMC engineer: new regulator switches at 2.1 MHz." },
+  { icon: "mail", from: "Test lab", when: "9:16 AM", text: "Re: Rev E samples. Retest slot moved to Thursday." },
+  { icon: "chat", from: "Team channel", when: "Yesterday", text: "EMC engineer: new regulator switches at 2.1 MHz." },
   { icon: "mail", from: "Supplier", when: "Mon", text: "Regulator datasheet, revision B attached." },
 ];
 
@@ -62,7 +62,7 @@ function LineIcon({ d, size }: { d: string; size: number }) {
 }
 
 /**
- * "Sense Hub / Rev E / Change review" product window (design: [data-frame]). Real, readable markup; on first view the
+ * "Sensor hub / Rev E / Change review" product window (design: [data-frame]). Real, readable markup; on first view the
  * header, sections and rows build in, source placeholders [·] swap to citations [n] and the status chip settles.
  */
 export default function StatementFrame() {
@@ -77,7 +77,7 @@ export default function StatementFrame() {
         <span className="text-fg-muted">
           <LineIcon d="M3 6h6l2 2h10v11H3z" size={14} />
         </span>
-        <span>Sense Hub</span>
+        <span>Sensor hub</span>
         <span className="text-line-8">/</span>
         <span>Rev E</span>
         <span className="text-line-8">/</span>
@@ -101,7 +101,7 @@ export default function StatementFrame() {
         </div>
         <div className="flex flex-wrap gap-[18px] text-[12px] text-fg-muted">
           <span>
-            Product <span className="text-fg-3">Sense Hub</span>
+            Product <span className="text-fg-3">Sensor hub</span>
           </span>
           <span>
             Revision <span className="text-fg-3">Rev E</span>

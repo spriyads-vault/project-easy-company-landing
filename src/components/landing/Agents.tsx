@@ -86,7 +86,8 @@ export default function Agents() {
         Put Crado agents to work
       </h2>
       <p className="m-0 mt-4 max-w-[640px] text-[15px] leading-[1.6] text-pretty text-fg-6">
-        Agents work inside your workspace and ask before they act. Every output is backed by evidence you can check.
+        Agents work inside your workspace, and every output is backed by evidence you can check. The EMC investigator is
+        available today; the others are in early access or on the roadmap.
       </p>
       <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {AGENTS.map((agent) => (

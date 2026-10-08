@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 
 import PdfBadge from "@/components/ui/PdfBadge";
 import { useMotion } from "@/hooks/useMotion";
 
-const LABEL = "Diagram: emails, Slack messages, tickets and lab reports filed into Case 0042 for Sense Hub Rev D";
+const LABEL = "Diagram: emails, chat messages, tickets and lab reports filed into Case 0042 for the sensor hub Rev D";
 const TRIP_MS = 2400;
 const GAP_MS = 600;
 
@@ -24,17 +24,17 @@ interface Source {
 }
 
 const SOURCES: Source[] = [
-  { label: "Gmail", icon: "mail", count: 12, unit: " threads", left: 17, top: 70, d: "M95 110 C95 220 410 136 410 236", row: 0 },
-  { label: "Outlook", icon: "mail", count: 4, unit: " threads", left: 187, top: 24, d: "M265 64 C265 174 454 136 454 236", row: 0 },
-  { label: "Slack", icon: "chat", count: 31, unit: " messages", left: 357, top: 0, d: "M435 40 C435 150 498 136 498 236", row: 1 },
-  { label: "Microsoft Teams", icon: "chat", count: 6, unit: " messages", left: 527, top: 0, d: "M605 40 C605 150 542 136 542 236", row: 1 },
-  { label: "Jira", icon: "ticket", count: 3, unit: " tickets", left: 697, top: 24, d: "M775 64 C775 174 586 136 586 236", row: -1 },
+  { label: "Lab email", icon: "mail", count: 12, unit: " threads", left: 17, top: 70, d: "M95 110 C95 220 410 136 410 236", row: 0 },
+  { label: "Supplier email", icon: "mail", count: 4, unit: " threads", left: 187, top: 24, d: "M265 64 C265 174 454 136 454 236", row: 0 },
+  { label: "Team chat", icon: "chat", count: 31, unit: " messages", left: 357, top: 0, d: "M435 40 C435 150 498 136 498 236", row: 1 },
+  { label: "Design reviews", icon: "chat", count: 6, unit: " messages", left: 527, top: 0, d: "M605 40 C605 150 542 136 542 236", row: 1 },
+  { label: "Change tickets", icon: "ticket", count: 3, unit: " tickets", left: 697, top: 24, d: "M775 64 C775 174 586 136 586 236", row: -1 },
   { label: "PDF reports", icon: "pdf", count: 14, unit: "", left: 867, top: 70, d: "M945 110 C945 220 630 136 630 236", row: 2 },
 ];
 
 const TIMELINE: { icon: IconKind; text: string; date: string }[] = [
-  { icon: "mail", text: "Halden EMC Lab · Rev E samples", date: "12 SEP" },
-  { icon: "chat", text: "#hw-compliance · regulator decision", date: "3 SEP" },
+  { icon: "mail", text: "Test lab · Rev E samples", date: "12 SEP" },
+  { icon: "chat", text: "Team channel · regulator decision", date: "3 SEP" },
   { icon: "pdf", text: "Rev D radiated emissions report", date: "9 SEP" },
 ];
 
@@ -97,7 +97,7 @@ function CaseCard({ className = "" }: { className?: string }) {
           <path d="M3 13h5l2 3h4l2-3h5M5 5h14l2 8v6H3v-6z" />
         </svg>
         <span className="text-[12.5px] font-semibold">Case 0042</span>
-        <span className="text-[12px] text-fg-6">· Sense Hub Rev D</span>
+        <span className="text-[12px] text-fg-6">· Sensor hub Rev D</span>
       </div>
       {TIMELINE.map((t, i) => (
         <div key={t.text} data-tl={i} className="relative flex h-10 items-center gap-2.5 rounded-[7px] px-2.5 text-[12px] text-fg-3">

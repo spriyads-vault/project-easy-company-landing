@@ -11,7 +11,7 @@ export interface FaqItem {
 export const FAQ: FaqItem[] = [
   {
     q: "What is Crado?",
-    a: "Crado connects product revisions, regulatory requirements and test evidence. Its agents trace design changes to the tests and certifications they affect, and keep every result tied to the revision it was measured on.",
+    a: "Crado connects product revisions, regulatory requirements and test evidence. It keeps every result tied to the revision it was measured on and investigates radiated-emissions failures. In early access, agents trace design changes to the tests and certifications they affect.",
   },
   {
     q: "Does Crado certify products or replace a test lab?",

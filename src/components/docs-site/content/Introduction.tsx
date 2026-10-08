@@ -17,7 +17,7 @@ const ROLES = [
   {
     label: "ENGINEERS",
     title: "Engineers",
-    body: "Engineers confirm values, review findings, approve any outside action and decide the physical next step. Crado never issues a certification decision.",
+    body: "Engineers confirm values, review findings and decide the physical next step. Crado never issues a certification decision.",
   },
 ];
 

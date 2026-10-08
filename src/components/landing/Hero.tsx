@@ -39,7 +39,7 @@ export default function Hero() {
           the engineering <PixelWord>loop</PixelWord>.
         </h1>
         <p className="mt-6 max-w-[500px] text-base leading-[1.55] text-pretty text-on-accent/85">
-          Crado keeps test evidence tied to every product revision and checks results against published rules. In early
+          Crado keeps test evidence tied to every product revision and checks radiated-emissions results against FCC Part 15 limits. In early
           access, agents trace design changes to the tests and certifications they touch.
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-5">

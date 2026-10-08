@@ -6,6 +6,7 @@ import WaitlistButton from "@/components/waitlist/WaitlistButton";
 import { CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
 
 const linkClass = "text-fg-muted hover:text-fg";
+const earlyAccess = <span className="ml-2 font-mono text-[10px] tracking-[0.1em] whitespace-nowrap text-fg-faint">EARLY ACCESS</span>;
 
 function Column({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -28,10 +29,10 @@ export default function Footer({ variant }: FooterProps) {
       <div className="mx-auto max-w-page px-(--space-gutter) pt-14 pb-8">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-8">
           <Column title="PRODUCT">
-            <a href={section("change-review")} className={linkClass}>Change review</a>
+            <a href={section("change-review")} className={linkClass}>Change review{earlyAccess}</a>
             <a href={section("failure-investigation")} className={linkClass}>Failure investigation</a>
-            <a href={section("evidence")} className={linkClass}>Evidence and communications</a>
-            <a href={section("agents")} className={linkClass}>Agents</a>
+            <a href={section("evidence")} className={linkClass}>Evidence and communications{earlyAccess}</a>
+            <a href={section("agents")} className={linkClass}>Agents{earlyAccess}</a>
             <a href={section("how-it-works")} className={linkClass}>How it works</a>
           </Column>
           <Column title="RESOURCES">

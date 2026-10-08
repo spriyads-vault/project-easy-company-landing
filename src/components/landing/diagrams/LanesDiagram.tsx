@@ -132,7 +132,7 @@ export default function LanesDiagram() {
       className="w-full max-w-[600px] overflow-hidden rounded-lg border border-line-3 bg-surface-2 font-sans text-[12.5px] shadow-[inset_0_1px_0_var(--hairline-white-4),0_40px_100px_-40px_rgb(0_0_0/0.8)]"
     >
       <Lane label="AGENT">
-        <span className="font-mono text-[10.5px] text-fg-muted">Read Halden report · proposed 1 value</span>
+        <span className="font-mono text-[10.5px] text-fg-muted">Read lab report · proposed 1 value</span>
         <div data-slot1 className="flex min-h-[34px] items-center rounded-md border border-dashed border-line-6 px-2.5">
           <span data-slotnote className="font-mono text-[10px] tracking-[0.06em] text-fg-faint">
             SENT FOR EVALUATION ↓
