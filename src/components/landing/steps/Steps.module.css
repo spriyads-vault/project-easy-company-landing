@@ -1,0 +1,359 @@
+/*
+ * Sticky 01/02/03 section (design: [data-steps], scene0/1/2, applyStep, initScenes).
+ *
+ * Wide (>= 1100px): the step texts scroll on the left; one sticky 560px box on the right stacks the three scenes.
+ * Exactly one layer is data-state="on" (step 01 from the server render), the others sit 12px above or below,
+ * transparent. StepsController moves data-state as the active step changes, so a swap is a 300ms cross-fade
+ * with no blank frame in either direction.
+ * Narrow: no sticky; each step carries its own copy of its scene inline, in a 4:3 box.
+ *
+ * Scene micro-animations run only while their scene box has data-run (the active scene while the section is on
+ * screen; inline scenes once, when 30% visible). They pause with data-paused (tab hidden). Resting styles are the
+ * final frame, so removing data-run, reduced motion and no JS all show the finished scene.
+ * Only transform, opacity and SVG stroke-dashoffset animate.
+ */
+
+.root {
+  /* Scene scale until StepsController measures the box: min(1, w / 720, h / 560). */
+  --scene-scale: 0.469;
+}
+
+@media (min-width: 1100px) {
+  .root {
+    --scene-scale: 0.94;
+  }
+}
+
+/* Decorative background layers behind each scene's front panel (design: bgO, bgHot). */
+.root [data-bg] {
+  opacity: 0.2;
+}
+
+.root [data-bghot] {
+  opacity: 0.5;
+}
+
+/* Floating secondary cards are desktop-only in the design (secFloat). */
+.root [data-float] {
+  display: none;
+}
+
+@media (min-width: 760px) {
+  .root [data-bg] {
+    opacity: 0.35;
+  }
+
+  .root [data-bghot] {
+    opacity: 0.85;
+  }
+
+  .root [data-float] {
+    display: block;
+  }
+}
+
+/* Typing cover for "Why did Rev D fail…": at rest it sits off to the right, outside the clipped text box. */
+.root [data-type-cover] {
+  transform: translateX(100%);
+}
+
+/*
+ * Step texts: the inactive ones dim on wide screens. The design fades the whole block to 0.3; that fails WCAG AA
+ * contrast for the number, body copy, label and buttons, so only the heading drops to 0.4 (large text keeps 3:1)
+ * and the paragraph and buttons to 0.8 (4.5:1).
+ */
+@media (min-width: 1100px) {
+  .step h2,
+  .step p,
+  .step [data-step-actions] {
+    transition: opacity 280ms ease-out;
+  }
+
+  .step:not([data-on]) h2 {
+    opacity: 0.4;
+  }
+
+  .step:not([data-on]) p,
+  .step:not([data-on]) [data-step-actions] {
+    opacity: 0.8;
+  }
+}
+
+/* Progress rail: fills as the section passes the viewport centre. */
+.bar {
+  transform-origin: 50% 0;
+  transform: scaleY(var(--sprog, 0));
+}
+
+@supports (animation-timeline: view()) {
+  .bar {
+    animation: fill linear both;
+    animation-timeline: --steps;
+    animation-range: cover 50vh cover calc(100% - 50vh);
+  }
+}
+
+@keyframes fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Sticky layers */
+.layer {
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 300ms ease-out,
+    transform 300ms ease-out;
+}
+
+.layer[data-state="before"] {
+  transform: translateY(-12px);
+}
+
+.layer[data-state="on"] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ---- scene timelines (durations and delays from the design) ---- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .root [data-run] [data-r],
+  .root [data-run] [data-gauge],
+  .root [data-run] [data-cur],
+  .root [data-run] [data-tip],
+  .root [data-run] [data-type-cover],
+  .root [data-run] [data-hot],
+  .root [data-run] [data-cp],
+  .root [data-run] [data-c],
+  .root [data-run] [data-nt],
+  .root [data-run] [data-rt],
+  .root [data-run] [data-doc],
+  .root [data-run] [data-dd2],
+  .root [data-run] [data-hl2],
+  .root [data-run] [data-new] {
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
+  }
+
+  .root [data-run] [data-caret] {
+    animation: caret 530ms steps(1, end) infinite alternate;
+  }
+
+  .root[data-paused] * {
+    animation-play-state: paused !important;
+  }
+
+  /* Scene 01 */
+  .root [data-run] [data-scene-id="0"] [data-r] {
+    animation-name: rise6;
+    animation-duration: 400ms;
+    animation-delay: calc(300ms + var(--i, 0) * 120ms);
+  }
+
+  .root [data-run] [data-scene-id="0"] [data-gauge] {
+    animation-name: draw;
+    animation-duration: 1400ms;
+    animation-delay: 200ms;
+  }
+
+  .root [data-run] [data-scene-id="0"] [data-cur] {
+    animation-name: cursor0;
+    animation-duration: 600ms;
+    animation-delay: 900ms;
+  }
+
+  .root [data-run] [data-scene-id="0"] [data-tip] {
+    animation-name: rise4;
+    animation-duration: 300ms;
+    animation-delay: 1500ms;
+  }
+
+  /* Scene 02 */
+  .root [data-run] [data-scene-id="1"] [data-type-cover] {
+    /* 32 characters × 40ms, one step per character */
+    animation: type 1280ms steps(32, end) 300ms both;
+  }
+
+  .root [data-run] [data-scene-id="1"] [data-hot] {
+    animation-name: dim;
+    animation-duration: 500ms;
+    animation-delay: 1700ms;
+  }
+
+  .root [data-run] [data-scene-id="1"] [data-cp] {
+    animation-name: rise16;
+    animation-duration: 500ms;
+    animation-delay: 2000ms;
+  }
+
+  .root [data-run] [data-scene-id="1"] [data-c] {
+    animation-name: rise4;
+    animation-duration: 350ms;
+    animation-delay: calc(2400ms + var(--i, 0) * 250ms);
+  }
+
+  .root [data-run] [data-scene-id="1"] [data-nt] {
+    animation-name: fade;
+    animation-duration: 350ms;
+    animation-delay: 3200ms;
+  }
+
+  .root [data-run] [data-scene-id="1"] [data-cur] {
+    animation-name: cursor1;
+    animation-duration: 600ms;
+    animation-delay: 3500ms;
+  }
+
+  .root [data-run] [data-scene-id="1"] [data-rt] {
+    animation-name: rise8;
+    animation-duration: 400ms;
+    animation-delay: 4100ms;
+  }
+
+  /* Scene 03: t0 = 300 + 4 rows × 120 + 600 = 1380ms */
+  .root [data-run] [data-scene-id="2"] [data-r] {
+    animation-name: rise6;
+    animation-duration: 400ms;
+    animation-delay: calc(300ms + var(--i, 0) * 120ms);
+  }
+
+  .root [data-run] [data-scene-id="2"] [data-doc] {
+    animation-name: rise8;
+    animation-duration: 400ms;
+    animation-delay: 500ms;
+  }
+
+  .root [data-run] [data-scene-id="2"] [data-dd2] {
+    animation-name: drop;
+    animation-duration: 300ms;
+    animation-delay: 1380ms;
+  }
+
+  .root [data-run] [data-scene-id="2"] [data-cur] {
+    animation-name: cursor2;
+    animation-duration: 800ms;
+    animation-delay: 1680ms;
+  }
+
+  .root [data-run] [data-scene-id="2"] [data-hl2] {
+    animation-name: fade;
+    animation-duration: 200ms;
+    animation-delay: 2480ms;
+  }
+
+  .root [data-run] [data-scene-id="2"] [data-new] {
+    animation-name: lower8;
+    animation-duration: 400ms;
+    animation-delay: 2980ms;
+  }
+}
+
+@keyframes rise4 {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes rise6 {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes rise8 {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes rise16 {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes lower8 {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dim {
+  from {
+    opacity: 0.3;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes type {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes caret {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes cursor0 {
+  from {
+    opacity: 0;
+    transform: translate(36px, 40px);
+  }
+}
+
+@keyframes cursor1 {
+  from {
+    opacity: 0;
+    transform: translate(30px, 40px);
+  }
+}
+
+@keyframes cursor2 {
+  0% {
+    opacity: 0;
+    transform: translate(-70px, 60px);
+  }
+  20% {
+    opacity: 1;
+  }
+}

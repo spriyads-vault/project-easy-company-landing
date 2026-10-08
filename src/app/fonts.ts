@@ -1,21 +1,34 @@
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Instrument_Serif } from "next/font/google";
 
-// Geist and Geist Mono (OFL), self-hosted by next/font as Latin subsets (SEO hand-off: "Self-host as WOFF2,
-// Latin subset"). Geist is not preloaded: above the fold it only appears inside the hero collage, so it should not
-// compete with the hero text. Geist Mono (banner and eyebrows) keeps its preload so the banner never swaps.
+// Inter (OFL) is the display and text face. It is the variable font with the optical size axis, so headings set
+// `font-variation-settings: "opsz" 32` and body text picks its size automatically. Preloaded because the hero h1
+// (the LCP element) uses it; next/font's size-adjusted fallback keeps metrics stable until it swaps in.
+const inter = Inter({
+  subsets: ["latin"],
+  axes: ["opsz"],
+  variable: "--font-inter",
+});
+
+// Geist and Geist Mono (OFL) for mockup UI and labels, self-hosted by next/font as Latin subsets. Geist is not
+// preloaded: above the fold it only appears inside the hero product window, so it should not compete with the
+// hero text. Geist Mono (banner and eyebrows) keeps its preload so the banner never swaps.
 const geistSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
   preload: false,
 });
 
+// Glyphs outside the Latin subset (the "→" in labels) fall back to the generic monospace face, as in the design,
+// rather than to next/font's metric-adjusted Arial. Preloaded, so the swap happens before first paint.
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-geist-mono",
+  adjustFontFallback: false,
+  fallback: ["monospace"],
 });
 
-// Accent words in headings ("loop", "change"). The canvas pixel effect draws over the real text.
+// Pixel-serif accent ("loop", step numbers). The canvas pixel effect draws over the real text.
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
@@ -24,25 +37,4 @@ const instrumentSerif = Instrument_Serif({
   preload: false,
 });
 
-/*
- * Satoshi (Fontshare licence) is not in the repo yet. Until it is, --font-satoshi is unset and the
- * metric-matched "Satoshi Fallback" from design-system.css renders instead.
- *
- * Drop-in once licensed WOFF2 files exist in src/app/fonts/:
- *
- *   import localFont from "next/font/local";
- *   const satoshi = localFont({
- *     src: [
- *       { path: "./fonts/Satoshi-Regular.woff2", weight: "400", style: "normal" },
- *       { path: "./fonts/Satoshi-Medium.woff2", weight: "500", style: "normal" },
- *       { path: "./fonts/Satoshi-Bold.woff2", weight: "700", style: "normal" },
- *     ],
- *     variable: "--font-satoshi",
- *     display: "swap",
- *     adjustFontFallback: "Arial",
- *   });
- *
- * and add `satoshi.variable` to FONT_VARIABLES below.
- */
-
-export const FONT_VARIABLES = [geistSans.variable, geistMono.variable, instrumentSerif.variable].join(" ");
+export const FONT_VARIABLES = [inter.variable, geistSans.variable, geistMono.variable, instrumentSerif.variable].join(" ");

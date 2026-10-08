@@ -5,6 +5,9 @@ import { useReducedMotion } from "@/hooks/useMotion";
 
 interface PixelWordProps {
   children: string;
+  /** Minimum pixel size in CSS px at full sharpness (design: data-pxk). The grid is fontSize / 48 or this, whichever is larger. */
+  grain?: number;
+  className?: string;
 }
 
 const STEPS = [3, 2, 1] as const;
@@ -14,9 +17,11 @@ const STEP_DELAY_MS = 140;
  * Serif accent word drawn as a thresholded, pixelated canvas over the real text (design: [data-px]).
  * The text stays in the DOM, selectable and indexable; it is only made transparent once a canvas is drawn.
  * Each sharpness step is its own pre-drawn canvas, revealed by switching opacity (no per-frame redraws).
- * The size is fixed at 1.12em (the design's fallback ratio) so nothing shifts when fonts load.
+ * The size is --pixel-serif-scale: Inter's cap height over Instrument Serif's, so the serif's capitals and
+ * baseline line up with the surrounding Inter text. It is a constant (not measured at runtime, as the design
+ * does) so nothing shifts when fonts load.
  */
-export default function PixelWord({ children }: PixelWordProps) {
+export default function PixelWord({ children, grain = 1, className }: PixelWordProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const reduced = useReducedMotion();
 
@@ -39,7 +44,7 @@ export default function PixelWord({ children }: PixelWordProps) {
       const h = el.offsetHeight;
       const pad = Math.ceil(fs * 0.14);
       const canvases = STEPS.map((s) => {
-        const k = Math.max(1, Math.round(fs / 32)) * s;
+        const k = Math.max(grain, fs / 48) * s;
         const cv = document.createElement("canvas");
         cv.setAttribute("aria-hidden", "true");
         const W = Math.ceil((w + 2 * pad) / k);
@@ -60,6 +65,7 @@ export default function PixelWord({ children }: PixelWordProps) {
         if (!ctx) return cv;
         ctx.font = `400 ${fs / k}px ${family}`;
         ctx.textBaseline = "alphabetic";
+        if ("letterSpacing" in ctx) ctx.letterSpacing = `${(fs * 0.01) / k}px`;
         ctx.fillStyle = color;
         const m = ctx.measureText(children);
         const A = m.fontBoundingBoxAscent * k;
@@ -80,7 +86,7 @@ export default function PixelWord({ children }: PixelWordProps) {
         return;
       }
       show(0);
-      const heading = el.closest("h1, h2") ?? el;
+      const heading = el.closest("h1, h2, [data-pxwrap]") ?? el;
       io = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return;
@@ -119,10 +125,10 @@ export default function PixelWord({ children }: PixelWordProps) {
       el.querySelectorAll("canvas").forEach((c) => c.remove());
       el.style.color = "";
     };
-  }, [children, reduced]);
+  }, [children, grain, reduced]);
 
   return (
-    <span ref={ref} className="relative inline-block font-serif text-[1.12em] font-normal tracking-normal">
+    <span ref={ref} className={`relative inline-block font-serif text-[length:var(--pixel-serif-scale)] font-normal tracking-[0.01em] ${className ?? ""}`}>
       {children}
     </span>
   );

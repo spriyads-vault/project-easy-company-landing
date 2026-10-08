@@ -13,13 +13,15 @@ test.describe("landing page", () => {
     await expect(page.locator("h1")).toHaveText("Compliance, inside the engineering loop.");
 
     const ids = await page.locator("main > section[id]").evaluateAll((els) => els.map((e) => e.id));
-    expect(ids).toEqual(["change-review", "evidence", "failure-investigation", "how-it-works", "use-cases", "agents", "faq"]);
+    expect(ids).toEqual(["how-it-works", "use-cases", "agents", "faq"]);
+    // The three product steps live in one sticky section, ahead of How it works, and keep their anchors.
+    const steps = await page.locator("[data-steps] [data-step]").evaluateAll((els) => els.map((e) => e.id));
+    expect(steps).toEqual(["change-review", "failure-investigation", "evidence"]);
   });
 
-  test("hero copy follows the approved wording and ships no integration logos", async ({ page }) => {
+  test("hero copy follows the approved wording and ships no third-party logos", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByText("In early access, agents trace design changes to the tests and certifications they touch.")).toBeVisible();
-    await expect(page.getByText("WORKS WITH YOUR LAB REPORTS · PDF · TEXT · MARKDOWN")).toBeVisible();
     const external = await page.locator("img").evaluateAll((imgs) =>
       imgs.map((i) => (i as HTMLImageElement).currentSrc || (i as HTMLImageElement).src).filter((s) => !s.startsWith(location.origin)),
     );
@@ -33,9 +35,18 @@ test.describe("landing page", () => {
       expect(text, word).not.toContain(word);
     }
     expect(text).not.toContain("—");
-    for (const name of ["sam lee", "sense hub", "halden", "gmail", "outlook", "microsoft teams", "jira"]) {
+    for (const name of ["sam lee", "sense hub", "halden", "gmail", "outlook", "microsoft teams"]) {
       expect(text, name).not.toContain(name);
     }
+    // Jira is named only as a roadmap connector, inside the hero tools strip.
+    const outsideStrip = await page.evaluate(() => {
+      const strip = document.querySelector('[aria-label="Connectors on the roadmap"]');
+      const clone = document.body.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('[aria-label="Connectors on the roadmap"], script, style, template').forEach((n) => n.remove());
+      return { strip: strip?.textContent ?? "", rest: clone.textContent ?? "" };
+    });
+    expect(outsideStrip.strip).toContain("Jira · Roadmap");
+    expect(outsideStrip.rest.toLowerCase()).not.toContain("jira");
   });
 
   test("FAQ JSON-LD matches the visible answers word for word", async ({ page }) => {
@@ -183,17 +194,18 @@ test.describe("motion", () => {
     const page = await context.newPage();
     await page.goto("/");
     const diagrams = page.locator("[data-diagram]");
-    expect(await diagrams.count()).toBeGreaterThanOrEqual(5);
+    expect(await diagrams.count()).toBeGreaterThanOrEqual(4);
     for (const d of await diagrams.all()) {
       if (await d.isVisible()) await d.scrollIntoViewIfNeeded();
     }
+    for (const id of ["change-review", "failure-investigation", "evidence"]) await page.locator(`#${id}`).scrollIntoViewIfNeeded();
     await page.waitForTimeout(800);
     const running = await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length);
     expect(running).toBe(0);
     // Final states, as the design renders them when motion is off.
     const finals: [string, string][] = [
-      ['[data-diagram="statement-frame"]', "Draft · awaiting engineer review"],
-      ['[data-diagram="change"]', "Suggested check · near-field scan at 144 MHz"],
+      ['[data-diagram="hero-window"]', "Reading report, page 4"],
+      ['[data-diagram="product-frame"]', "Held for review"],
       ['[data-diagram="lanes"]', "Reviewed by EMC engineer"],
       ['[aria-label="Product principles"]', "Unknown stays unknown."],
     ];
@@ -203,9 +215,6 @@ test.describe("motion", () => {
       await expect(el, text).toBeVisible();
       expect(await el.evaluate((n) => Number(getComputedStyle(n).opacity)), text).toBe(1);
     }
-    // Every "At risk" status is showing in the change review diagram.
-    const atRisk = page.locator('[data-diagram="change"]').getByText("At risk").filter({ visible: true });
-    expect(await atRisk.evaluateAll((els) => els.filter((e) => Number(getComputedStyle(e).opacity) === 1).length)).toBeGreaterThanOrEqual(4);
     await context.close();
   });
 

@@ -1,13 +1,11 @@
 import Agents from "@/components/landing/Agents";
-import ChangeReview from "@/components/landing/ChangeReview";
-import Evidence from "@/components/landing/Evidence";
-import FailureInvestigation from "@/components/landing/FailureInvestigation";
 import Faq from "@/components/landing/Faq";
 import FinalCta from "@/components/landing/FinalCta";
 import Hero from "@/components/landing/Hero";
 import HowItWorks from "@/components/landing/HowItWorks";
 import Principles from "@/components/landing/Principles";
 import Statement from "@/components/landing/Statement";
+import Steps from "@/components/landing/steps/Steps";
 import UseCases from "@/components/landing/UseCases";
 import JsonLd from "@/components/site/JsonLd";
 import SiteShell from "@/components/site/SiteShell";
@@ -29,9 +27,7 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Statement />
-        <ChangeReview />
-        <Evidence />
-        <FailureInvestigation />
+        <Steps />
         <HowItWorks />
         <UseCases />
         <Agents />

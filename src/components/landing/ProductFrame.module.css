@@ -1,0 +1,60 @@
+/*
+ * Scroll-scaling product frame (design: initScrollFx).
+ * The frame grows from --s0 (82% of the content width, set by ProductFrame from the layout) to full size while it
+ * travels from the bottom of the viewport to the centre, easing out (cubic), and shrinks back on the way up.
+ * Browsers with scroll-driven animations do this in CSS on the compositor; others get the same curve from
+ * ProductFrame's requestAnimationFrame fallback, which writes --p. Only transform animates.
+ * The Finding rows rise in once, when the frame reaches the centre ([data-played]).
+ * Reduced motion: full size, rows shown, nothing moves.
+ */
+
+.frame {
+  transform-origin: 50% 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .frame {
+      animation: grow linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 50%;
+    }
+  }
+
+  @supports not (animation-timeline: view()) {
+    /* --p is the eased progress (0..1) from the fallback. */
+    .frame {
+      transform: scale(calc(var(--s0, 1) + (1 - var(--s0, 1)) * var(--p, 1)));
+    }
+  }
+
+  /* Hidden only when script can reveal them again. */
+  @media (scripting: enabled) {
+    .frame:not([data-played]) [data-ps] {
+      opacity: 0;
+    }
+  }
+
+  .frame[data-played] [data-ps] {
+    animation: rise 450ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: calc(200ms + var(--i, 0) * 380ms);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scale(var(--s0, 1));
+    /* ease-out cubic, as the design's 1 - (1 - p)^3 */
+    animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
