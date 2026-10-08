@@ -1,136 +1,89 @@
 @import "tailwindcss";
-
-@theme inline {
-  --font-sans: var(--font-space-grotesk), system-ui, sans-serif;
-  /* Headings 24px and above, and the wordmark. */
-  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
-  /* Docs code blocks only. */
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
-}
-
-@theme {
-  --color-*: initial;
-  --color-transparent: transparent;
-  --color-white: #ffffff;
-
-  /* Text */
-  --color-fg: #18181b;
-  --color-fg-muted: #52525b;
-  --color-fg-subtle: #71717a;
-
-  /* Brand ink */
-  --color-ink: #2a3441;
-  --color-ink-deep: #1e2630;
-  --color-navy: #171d25;
-
-  /* Surfaces. The oat names are kept so docs and legal pages pick up the new palette. */
-  --color-oat: #fafaf9;
-  --color-oat-light: #ffffff;
-  --color-oat-hover: #f4f4f5;
-  --color-oat-active: #eef1f5;
-  --color-line: #e4e4e7;
-  --color-line-soft: #f4f4f5;
-  --color-muted: #52525b;
-  --color-muted-2: #52525b;
-  --color-gray: #71717a;
-
-  /* Accents */
-  --color-lime: #b6e88e;
-  --color-slate: #6d85ad;
-  --color-sky: #cdddf2;
-  --color-butter: #f6e39e;
-  --color-lilac: #bfa3e6;
-  --color-slate-mid: #8ea3c6;
-
-  /* Evidence states (docs) */
-  --color-observed: #d5deec;
-  --color-known: #ddf2c9;
-  --color-inferred: #e6dcf5;
-  --color-missing: #fbf4d8;
-  --color-historical: #eceae3;
-
-  --spacing-gutter: clamp(20px, 4vw, 40px);
-}
+@import "../styles/design-system.css";
 
 html {
-  scroll-behavior: smooth;
-  /* Sticky header (64px) plus breathing room. */
-  scroll-padding-top: 72px;
+  background: var(--color-bg);
+  scroll-padding-top: calc(var(--nav-height) + 8px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
   margin: 0;
-  background: var(--color-oat);
+  background: var(--color-bg);
   color: var(--color-fg);
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer base {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  strong,
-  b,
-  th {
-    font-weight: 400;
-  }
-
-  h1,
-  h2,
-  [data-wordmark] {
-    font-family: var(--font-display);
-  }
-
   a {
-    color: var(--color-ink);
-    text-decoration-line: underline;
+    color: var(--color-fg);
+    text-decoration: none;
   }
 
   a:hover {
-    color: #15191f;
+    color: var(--color-white);
   }
 
   button {
-    font-family: inherit;
+    font: inherit;
+    color: inherit;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ink);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 
   ::selection {
-    background: #e4e4e7;
-    color: var(--color-fg);
+    background: var(--color-accent-soft);
+    color: var(--color-white);
   }
 }
 
-@keyframes barIn {
-  from {
-    opacity: 0;
+/*
+ * Motion. Components mark an animated region with data-motion and a client hook sets:
+ *   data-in      once the region has entered the viewport (one-shot reveals start)
+ *   data-paused  while the region is off-screen or the tab is hidden (loops pause)
+ * Resting styles are the final state, so reduced motion (and no JS for static content) shows the finished
+ * diagram. Initial states only apply when motion is allowed and the region has not been reached yet.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion][data-paused] *,
+  [data-motion][data-paused]::before,
+  [data-motion][data-paused]::after {
+    animation-play-state: paused !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   *,
   *::before,
   *::after {
-    transition: none !important;
     animation: none !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
   }
 }
 
-/* Docs pages add a 52px sticky contents bar below the header on narrow screens. */
-@media (max-width: 819px) {
-  html:has(.docs-shell) {
-    scroll-padding-top: 128px;
-  }
+/* Visually hidden but available to assistive tech. */
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

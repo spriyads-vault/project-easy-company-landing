@@ -1,8 +1,15 @@
-import DocsPage, { docsMetadata } from "@/components/docs/DocsPage";
-import { DOC_GROUPS } from "@/lib/docs";
+import DocsArticle from "@/components/docs-site/DocsArticle";
+import Introduction from "@/components/docs-site/content/Introduction";
+import { DOCS_PAGES, docsMetadata } from "@/lib/docs-pages";
 
-export const metadata = docsMetadata(DOC_GROUPS[0]);
+const PAGE = DOCS_PAGES[0];
 
-export default function DocsHome() {
-  return <DocsPage group={DOC_GROUPS[0]} />;
+export const metadata = docsMetadata(PAGE);
+
+export default function DocsIntroduction() {
+  return (
+    <DocsArticle page={PAGE}>
+      <Introduction />
+    </DocsArticle>
+  );
 }

@@ -2,8 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   async redirects() {
-    // The first docs group lives at /docs itself.
-    return [{ source: "/docs/get-started", destination: "/docs", permanent: true }];
+    // 301s from the SEO hand-off's redirect map (statusCode, not `permanent`, which would send 308).
+    return [
+      { source: "/docs/core-concepts", destination: "/docs/concepts", statusCode: 301 },
+      { source: "/docs/get-started", destination: "/docs", statusCode: 301 },
+    ];
   },
 };
 

@@ -1,0 +1,24 @@
+# Crado
+
+> Compliance, inside the engineering loop.
+
+Crado connects product revisions, regulatory requirements and test evidence for hardware teams. It keeps every result tied to the revision it was measured on and investigates radiated-emissions failures. In early access, agents trace design changes to the EMC tests and certifications they affect.
+
+How Crado reaches a result: Agents investigate. Rules evaluate. Engineers decide.
+- Agents read reports and propose candidate explanations and next tests. In early access, they also trace design changes. Everything they propose is labelled Inferred until a person confirms it.
+- A rule-based evaluation engine applies published, versioned rules to confirmed values only, and stops with a stated reason when an input is missing or two readings are not comparable.
+- Engineers confirm values, review findings and decide the physical next step. Crado never issues a certification decision.
+
+Current coverage: radiated emissions evaluated against 47 CFR 15.109(a) Class B limits for supported inputs. Other standards are on the roadmap.
+
+Crado does not issue certifications, replace accredited test reports or make regulatory determinations. Change review and communications features are in early access.
+
+## Docs
+- [Introduction](https://www.crado.io/docs): what Crado does and how it reaches a result
+- [Concepts](https://www.crado.io/docs/concepts): revisions, requirements, evidence, evidence states, agents, rules and review
+- [Evaluation](https://www.crado.io/docs/evaluation): report confirmation, rule evaluation, measurement comparisons, blocked checks
+- [Reference](https://www.crado.io/docs/reference): regulatory coverage and glossary
+- [Trust](https://www.crado.io/docs/trust): workspace access, data handling and security status
+- [Changelog](https://www.crado.io/docs/changelog)
+
+Contact: hello@crado.io

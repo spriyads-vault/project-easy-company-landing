@@ -1,0 +1,75 @@
+/*
+ * Hero collage motion (design: initHero).
+ * Settle runs from first paint (CSS, not hydration) so the server-rendered collage never flashes.
+ * Drift and the horn float pause while the collage is off screen or the tab is hidden ([data-paused]).
+ * Resting styles are the final state; prefers-reduced-motion starts nothing.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* opacity 0 + 12px rise, 600ms, 120ms + i * 70ms stagger (--i set per element) */
+  .settle {
+    animation: settle 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: calc(120ms + var(--i, 0) * 70ms);
+  }
+
+  /* Trigger card ring: one pulse at 1.2s */
+  .pulse {
+    animation: pulse 1100ms ease-in-out 1200ms;
+  }
+
+  /* translateY ±3px, alternate forever; duration and phase per card (--dur, --delay) */
+  .drift {
+    animation: drift var(--dur, 4000ms) ease-in-out var(--delay, 0ms) infinite alternate backwards;
+  }
+
+  /* Horn antenna float: ±4px over 3s */
+  .float {
+    animation: float 3000ms ease-in-out infinite alternate;
+  }
+
+  :global([data-paused]) .drift,
+  :global([data-paused]) .float {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(-3px);
+  }
+  to {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes float {
+  from {
+    transform: translateY(-4px);
+  }
+  to {
+    transform: translateY(4px);
+  }
+}

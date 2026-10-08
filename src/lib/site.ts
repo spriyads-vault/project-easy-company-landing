@@ -2,61 +2,72 @@ import type { Metadata } from "next";
 
 export const SITE_URL = "https://www.crado.io";
 export const SITE_NAME = "Crado";
+export const CONTACT_EMAIL = "hello@crado.io";
+export const LINKEDIN_URL = "https://www.linkedin.com/company/crado-io/";
+export const BOOKING_URL = "https://cal.com/crado-a7dbr4/30min";
+export const LOGO_PATH = "/assets/crado-logo.png";
 
-export const HOME_TITLE = "Crado | Hardware Compliance Inside the Engineering Loop";
+export const HOME_TITLE = "Crado | Hardware compliance inside the engineering loop";
 export const HOME_DESCRIPTION =
-  "Connect hardware revisions, regulatory requirements and test evidence. Investigate radiated-emissions failures and prepare reviewed retest plans with Crado.";
+  "Crado keeps EMC test evidence tied to each product revision, investigates radiated-emissions failures and checks results against FCC Part 15 limits.";
 
 export const OG_IMAGE = {
   url: "/og/crado-og-1200x630.png",
   width: 1200,
   height: 630,
-  alt: "Crado logo with the headline Compliance, inside the engineering loop, on an oat background with slate and green revision layers.",
+  alt: "Crado: Compliance, inside the engineering loop.",
 };
 
-/** Canonical, Open Graph and Twitter metadata for one public page. */
-export function pageMetadata({
-  title,
-  description,
-  path,
-  type = "website",
-}: {
+interface PageMetadataInput {
   title: string;
   description: string;
   path: string;
   type?: "website" | "article";
-}): Metadata {
+  ogAlt?: string;
+}
+
+/** Canonical, robots, Open Graph and Twitter metadata for one public page (SEO hand-off). */
+export function pageMetadata({ title, description, path, type = "website", ogAlt = OG_IMAGE.alt }: PageMetadataInput): Metadata {
+  // Next normalises the root URL to the bare origin; the hand-off wants "https://www.crado.io/", so the home
+  // page renders its canonical and og:url itself (src/app/page.tsx).
+  const root = path === "/";
   const url = `${SITE_URL}${path}`;
+  const image = { ...OG_IMAGE, alt: ogAlt };
   return {
-    title,
+    title: { absolute: title },
     description,
-    alternates: { canonical: url },
-    openGraph: { type, siteName: SITE_NAME, title, description, url, images: [OG_IMAGE] },
-    twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
+    alternates: root ? undefined : { canonical: url },
+    robots: { index: true, follow: true, "max-image-preview": "large" },
+    openGraph: { type, siteName: SITE_NAME, url: root ? undefined : url, title, description, images: [image] },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }
 
-const ORGANIZATION = {
+export const ORGANIZATION_LD = {
+  "@context": "https://schema.org",
   "@type": "Organization",
-  "@id": `${SITE_URL}/#organization`,
   name: SITE_NAME,
   url: `${SITE_URL}/`,
-  logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/crado-mark-black.png`, width: 882, height: 1001 },
-  email: "hello@crado.io",
-  sameAs: ["https://www.linkedin.com/company/crado-io/"],
+  logo: `${SITE_URL}${LOGO_PATH}`,
+  email: CONTACT_EMAIL,
+  sameAs: [LINKEDIN_URL],
 };
 
-const WEBSITE = {
+export const WEBSITE_LD = {
+  "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": `${SITE_URL}/#website`,
-  url: `${SITE_URL}/`,
   name: SITE_NAME,
-  publisher: { "@id": `${SITE_URL}/#organization` },
+  url: `${SITE_URL}/`,
 };
 
-export function jsonLd(...nodes: object[]) {
-  return JSON.stringify({ "@context": "https://schema.org", "@graph": [ORGANIZATION, WEBSITE, ...nodes] }).replace(
-    /</g,
-    "\\u003c",
-  );
-}
+export const SOFTWARE_APPLICATION_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: SITE_NAME,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  description: HOME_DESCRIPTION,
+  url: `${SITE_URL}/`,
+};
+
+export const HOME_URL = `${SITE_URL}/`;
