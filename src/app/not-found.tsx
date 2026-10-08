@@ -1,40 +1,33 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import AnnouncementBar from "@/components/site/AnnouncementBar";
-import SiteFooter from "@/components/site/SiteFooter";
-import SiteHeader from "@/components/site/SiteHeader";
+import SkipLink from "@/components/site/SkipLink";
+import Logo from "@/components/ui/Logo";
 
 export const metadata: Metadata = {
-  title: "Page not found | Crado",
-  robots: { index: false, follow: true },
+  title: { absolute: "Page not found | Crado" },
 };
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col bg-oat font-sans text-fg">
-      <AnnouncementBar />
-      <SiteHeader />
-      <main id="main" className="mx-auto box-content w-full max-w-[1200px] flex-1 px-gutter py-[clamp(72px,10vw,136px)]">
-        <p className="m-0 mb-4 text-[11px] leading-[1.4] font-medium tracking-[0.08em] uppercase text-fg-muted">404</p>
-        <h1 className="m-0 mb-6 font-display text-[clamp(40px,5vw,64px)] leading-[1.04] tracking-[-0.05em]">
-          This page does not exist.
-        </h1>
-        <p className="m-0 mb-8 max-w-[34rem] text-lg leading-[1.65] tracking-[-0.015em] text-fg-muted">
-          The address may be mistyped, or the page may have moved.
-        </p>
-        <div className="flex flex-wrap gap-x-7 gap-y-4">
-          <Link
-            href="/"
-            className="inline-flex h-11 items-center rounded-full bg-ink px-5 text-sm font-medium text-white no-underline hover:bg-ink-deep hover:text-white"
-          >
-            Go to the homepage
+    <div className="flex min-h-screen flex-col bg-bg font-display text-fg">
+      <SkipLink target="main" />
+      <header className="mx-auto flex h-14 w-full max-w-page items-center px-(--space-gutter)">
+        <Link href="/" aria-label="Crado home" className="flex">
+          <Logo height={22} alt="" />
+        </Link>
+      </header>
+      <main id="main" className="mx-auto flex w-full max-w-page flex-1 flex-col items-start px-(--space-gutter) py-[clamp(80px,12vw,160px)]">
+        <p className="m-0 font-mono text-[10px] tracking-[0.1em] text-fg-faint">404</p>
+        <h1 className="m-0 mt-5 text-[clamp(36px,6vw,56px)] leading-[1.05] font-bold tracking-[-0.035em]">This page isn&apos;t here.</h1>
+        <nav aria-label="Recovery" className="mt-8 flex flex-wrap gap-3">
+          <Link href="/" className="inline-flex h-9 items-center rounded-sm bg-fg px-3.5 text-sm font-medium text-bg hover:bg-white hover:text-bg">
+            Go to the home page
           </Link>
-          <Link href="/docs" className="inline-flex h-11 items-center rounded-full border border-line px-5 text-sm font-medium text-ink no-underline hover:border-ink">
+          <Link href="/docs" className="inline-flex h-9 items-center rounded-sm border border-line-4 px-3.5 text-sm font-medium hover:bg-surface-3">
             Read the docs
           </Link>
-        </div>
+        </nav>
       </main>
-      <SiteFooter />
     </div>
   );
 }

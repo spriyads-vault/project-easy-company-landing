@@ -1,0 +1,165 @@
+/*
+ * Crado design system: tokens for the public site (dark only).
+ * Source: Claude Design project "Crado Homepage" (Crado Homepage.dc.html, Crado Docs.dc.html, 404.dc.html).
+ *
+ * Every colour, radius, easing and layout constant used by the site lives here. Tailwind utilities are
+ * generated from the @theme block (bg-surface-2, text-fg-muted, border-line-3, rounded-card, ease-out-expo…).
+ * Add new tokens here rather than hard-coding values in components.
+ *
+ * Design hex → token (for porting the prototype):
+ *   #0A0A0B bg · #050506 bg-sunken · #0C0C0D bg-raised · #0F0F11 surface-0 · #111114 surface-1 · #121214 surface-1b
+ *   #141416 surface-2 · #161618/#16161A surface-3 · #1A1A1C/#1A1A1D surface-4 · #1C1C1F surface-5
+ *   #1E1E21/#1F1F22 surface-6 · #222225/#222226/#232327 surface-7
+ *   #1C1C20 line-1 · #232326 line-2 · #26262A/#26262B line-3 · #2A2A2E line-4 · #2E2E33 line-5 · #34343A line-6
+ *   #3A3A40 line-7 · #4A4A52 line-8
+ *   #FFFFFF white · #F4F4F5 fg · #E4E4E7 fg-2 · #D4D4D8 fg-3 · #B4B4BC fg-4 · #A1A1AA fg-5 · #9A9AA2 fg-6
+ *   #8B8B94 fg-muted · #6B6B73 fg-faint (raised to #84848D for AA contrast, see below)
+ */
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  /* Page and surfaces, darkest to lightest */
+  --color-bg: #0a0a0b;
+  --color-bg-sunken: #050506;
+  --color-bg-raised: #0c0c0d;
+  --color-surface-0: #0f0f11;
+  --color-surface-1: #111114;
+  --color-surface-1b: #121214;
+  --color-surface-2: #141416;
+  --color-surface-3: #16161a;
+  --color-surface-4: #1a1a1d;
+  --color-surface-5: #1c1c1f;
+  --color-surface-6: #1f1f22;
+  --color-surface-7: #232327;
+
+  /* Borders and dividers */
+  --color-line-1: #1c1c20;
+  --color-line-2: #232326;
+  --color-line-3: #26262b;
+  --color-line-4: #2a2a2e;
+  --color-line-5: #2e2e33;
+  --color-line-6: #34343a;
+  --color-line-7: #3a3a40;
+  --color-line-8: #4a4a52;
+
+  /* Text */
+  --color-fg: #f4f4f5;
+  --color-fg-2: #e4e4e7;
+  --color-fg-3: #d4d4d8;
+  --color-fg-4: #b4b4bc;
+  --color-fg-5: #a1a1aa;
+  --color-fg-6: #9a9aa2;
+  --color-fg-muted: #8b8b94;
+  /* The design uses #6B6B73 (3.7:1 on the page). Raised to the lightest value that passes WCAG AA (4.5:1)
+     on every surface up to surface-5, so labels stay quiet but legible. */
+  --color-fg-faint: #84848d;
+
+  /* Accent (the design's default; the accent tweak panel does not ship) */
+  --color-accent: #2e4bff;
+  --color-accent-strong: #2842e0;
+  --color-accent-soft: rgb(46 75 255 / 0.22);
+  --color-accent-text: #7086ff;
+  --color-accent-band: #2e4bff;
+  --color-on-accent: #ffffff;
+
+  /* Status */
+  --color-danger: #f87171;
+  --color-danger-strong: #e5484d;
+  --color-warn: #e6c15a;
+  --color-warn-2: #f0ce6e;
+  --color-warn-ink: #1e1b12;
+  --color-ok: #4ade80;
+  --color-info: #5ea0ff;
+  --color-violet: #a78bfa;
+  --color-orange: #fb923c;
+  --color-pink: #f472b6;
+
+  /* Dither / pixel art greys (canvas only) */
+  --color-dither-1: #34343b;
+  --color-dither-2: #7c7c86;
+  --color-dither-3: #dcdce0;
+
+  /* Typography. Satoshi is wired through next/font/local once licensed files land (see src/app/fonts.ts);
+     until then the metric-matched fallback below renders in its place without layout shift. */
+  --font-display: var(--font-satoshi, "Satoshi Fallback"), "Satoshi Fallback", system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-card: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+
+  /* Shadows */
+  --shadow-pop: 0 24px 60px -12px rgb(0 0 0 / 0.65);
+  --shadow-modal: 0 30px 80px -20px rgb(0 0 0 / 0.7);
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-panel-in: panel-in 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-step-in: step-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-spin: spin 0.8s linear infinite;
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Layout */
+  --container-page: 1088px;
+  --container-article: 720px;
+  --container-form: 560px;
+  --breakpoint-sm: 760px;
+  --breakpoint-md: 1000px;
+  --breakpoint-lg: 1100px;
+  --breakpoint-xl: 1180px;
+}
+
+:root {
+  color-scheme: dark;
+  /* Section rhythm from the design */
+  --space-gutter: clamp(20px, 3vw, 24px);
+  --space-section: clamp(80px, 8.9vw, 128px);
+  --nav-height: 56px;
+  --scrim: rgb(5 5 6 / 0.86);
+  --nav-bg-scrolled: rgb(10 10 11 / 0.72);
+  --hairline-white-4: rgb(255 255 255 / 0.04);
+  --hairline-white-5: rgb(255 255 255 / 0.05);
+  --hairline-white-6: rgb(255 255 255 / 0.06);
+  --hairline-white-7: rgb(255 255 255 / 0.07);
+}
+
+/* Metric-matched stand-in for Satoshi (SEO hand-off: "Fallback with metric override"). */
+@font-face {
+  font-family: "Satoshi Fallback";
+  src: local("Arial"), local("ArialMT"), local("Helvetica");
+  size-adjust: 102%;
+  ascent-override: 92%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
