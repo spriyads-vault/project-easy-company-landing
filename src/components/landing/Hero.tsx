@@ -1,64 +1,58 @@
-import ArrowLink from "@/components/ui/ArrowLink";
+import Link from "next/link";
 import PixelWord from "@/components/ui/PixelWord";
 import WaitlistButton from "@/components/waitlist/WaitlistButton";
-import HeroCollage, { ICON_PATH } from "./diagrams/HeroCollage";
+import ChromeObject from "./hero/ChromeObject";
+import HeroWindow from "./hero/HeroWindow";
+import ToolsStrip from "./hero/ToolsStrip";
+
+const BUTTON = "inline-flex h-[52px] items-center justify-center rounded-sm px-[22px] text-[17px] font-medium tracking-[-.005em] whitespace-nowrap transition-colors duration-150";
 
 /**
- * Home hero on the accent band. Server component: the h1 and paragraph are plain server-rendered text with no
- * entrance animation, so the h1 paints as the LCP element on first frame. Only the collage below animates.
+ * Home hero on the flat hero band. Server component: the h1 and paragraph are plain server-rendered text with no
+ * entrance animation, so the h1 paints as the LCP element on first frame. The pixel accent, the chrome ring and
+ * the product window below are the only moving parts.
  */
 export default function Hero() {
   return (
     <section
       data-hero
       aria-labelledby="hero-title"
-      className="relative mx-auto max-w-page px-(--space-gutter) pt-[clamp(48px,6vw,72px)] pb-20 text-on-accent"
+      className="relative mx-auto max-w-page px-(--space-gutter) pt-(--space-hero-top) text-white [&_:focus-visible]:outline-white"
     >
       <div className="flex flex-col items-start">
-        <div className="flex items-center gap-2 text-[13px] font-medium">
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-            className="flex-none"
-          >
-            <path d={ICON_PATH.change} />
+        <div className="flex items-center gap-2.5 text-[18px] font-medium tracking-[-.005em]">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" className="flex-none fill-current">
+            <path d="M12 3C12.8 8.5 15.5 11.2 21 12C15.5 12.8 12.8 15.5 12 21C11.2 15.5 8.5 12.8 3 12C8.5 11.2 11.2 8.5 12 3Z" />
           </svg>
-          <span>Change review</span>
-          <span className="ml-1 font-mono text-[10px] tracking-[0.1em] text-on-accent/85">EARLY ACCESS</span>
+          <span>Case threads</span>
         </div>
-        <h1 id="hero-title" className="mt-6 text-[40px] leading-[1.02] font-bold tracking-[-0.04em] sm:text-[64px]">
-          Compliance, inside{" "}
+        <h1
+          id="hero-title"
+          className="mt-7 text-[44px] leading-none font-semibold tracking-[-.035em] [font-variation-settings:'opsz'_32] sm:text-[72px]"
+        >
+          Compliance, inside
+          <ChromeObject />{" "}
+          {/* The space before the break keeps the text "Compliance, inside the engineering loop." */}
           <br />
           the engineering <PixelWord>loop</PixelWord>.
         </h1>
-        <p className="mt-6 max-w-[500px] text-base leading-[1.55] text-pretty text-on-accent/85">
+        <p className="mt-8 max-w-[760px] text-[length:clamp(18px,1vw+14px,20px)] leading-[1.5] tracking-[-.005em] text-pretty text-white/92">
           Crado keeps test evidence tied to every product revision and checks radiated-emissions results against FCC Part 15 limits. In early
           access, agents trace design changes to the tests and certifications they touch.
         </p>
-        <div className="mt-6 flex flex-wrap items-center gap-5">
-          <WaitlistButton
-            source="hero"
-            className="inline-flex h-8 cursor-pointer items-center rounded-sm bg-fg px-3 text-sm font-medium text-bg hover:bg-white"
-          >
-            Join early access
-          </WaitlistButton>
-          <ArrowLink href="/docs" className="text-on-accent">
-            Read the docs
-          </ArrowLink>
+        <div className="mt-10 flex flex-col items-stretch justify-between gap-8 self-stretch sm:flex-row sm:items-end sm:gap-6">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <WaitlistButton source="hero" className={`${BUTTON} cursor-pointer border-0 bg-white text-ink hover:bg-white-hover`}>
+              Join early access
+            </WaitlistButton>
+            <Link href="/docs" className={`${BUTTON} border border-white/35 bg-white/6 text-white hover:bg-white/12 hover:text-white`}>
+              Read the docs
+            </Link>
+          </div>
+          <ToolsStrip />
         </div>
-        {/* Replaces the design's label + integration-logo row; the box keeps that row's height (label 15.5 + 12 + icons, which wrap to a second line below ~456px) so nothing below shifts. */}
-        <p className="mt-8 h-[83px] font-mono text-[10px] leading-[1.55] tracking-[0.1em] text-balance text-on-accent/85 min-[456px]:h-[59.5px]">
-          WORKS WITH YOUR LAB REPORTS · PDF · TEXT · MARKDOWN
-        </p>
       </div>
-      <HeroCollage />
+      <HeroWindow />
     </section>
   );
 }

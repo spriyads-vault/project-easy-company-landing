@@ -1,6 +1,7 @@
 /*
  * Crado design system: tokens for the public site (dark only).
  * Source: Claude Design project "Crado Homepage" (Crado Homepage.dc.html, Crado Docs.dc.html, 404.dc.html).
+ * Homepage v3 (2026-10-08) added the hero band, announcement, vivid accent and mockup tokens marked "v3" below.
  *
  * Every colour, radius, easing and layout constant used by the site lives here. Tailwind utilities are
  * generated from the @theme block (bg-surface-2, text-fg-muted, border-line-3, rounded-card, ease-out-expo…).
@@ -36,6 +37,9 @@
   --color-surface-5: #1c1c1f;
   --color-surface-6: #1f1f22;
   --color-surface-7: #232327;
+  /* v3 mockup surfaces */
+  --color-surface-0b: #0e0e10;
+  --color-surface-2b: #151517;
 
   /* Borders and dividers */
   --color-line-1: #1c1c20;
@@ -46,6 +50,12 @@
   --color-line-6: #34343a;
   --color-line-7: #3a3a40;
   --color-line-8: #4a4a52;
+  /* v3 */
+  --color-line-1b: #1f1f23;
+  --color-line-4b: #2a2a30;
+  --color-line-5b: #2c2c33;
+  --color-line-9: #45454c;
+  --color-line-10: #55555f;
 
   /* Text */
   --color-fg: #f4f4f5;
@@ -58,6 +68,11 @@
   /* The design uses #6B6B73 (3.7:1 on the page). Raised to the lightest value that passes WCAG AA (4.5:1)
      on every surface up to surface-5, so labels stay quiet but legible. */
   --color-fg-faint: #84848d;
+  /* v3: decorative mockup labels only (never body copy) */
+  --color-fg-dim: #6a6a78;
+  /* v3: dark text on white buttons and tooltips */
+  --color-ink: #0b0b0c;
+  --color-white-hover: #ededed;
 
   /* Accent (the design's default; the accent tweak panel does not ship) */
   --color-accent: #2e4bff;
@@ -66,6 +81,13 @@
   --color-accent-text: #7086ff;
   --color-accent-band: #2e4bff;
   --color-on-accent: #ffffff;
+  /* v3: hero band and announcement bar, step numbers and cited rows */
+  --color-hero-band: #1430b8;
+  --color-announce: #0f2696;
+  --color-accent-vivid: #3d5afe;
+  --color-accent-pale: #9db0ff;
+  --color-accent-glow: #5b7bff;
+  --color-accent-soft-line: #7fa0ff;
 
   /* Status */
   --color-danger: #f87171;
@@ -78,15 +100,21 @@
   --color-violet: #a78bfa;
   --color-orange: #fb923c;
   --color-pink: #f472b6;
+  /* v3 status variants used in the mockups */
+  --color-danger-2: #ff7a7a;
+  --color-danger-soft: #ff8a8e;
+  --color-warn-3: #f2cf73;
+  --color-warn-ink-2: #17150f;
+  --color-ok-2: #4fd18f;
 
   /* Dither / pixel art greys (canvas only) */
   --color-dither-1: #34343b;
   --color-dither-2: #7c7c86;
   --color-dither-3: #dcdce0;
 
-  /* Typography. Satoshi is wired through next/font/local once licensed files land (see src/app/fonts.ts);
-     until then the metric-matched fallback below renders in its place without layout shift. */
-  --font-display: var(--font-satoshi, "Satoshi Fallback"), "Satoshi Fallback", system-ui, sans-serif;
+  /* Typography. Inter (variable, with the opsz axis) is the display and text face; next/font supplies a
+     size-adjusted fallback so nothing shifts when it loads. Geist and Geist Mono are for mockup UI and labels. */
+  --font-display: var(--font-inter), system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-serif: var(--font-instrument-serif), Georgia, serif;
@@ -132,6 +160,10 @@
 
   /* Layout */
   --container-page: 1088px;
+  /* v3: statement copy, product frame, sticky steps */
+  --container-statement: 1040px;
+  --container-frame: 1200px;
+  --container-steps: 1248px;
   --container-article: 720px;
   --container-form: 560px;
   --breakpoint-sm: 760px;
@@ -142,9 +174,13 @@
 
 :root {
   color-scheme: dark;
-  /* Section rhythm from the design */
+  /* Section rhythm from the design (v3): every section pads 88px on mobile up to 144px on desktop. */
   --space-gutter: clamp(20px, 3vw, 24px);
-  --space-section: clamp(80px, 8.9vw, 128px);
+  --space-section: clamp(88px, 10vw, 144px);
+  /* Hero top padding, from the design */
+  --space-hero-top: clamp(56px, 8.4vw, 120px);
+  /* Wide nav side padding (v3 full-width nav) */
+  --space-nav-x: clamp(20px, 2.8vw, 40px);
   --nav-height: 56px;
   --scrim: rgb(5 5 6 / 0.86);
   --nav-bg-scrolled: rgb(10 10 11 / 0.72);
@@ -152,14 +188,18 @@
   --hairline-white-5: rgb(255 255 255 / 0.05);
   --hairline-white-6: rgb(255 255 255 / 0.06);
   --hairline-white-7: rgb(255 255 255 / 0.07);
+  /* v3: pixel-serif accent size = Inter 600 cap height / Instrument Serif cap height (72.75 / 72 at 100px, as the
+     design measures it at runtime), so the accent shares Inter's baseline and cap height. */
+  --pixel-serif-scale: 1.01em;
 }
 
-/* Metric-matched stand-in for Satoshi (SEO hand-off: "Fallback with metric override"). */
-@font-face {
-  font-family: "Satoshi Fallback";
-  src: local("Arial"), local("ArialMT"), local("Helvetica");
-  size-adjust: 102%;
-  ascent-override: 92%;
-  descent-override: 22%;
-  line-gap-override: 0%;
+/* v3: the home nav is taller (64px mobile, 72px from 760px). Docs and legal pages keep 56px. */
+:root:has(nav[data-variant="home"]) {
+  --nav-height: 64px;
+}
+
+@media (min-width: 760px) {
+  :root:has(nav[data-variant="home"]) {
+    --nav-height: 72px;
+  }
 }

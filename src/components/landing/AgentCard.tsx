@@ -21,7 +21,7 @@ export default function AgentCard({ name, description, prompt, icon, label }: Ag
     <div className="group relative flex min-h-[168px] flex-col rounded-lg border border-line-2 bg-surface-1b p-6 transition-[transform,border-color] duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-line-5 focus-within:-translate-y-0.5 focus-within:border-line-5">
       {label ? <Label className="absolute top-6 right-6">{label}</Label> : null}
       {icon}
-      <h3 className="m-0 mt-3.5 text-base font-medium tracking-[-0.01em]">{name}</h3>
+      <h3 className="m-0 mt-3.5 text-base leading-[1.55] font-medium tracking-[-0.01em]">{name}</h3>
       <div className="mt-1.5 grid">
         <p
           className={`m-0 text-sm leading-normal text-pretty text-fg-muted ${SWAP} [@media(hover:hover)]:[grid-area:1/1] [@media(hover:hover)]:group-hover:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-0`}

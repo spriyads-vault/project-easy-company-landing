@@ -11,7 +11,7 @@ const earlyAccess = <span className="ml-2 font-mono text-[10px] tracking-[0.1em]
 function Column({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-2.5 text-[13px]">
-      <h2 className="m-0 mb-1 font-mono text-[10px] font-normal tracking-[0.1em] text-fg-faint">{title}</h2>
+      <h2 className="m-0 mb-1 font-mono text-[10px] leading-[1.55] font-normal tracking-[0.1em] text-fg-faint">{title}</h2>
       {children}
     </div>
   );
@@ -65,7 +65,7 @@ export default function Footer({ variant }: FooterProps) {
             <span className="text-[13px] text-fg-muted">Compliance, inside the engineering loop.</span>
           </div>
           <div className="flex items-center gap-4 py-4">
-            <span className="text-xs text-fg-muted">Member of NVIDIA Inception</span>
+            <span className="text-[12px] text-fg-muted">Member of NVIDIA Inception</span>
             <Image
               src="/assets/nvidia-inception-badge.png"
               alt="NVIDIA Inception member"

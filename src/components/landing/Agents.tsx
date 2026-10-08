@@ -80,16 +80,16 @@ const AGENTS: AgentCardProps[] = [
 
 export default function Agents() {
   return (
-    <section id="agents" aria-labelledby="agents-title" className="mx-auto max-w-page px-(--space-gutter) pt-(--space-section)">
+    <section id="agents" aria-labelledby="agents-title" className="mx-auto max-w-page px-(--space-gutter) py-(--space-section)">
       <Label>AGENTS</Label>
-      <h2 id="agents-title" className="m-0 mt-5 text-[30px] leading-[1.2] font-bold tracking-[-0.02em]">
+      <h2 id="agents-title" className="m-0 mt-5 text-[length:clamp(34px,3.4vw,48px)] leading-[1.08] font-semibold tracking-[-0.03em]">
         Put Crado agents to work
       </h2>
-      <p className="m-0 mt-4 max-w-[640px] text-[15px] leading-[1.6] text-pretty text-fg-6">
+      <p className="m-0 mt-6 max-w-[640px] text-[17px] leading-normal tracking-[-0.005em] text-pretty text-fg-6">
         Agents work inside your workspace, and every output is backed by evidence you can check. The EMC investigator is
         available today; the others are in early access or on the roadmap.
       </p>
-      <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+      <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {AGENTS.map((agent) => (
           <AgentCard key={agent.name} {...agent} />
         ))}

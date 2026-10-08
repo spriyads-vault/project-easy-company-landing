@@ -23,20 +23,20 @@ const DASHED_Y = "bg-[repeating-linear-gradient(180deg,var(--color-line-7)_0_4px
 
 export default function UseCases() {
   return (
-    <section id="use-cases" aria-labelledby="use-cases-title" className="mx-auto max-w-page px-(--space-gutter) pt-(--space-section)">
+    <section id="use-cases" aria-labelledby="use-cases-title" className="mx-auto max-w-page px-(--space-gutter) py-(--space-section)">
       <div className="flex max-w-[640px] flex-col items-start">
         <Label>USE CASES</Label>
-        <h2 id="use-cases-title" className="m-0 mt-5 text-[30px] leading-[1.2] font-bold tracking-[-0.02em] text-balance">
+        <h2 id="use-cases-title" className="m-0 mt-5 text-[length:clamp(34px,3.4vw,48px)] leading-[1.08] font-semibold tracking-[-0.03em] text-balance">
           One question, every regulated industry.
         </h2>
-        <p className="m-0 mt-4 text-[15px] leading-[1.6] text-pretty text-fg-6">
+        <p className="m-0 mt-6 text-[17px] leading-normal tracking-[-0.005em] text-pretty text-fg-6">
           A design changed: does our evidence still hold? Electronics teams ask it as an FCC permissive change. Robotics teams ask
           it as a substantial modification. Aerospace teams ask it as qualification by similarity. We start with connected
           electronics.
         </p>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-16">
         <div className="hidden lg:block">
           <HorizonTrack stops={STOPS} ariaLabel={TRACK_LABEL} />
         </div>

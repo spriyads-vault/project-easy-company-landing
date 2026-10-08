@@ -33,8 +33,8 @@ const PRODUCT: ProductItem[] = [
 /** Section id → nav item index (0 Product, 1 How it works, 2 Use cases). Design: SECS. */
 const SPY: [string, number][] = [
   ["change-review", 0],
-  ["evidence", 0],
   ["failure-investigation", 0],
+  ["evidence", 0],
   ["how-it-works", 1],
   ["use-cases", 2],
   ["agents", 0],
@@ -69,14 +69,14 @@ export default function Nav({ variant }: { variant: Variant }) {
   const ddTimer = useRef<number>(0);
   const ddOpenedAt = useRef(0);
 
-  // Scroll state and scrollspy (activation line: 56px + 35% of the viewport).
+  // Scroll state and scrollspy (activation line: the design's 72px nav + 35% of the viewport).
   useEffect(() => {
     let frame = 0;
     const update = () => {
       frame = 0;
       setScrolled(window.scrollY > 24);
       if (!home) return;
-      const line = 56 + window.innerHeight * 0.35;
+      const line = 72 + window.innerHeight * 0.35;
       let a = -1;
       for (const [id, n] of SPY) {
         const el = document.getElementById(id);
@@ -206,26 +206,35 @@ export default function Nav({ variant }: { variant: Variant }) {
     }
   };
 
-  // Home at the top sits on the accent band, so it uses on-accent ink.
+  // Home at the top sits on the hero band, so it uses on-accent ink (every link white, as in the design).
   const onBand = home && !scrolled;
   const ink = onBand ? "text-on-accent" : "text-fg";
-  const linkColor = (i: number) => (i === active ? ink : onBand ? "text-on-accent/85" : "text-fg-6");
+  const muted = onBand ? (home ? "text-on-accent" : "text-on-accent/85") : "text-fg-6";
+  const linkColor = (i: number) => (i === active ? ink : muted);
   const hoverInk = onBand ? "hover:text-on-accent" : "hover:text-fg";
 
   return (
     <>
       <nav
         aria-label="Main"
-        className={`sticky top-0 z-50 h-14 border-b backdrop-blur-[12px] transition-[border-color,background-color,color] duration-200 ${
+        data-variant={variant}
+        className={`sticky top-0 z-50 border-b ${home ? "h-(--nav-height)" : "h-14"} backdrop-blur-[12px] transition-[border-color,background-color,color] duration-200 ${
           onBand ? "border-transparent bg-transparent" : "border-line-1 bg-(--nav-bg-scrolled)"
         } ${!home && !scrolled ? "border-transparent" : ""} ${ink}`}
       >
-        <div className={`mx-auto flex h-full items-center gap-12 px-(--space-gutter) ${home ? "max-w-page" : "max-w-[1440px]"}`}>
+        <div
+          className={`flex h-full items-center ${home ? "gap-14 px-(--space-nav-x)" : "mx-auto max-w-[1440px] gap-12 px-(--space-gutter)"}`}
+        >
           <Link href="/" aria-label="Crado home" className="flex items-center text-inherit">
-            <Logo height={home ? 22 : 20} alt="" />
+            <Logo height={home ? 24 : 20} alt="" />
           </Link>
 
-          <div ref={linksRef} className="relative hidden h-full items-center gap-7 font-display text-sm font-medium sm:flex">
+          <div
+            ref={linksRef}
+            className={`relative hidden h-full items-center font-display font-medium sm:flex ${
+              home ? "gap-8 text-[17px] tracking-[-0.005em]" : "gap-7 text-sm"
+            }`}
+          >
             <div ref={ddRef} onMouseEnter={ddEnter} onMouseLeave={ddLeave} onKeyDown={ddKey} className="relative flex h-full items-center">
               <button
                 ref={ddBtnRef}
@@ -236,7 +245,7 @@ export default function Nav({ variant }: { variant: Variant }) {
                 aria-expanded={ddOpen}
                 aria-controls="nav-product-menu"
                 onClick={ddClick}
-                className={`flex cursor-pointer items-center gap-[5px] border-0 bg-transparent p-0 transition-colors duration-200 ${linkColor(0)} ${hoverInk}`}
+                className={`flex cursor-pointer items-center gap-[5px] border-0 bg-transparent p-0 transition-colors duration-200 ${home ? "tracking-normal" : ""} ${linkColor(0)} ${hoverInk}`}
               >
                 Product
                 <Chevron open={ddOpen} />
@@ -288,7 +297,7 @@ export default function Nav({ variant }: { variant: Variant }) {
               Use cases
             </a>
             {variant !== "docs" ? (
-              <Link data-navi href="/docs" className={`transition-colors duration-200 ${onBand ? "text-on-accent/85" : "text-fg-6"} ${hoverInk}`}>
+              <Link data-navi href="/docs" className={`transition-colors duration-200 ${muted} ${hoverInk}`}>
                 Docs
               </Link>
             ) : (
@@ -300,7 +309,7 @@ export default function Nav({ variant }: { variant: Variant }) {
             {home && (
               <span
                 aria-hidden="true"
-                className={`pointer-events-none absolute bottom-3.5 left-0 h-px w-px origin-left transition-[transform,opacity] duration-200 ${onBand ? "bg-on-accent" : "bg-accent"} ${
+                className={`pointer-events-none absolute bottom-[22px] left-0 h-px w-px origin-left transition-[transform,opacity] duration-200 ${onBand ? "bg-on-accent" : "bg-accent"} ${
                   ul && active >= 0 ? "opacity-100" : "opacity-0"
                 }`}
                 style={{ transform: ul ? `translateX(${ul.x}px) scaleX(${ul.w})` : undefined }}
@@ -311,7 +320,11 @@ export default function Nav({ variant }: { variant: Variant }) {
           <div className="ml-auto flex items-center gap-1">
             <WaitlistButton
               source={source}
-              className="flex h-8 cursor-pointer items-center rounded-sm border-0 bg-fg px-3 font-display text-sm font-medium whitespace-nowrap text-bg transition-colors hover:bg-white"
+              className={
+                home
+                  ? "flex h-11 cursor-pointer items-center rounded-sm border-0 bg-white px-5 font-display text-base font-medium tracking-[-0.005em] whitespace-nowrap text-ink transition-colors duration-150 hover:bg-white-hover hover:text-ink"
+                  : "flex h-8 cursor-pointer items-center rounded-sm border-0 bg-fg px-3 font-display text-sm font-medium whitespace-nowrap text-bg transition-colors hover:bg-white"
+              }
             >
               Join early access
             </WaitlistButton>
@@ -341,7 +354,7 @@ export default function Nav({ variant }: { variant: Variant }) {
           aria-label="Menu"
           className="fixed inset-0 z-70 flex flex-col overflow-y-auto bg-bg px-5 text-fg"
         >
-          <div className="flex h-14 flex-none items-center justify-between">
+          <div className={`flex flex-none items-center justify-between ${home ? "h-16" : "h-14"}`}>
             <Link href="/" aria-label="Crado home" onClick={() => setMenuOpen(false)} className="flex items-center">
               <Logo height={22} alt="" />
             </Link>
@@ -363,7 +376,7 @@ export default function Nav({ variant }: { variant: Variant }) {
               aria-expanded={accOpen}
               aria-controls="mobile-product"
               onClick={() => setAccOpen((o) => !o)}
-              className="flex cursor-pointer items-center justify-between border-0 border-b border-line-1 bg-transparent py-4 text-left text-fg"
+              className={`flex cursor-pointer items-center justify-between border-0 border-b border-line-1 bg-transparent py-4 text-left text-fg ${home ? "tracking-normal" : ""}`}
             >
               Product
               <Chevron open={accOpen} />
@@ -372,11 +385,11 @@ export default function Nav({ variant }: { variant: Variant }) {
               <div id="mobile-product" className="flex flex-col border-b border-line-1 pt-2 pb-3">
                 {[...PRODUCT, { id: "how-it-works", title: "Evaluation engine", sub: "Rule-based checks on confirmed values.", earlyAccess: false }].map((item) => (
                   <a key={item.title} href={href(item.id)} onClick={() => setMenuOpen(false)} className="flex flex-col gap-0.5 py-2.5 font-sans text-fg">
-                    <span className="flex items-center gap-2.5 text-[15px] font-medium tracking-normal">
+                    <span className={`flex items-center gap-2.5 text-[15px] font-medium ${home ? "" : "tracking-normal"}`}>
                       {item.title}
                       {item.earlyAccess && <span className="font-mono text-[9.5px] tracking-[0.1em] text-fg-faint">EARLY ACCESS</span>}
                     </span>
-                    <span className="text-[13px] tracking-normal text-fg-muted">{item.sub}</span>
+                    <span className={`text-[13px] text-fg-muted ${home ? "" : "tracking-normal"}`}>{item.sub}</span>
                   </a>
                 ))}
               </div>

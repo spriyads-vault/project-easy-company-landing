@@ -1,0 +1,65 @@
+/*
+ * Hero motion (design: initHero). Plain CSS from first paint, so the server-rendered window never flashes.
+ * settle: window and cards rise in (uses `translate`, so it composes with drift's `transform`).
+ * stream: thread rows appear one by one. drift: the floating cards bob ±3px. wdot: the "reading" dots pulse.
+ * Loops pause while the hero is off screen or the tab is hidden ([data-paused], set by MotionRegion).
+ * Resting styles are the final state; prefers-reduced-motion runs nothing.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .settle {
+    animation: settle 600ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: calc(120ms + var(--i, 0) * 70ms);
+  }
+
+  .stream {
+    animation: stream 500ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    animation-delay: calc(900ms + var(--i, 0) * 550ms);
+  }
+
+  .drift {
+    animation: drift var(--dur) ease-in-out var(--delay) infinite alternate backwards;
+  }
+
+  .wdot {
+    animation: wdot 1200ms ease-in-out calc(var(--i, 0) * 180ms) infinite;
+  }
+
+  :global([data-paused]) .drift,
+  :global([data-paused]) .wdot {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+@keyframes stream {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(-3px);
+  }
+  to {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes wdot {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}

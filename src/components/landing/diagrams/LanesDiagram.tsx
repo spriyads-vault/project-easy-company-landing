@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import { useMotion } from "@/hooks/useMotion";
-import { Icon, Tag } from "./LoopParts";
+import { Icon, Tag } from "./LaneParts";
 import { EASE_OUT_EXPO, track, type Stop } from "./timeline";
 
 const T = 12000;
