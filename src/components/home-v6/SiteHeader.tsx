@@ -21,12 +21,21 @@ export function scrollToAnchor(id: string) {
 const NAV_LINK =
   "border-b-2 py-3 font-v6-sans text-[15px] leading-none font-medium text-v6-ink transition-[color,border-color] duration-150 ease-v6-ui hover:text-v6-muted";
 
+interface SiteHeaderProps {
+  /**
+   * Prefix for links to homepage sections: "" on the homepage, "/" on every other page (docs, legal, 404), where the
+   * section links and "Book a case review" go to the homepage. "Join the waitlist" stays on the page: every page
+   * ends with the footer waitlist.
+   */
+  linkBase?: "" | "/";
+}
+
 /**
  * Sticky header (design: header). Over the page it is solid; once scrolled it turns translucent with a blur and a
  * hairline. The current section's link is underlined. At 640px and below the links move into a full-screen menu
  * (a modal <dialog>: Tab cycles inside it, Esc closes it and focus returns to the menu button).
  */
-export default function SiteHeader() {
+export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("");
   const menuRef = useRef<HTMLDialogElement>(null);
@@ -75,6 +84,8 @@ export default function SiteHeader() {
   };
 
   const menuLink = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    // Off the homepage, section links are ordinary navigations to "/#id"; only the waitlist is on every page.
+    if (linkBase && id !== "waitlist") return;
     e.preventDefault();
     menuRef.current?.close();
     requestAnimationFrame(() => scrollToAnchor(id));
@@ -93,18 +104,18 @@ export default function SiteHeader() {
           </Link>
           <nav aria-label="Main" className="hidden gap-9 v6t:flex">
             {NAV_LINKS.map(({ id, label }) => (
-              <a key={id} href={`#${id}`} aria-current={active === id ? "true" : undefined} className={`${NAV_LINK} ${active === id ? "border-v6-primary" : "border-transparent"}`}>
+              <a key={id} href={`${linkBase}#${id}`} aria-current={active === id ? "true" : undefined} className={`${NAV_LINK} ${active === id ? "border-v6-primary" : "border-transparent"}`}>
                 {label}
               </a>
             ))}
           </nav>
           <div className="hidden v6t:block">
-            <a href="#book" className={BUTTON_PRIMARY}>
+            <a href={`${linkBase}#book`} className={BUTTON_PRIMARY}>
               {CTA.book}
             </a>
           </div>
           <div className="flex items-center gap-2 v6t:hidden">
-            <a href="#book" className={BUTTON_PRIMARY}>
+            <a href={`${linkBase}#book`} className={BUTTON_PRIMARY}>
               {CTA.bookShort}
             </a>
             <button
@@ -145,7 +156,7 @@ export default function SiteHeader() {
           {[...NAV_LINKS, { id: "waitlist", label: CTA.join }].map(({ id, label }) => (
             <a
               key={id}
-              href={`#${id}`}
+              href={id === "waitlist" ? "#waitlist" : `${linkBase}#${id}`}
               onClick={(e) => menuLink(e, id)}
               className="border-b border-v6-line py-4 font-v6-serif text-[34px] leading-[38px] tracking-[-.02em] text-v6-ink hover:text-v6-ink"
             >
@@ -155,7 +166,7 @@ export default function SiteHeader() {
         </nav>
         <div className="mt-auto px-(--v6-gutter) py-6">
           <a
-            href="#book"
+            href={`${linkBase}#book`}
             onClick={(e) => menuLink(e, "book")}
             className="flex h-12 items-center justify-center rounded-v6-button bg-v6-primary font-v6-sans text-[15px] leading-none font-medium text-v6-on-primary hover:bg-v6-primary-hover hover:text-v6-on-primary"
           >

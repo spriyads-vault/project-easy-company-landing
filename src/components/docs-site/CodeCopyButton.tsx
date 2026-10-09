@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/** "Copy" button for a code block; reads "Copied" for 1.5s after a click. */
-export default function CodeCopyButton({ text, label }: { text: string; label: string }) {
+/** Copies `text` and reports `copied` for 1.5s afterwards (shared by the v3 and v6 copy buttons). */
+export function useCopied(text: string): { copied: boolean; copy: () => void } {
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -15,6 +15,12 @@ export default function CodeCopyButton({ text, label }: { text: string; label: s
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setCopied(false), 1500);
   };
+  return { copied, copy };
+}
+
+/** "Copy" button for a code block; reads "Copied" for 1.5s after a click. */
+export default function CodeCopyButton({ text, label }: { text: string; label: string }) {
+  const { copied, copy } = useCopied(text);
 
   return (
     <button

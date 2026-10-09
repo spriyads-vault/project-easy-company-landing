@@ -4,7 +4,7 @@ import JsonLd from "@/components/site/JsonLd";
 import { CONTACT_EMAIL } from "@/lib/site";
 import { DOCS_UPDATED_LABEL, docsJsonLd, docsNeighbours, type DocsPage } from "@/lib/docs-pages";
 import Feedback from "./Feedback";
-import { Mono } from "./ui";
+import { Mono } from "./ui-v3";
 
 const CARD = "flex flex-col gap-1.5 rounded-card border border-line-2 px-5 py-[18px] transition-[border-color,background-color] duration-150 hover:border-line-7 hover:bg-surface-0";
 

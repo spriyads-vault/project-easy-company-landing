@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { WaitlistSource } from "@/lib/waitlist/schema";
 import Link from "next/link";
 import { CLOSING_BODY, CLOSING_H2, CTA, WAITLIST_COPY } from "@/content/home-v6";
 import { BOOKING_URL, CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
@@ -33,8 +34,17 @@ const FOOT_HEAD = `${LABEL} mb-2 text-v6-muted uppercase`;
 const ICON_LINK =
   "flex h-11 w-11 items-center justify-center rounded-v6-button border border-v6-line-strong font-v6-sans text-[15px] leading-none font-medium text-v6-ink transition-colors duration-150 ease-v6-ui hover:border-v6-ink hover:text-v6-ink active:translate-y-px";
 
+interface FooterProps {
+  /** "" on the homepage; "/" elsewhere, so the Product links and "Book a case review" go to the homepage sections. */
+  linkBase?: "" | "/";
+  /** Attribution for the waitlist form: the homepage's inline form, or "docs" on docs pages. */
+  source?: WaitlistSource;
+  /** The waitlist title's level: h3 under the page's h2 sections; h2 on a page with none (the 404). */
+  waitlistHeading?: "h2" | "h3";
+}
+
 /** Footer: the waitlist, link columns and the NVIDIA Inception badge, on a page card over forest (design: FOOTER). */
-export function Footer() {
+export function Footer({ linkBase = "", source, waitlistHeading: WaitlistHeading = "h3" }: FooterProps) {
   return (
     <footer className="bg-v6-forest p-6">
       <div className="rounded-v6-panel bg-v6-page pt-16 pb-7">
@@ -43,30 +53,30 @@ export function Footer() {
             <LegacyAnchors section="waitlist" />
             <div className="col-[1/-1] flex flex-col gap-3 v6d:col-[1/6]">
               <Pill tone="sun">{WAITLIST_COPY.tag}</Pill>
-              <h3 className={`${H3} mt-2 text-balance`}>{WAITLIST_COPY.title}</h3>
+              <WaitlistHeading className={`${H3} mt-2 text-balance`}>{WAITLIST_COPY.title}</WaitlistHeading>
               <p className="m-0 max-w-[64ch] text-pretty text-v6-muted">{WAITLIST_COPY.body}</p>
             </div>
             <div className="col-[1/-1] flex flex-col v6d:col-[7/13]">
-              <WaitlistFormV6 />
+              <WaitlistFormV6 source={source} />
             </div>
           </div>
 
           <nav aria-label="Footer" className="grid grid-cols-1 border-t border-v6-line pt-7 font-v6-sans text-[15px] leading-[22px] v6t:grid-cols-2 v6d:grid-cols-4">
             <div className="flex flex-col py-5 pr-5">
               <div className={FOOT_HEAD}>Product</div>
-              <a href="#how" className={FOOT_LINK}>
+              <a href={`${linkBase}#how`} className={FOOT_LINK}>
                 How it works
               </a>
-              <a href="#agents" className={FOOT_LINK}>
+              <a href={`${linkBase}#agents`} className={FOOT_LINK}>
                 Agents
               </a>
-              <a href="#coverage" className={FOOT_LINK}>
+              <a href={`${linkBase}#coverage`} className={FOOT_LINK}>
                 Coverage
               </a>
             </div>
             <div className="flex flex-col py-5 pr-5">
               <div className={FOOT_HEAD}>Company</div>
-              <a href="#book" className={FOOT_LINK}>
+              <a href={`${linkBase}#book`} className={FOOT_LINK}>
                 {CTA.book}
               </a>
               <a href="#waitlist" className={FOOT_LINK}>

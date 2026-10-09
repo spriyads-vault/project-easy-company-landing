@@ -114,6 +114,11 @@ const PAGE_INPUTS: DocsPageInput[] = [
       { id: "coverage", label: "Regulatory coverage" },
       { id: "glossary", label: "Glossary" },
     ],
+    toc: [
+      { id: "coverage", label: "Regulatory coverage" },
+      { id: "not-covered", label: "Not covered" },
+      { id: "glossary", label: "Glossary" },
+    ],
   },
   {
     slug: "trust",

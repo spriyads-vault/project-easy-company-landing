@@ -74,11 +74,14 @@ unit test fails if a component writes a status itself.
 | White on primary / hover | 9.79 / 12.08 | Pass |
 | Primary on page (links, FAQ numbers) | 9.15 | Pass |
 | Primary on sunshine (announcement link) | 7.68 | Pass |
+| Ok ink `#1D6B3A` on card / page / alt (docs status text) | 6.53 / 6.10 / 5.68 | Pass |
+| Warn ink `#7A5600` on card / page / alt (docs status text) | 6.65 / 6.21 / 5.79 | Pass |
+| Missing ink on card / page (docs "Exceeds limit", "Blocked") | 8.36 / 7.82 | Pass |
 
 ## Type
 
-IBM Plex, self-hosted by `next/font` with size-adjusted fallbacks (`src/home/v6/fonts.ts`): Serif 400, Sans 400/500,
-Mono 500. Sizes are CSS variables that change at the breakpoints (`--v6-h1` etc.).
+IBM Plex, self-hosted by `next/font` with size-adjusted fallbacks (`src/app/fonts-v6.ts`, preloaded on every page
+while the flag is on): Serif 400, Sans 400/500, Mono 500. Sizes are CSS variables that change at the breakpoints (`--v6-h1` etc.).
 
 | Style | Face | Desktop | Tablet (≤1023) | Mobile (≤640) |
 |---|---|---|---|---|
@@ -91,6 +94,29 @@ Mono 500. Sizes are CSS variables that change at the breakpoints (`--v6-h1` etc.
 | Label | Plex Mono 500, 0.06em (uppercase for tags and eyebrows) | 12/16 | 12/16 | 12/16 |
 
 Notes, captions, quotes and numbers use Plex Mono 500 12/16 without tracking.
+
+### Docs and legal pages (SCRUM-296)
+
+Fixed at every width (`--v6-doc-*`): H1 Plex Serif 52/58, H2 34/40, H3 24/32, body Plex Sans 17/28, code Plex Mono
+500 14/22. Lead paragraphs Plex Sans 20/30 in Muted.
+
+## Docs layout and components (SCRUM-296)
+
+- Layout: from 1280px (`v6w:`) a 240px sidebar, a 72ch content column and a 200px "On this page" rail. 1024 to 1279:
+  sidebar and content, the list above the content. Below 1024: one column, a 48px contents bar (`--v6-docs-bar`)
+  under the header opens the contents drawer (search and page index); the list above the content is open from
+  641px and collapsed at 640 and below. Anchors land 24px below the header (and the bar).
+- Drawer: page background, hairline, radius 20, over an Ink scrim at 32% (`v6-scrim`); focus moves in and back.
+- Code blocks: white card, hairline, radius 8; highlighted tokens in Primary. Copy button: hairline outline, Ink
+  outline on hover, primary ring on focus, Mint with a check for 1.5s when copied.
+- Tables: the coverage style: white panel, radius 20, Alt header with mono labels, row hairlines, horizontal scroll
+  in a focusable region, first column held while scrolling.
+- Callouts (radius 8, Ink text): Sky note, Sunshine caution, grey Roadmap, Mint Live.
+- Evidence badges as on the homepage: sky observed, mint known/confirmed, sun inferred, lilac missing.
+- The shared docs content keeps its v3 utility classes; inside `[data-site-v6]` the v3 tokens resolve to the v6
+  palette and Plex (`src/site/v6/site.css`).
+- Legal pages: one 72ch column, the section list at the top; print hides the announcement, header, list and footer.
+- 404: H1, Intro line, primary and secondary buttons, a small still record block (Ink dashes on the page colour).
 
 ## Radius, spacing, layout
 

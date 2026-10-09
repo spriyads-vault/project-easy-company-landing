@@ -1,4 +1,4 @@
-import { A, Bullet, H2, H3, Table } from "../ui";
+import { A, Bullet, H2, Table } from "../ui";
 
 const ECFR_15_109 = "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-15/subpart-B/section-15.109";
 
@@ -55,7 +55,7 @@ export default function Reference() {
           ],
         ]}
       />
-      <H3>Not covered</H3>
+      <H2 id="not-covered">Not covered</H2>
       <ul className="m-0 flex list-none flex-col gap-2.5 p-0 text-base leading-[1.6] text-fg-4">
         {NOT_COVERED.map((item) => (
           <Bullet key={item} className="[&>span:first-child]:mt-[9px]">

@@ -11,6 +11,7 @@ import {
   PRODUCT_TYPE_OPTIONS,
   ROLE_OPTIONS,
   type WaitlistResponse,
+  type WaitlistSource,
 } from "@/lib/waitlist/schema";
 import { SMALL } from "../ui";
 import {
@@ -30,8 +31,8 @@ import {
 } from "./formState";
 import s from "./WaitlistForm.module.css";
 
-/** Attribution value for this form (the existing "final_cta_inline" source: the inline form at the page end). */
-const SOURCE = "final_cta_inline";
+/** Default attribution for this form (the existing "final_cta_inline" source: the inline form at the page end). */
+const SOURCE: WaitlistSource = "final_cta_inline";
 
 const FIELD =
   "h-12 w-full rounded-v6-button border bg-v6-card px-4 font-v6-sans text-[16px] leading-none text-v6-ink transition-[border-color,background-color,color] duration-150 ease-v6-ui placeholder:text-v6-muted";
@@ -78,7 +79,12 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
  * honeypot field and the time the form was opened (the server refuses anything faster than 2 seconds). Role
  * options, consent text and step 2 fields come from the live code (src/lib/waitlist/schema.ts, WaitlistForm.tsx).
  */
-export default function WaitlistFormV6() {
+interface WaitlistFormV6Props {
+  /** Existing source value sent with the sign-up; docs pages send "docs", as the v3 docs did. */
+  source?: WaitlistSource;
+}
+
+export default function WaitlistFormV6({ source = SOURCE }: WaitlistFormV6Props) {
   const [st, setSt] = useState<Step1State>(INITIAL_STEP1);
   const [website, setWebsite] = useState("");
   const [token, setToken] = useState<string | null>(null);
@@ -114,7 +120,7 @@ export default function WaitlistFormV6() {
       email: st.email,
       role: st.role,
       marketing_opt_in: st.updates,
-      source: SOURCE,
+      source,
       website,
       form_opened_at: openedAt.current,
       ...readAttribution(),

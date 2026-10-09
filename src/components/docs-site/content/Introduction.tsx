@@ -7,7 +7,7 @@ const ROLES = [
     label: "AGENTS",
     title: "Agents",
     // Approved copy change: live capability only (no email/Slack gathering).
-    body: "Agents read reports, propose candidate explanations and suggest next tests. Everything they propose is labelled Inferred until a person confirms it.",
+    body: "Agents read reports, propose likely causes and suggest next tests. Everything they propose is labelled Inferred until a person confirms it.",
   },
   {
     label: "ENGINE",
@@ -41,7 +41,7 @@ const STEPS = [
   },
   {
     title: "Inspect the investigation",
-    body: <>Review what is observed, what is known about the product, what is inferred and what is missing. Candidate explanations are labelled as inferred.</>,
+    body: <>Review what is observed, what is known about the product, what is inferred and what is missing. Likely causes are labelled as inferred.</>,
   },
   {
     title: "Review the next test",
