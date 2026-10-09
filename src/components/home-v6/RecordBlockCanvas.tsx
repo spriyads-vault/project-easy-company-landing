@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { AGENTS_PALETTE, AGENTS_TIME, HERO_PALETTE, drawRecordBlock, seedParticles } from "./recordBlock";
+import { AGENTS_PALETTE, AGENTS_TIME, HERO_PALETTE, STILL_PALETTE, drawRecordBlock, seedParticles } from "./recordBlock";
 
 interface RecordBlockCanvasProps {
-  /** hero: animated, with streams. agents: the design's still frame on the forest band. */
-  variant: "hero" | "agents";
+  /** hero: animated, with streams. agents: the design's still frame on the forest band. still: that frame on the page. */
+  variant: "hero" | "agents" | "still";
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export default function RecordBlockCanvas({ variant, className }: RecordBlockCan
     const cv = ref.current;
     if (!cv) return;
     const hero = variant === "hero";
-    const pal = hero ? HERO_PALETTE : AGENTS_PALETTE;
+    const pal = hero ? HERO_PALETTE : variant === "agents" ? AGENTS_PALETTE : STILL_PALETTE;
     const parts = seedParticles();
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let raf = 0;

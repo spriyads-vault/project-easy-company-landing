@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ComponentType } from "react";
-import DocsArticle from "@/components/docs-site/DocsArticle";
+import { DocsArticle } from "@crado/site-active";
 import Changelog from "@/components/docs-site/content/Changelog";
 import Concepts from "@/components/docs-site/content/Concepts";
 import Evaluation from "@/components/docs-site/content/Evaluation";

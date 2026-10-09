@@ -19,6 +19,9 @@ export const HERO_PALETTE: RecordBlockPalette = { ink: "#141821", alpha: 0.85, f
 /** Agents section on the forest band: on-dark dashes, no streams. */
 export const AGENTS_PALETTE: RecordBlockPalette = { ink: "#F8F7F6", alpha: 0.85, fill: "#12302A" };
 
+/** Small still block on the page (404): Ink dashes on the page colour, no streams. */
+export const STILL_PALETTE: RecordBlockPalette = { ink: "#141821", alpha: 0.85, fill: "#F8F7F6" };
+
 /** The design's still frame for the agents block, and for the hero when motion is off. */
 export const AGENTS_TIME = 2600;
 /** Design default for streamDensity (3 to 14 lanes per side). */

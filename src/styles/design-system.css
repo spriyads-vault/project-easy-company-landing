@@ -185,6 +185,11 @@
   --color-v6-ink: #141821;
   --color-v6-muted: #5c6270;
   --color-v6-missing-ink: #8a2e2e;
+  /* Docs (SCRUM-296): AA status text and icons on the light surfaces (6:1 or better on card, page and alt) */
+  --color-v6-ok-ink: #1d6b3a;
+  --color-v6-warn-ink: #7a5600;
+  /* Docs drawer scrim */
+  --color-v6-scrim: rgb(20 24 33 / 0.32);
   /* Evidence states: sky observed, mint known, sun inferred, lilac missing; tag-grey for ROADMAP */
   --color-v6-sun: #ffe36e;
   --color-v6-lilac: #f2c4ff;
@@ -225,11 +230,13 @@
   --container-v6: 1200px;
   --breakpoint-v6t: 641px;
   --breakpoint-v6d: 1024px;
+  /* Docs: the "On this page" rail joins the sidebar and content from 1280px (below it the list sits above the content) */
+  --breakpoint-v6w: 1280px;
 }
 
 /*
- * v6 faces. `inline` makes the utilities use these values directly, because next/font's --font-plex-* variables are
- * set on the v6 page root rather than on <html> (the root layout serves the v3 faces to every other page).
+ * v6 faces. `inline` makes the utilities use these values directly: next/font's --font-plex-* variables are set on
+ * <html> by the root layout when NEXT_PUBLIC_FF_HOMEPAGE_V6 is on (src/app/fonts-v6.ts), and on the v6 home root.
  */
 @theme inline {
   --font-v6-serif: var(--font-plex-serif), Georgia, serif;
@@ -276,6 +283,19 @@
   --v6-section: 136px;
   --v6-gutter: 40px;
   --v6-nav-height: 64px;
+  /* Docs and legal type (SCRUM-296), fixed at every width: H1 Plex Serif 52/58, H2 34/40, H3 24/32, body Plex Sans
+     17/28, code Plex Mono 14/22. The docs bar under the header (below 1024px) is 48px tall. */
+  --v6-doc-h1: 52px;
+  --v6-doc-h1-lh: 58px;
+  --v6-doc-h2: 34px;
+  --v6-doc-h2-lh: 40px;
+  --v6-doc-h3: 24px;
+  --v6-doc-h3-lh: 32px;
+  --v6-doc-body: 17px;
+  --v6-doc-body-lh: 28px;
+  --v6-doc-code: 14px;
+  --v6-doc-code-lh: 22px;
+  --v6-docs-bar: 48px;
 }
 
 @media (max-width: 1023px) {

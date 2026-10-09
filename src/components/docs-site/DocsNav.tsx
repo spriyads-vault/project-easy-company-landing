@@ -19,6 +19,18 @@ import { DOCS_PAGES, docsPageByPath, type DocsPage } from "@/lib/docs-pages";
 /** Design breakpoint for the mobile layout (state.w < 760). */
 const MOBILE_MAX = 760;
 
+/** Layout numbers the provider needs; the defaults are the v3 docs (the v6 layout passes its own). */
+interface DocsNavLayout {
+  /** Below this width the sidebar is hidden and ⌘K opens the contents drawer instead. */
+  drawerBelow: number;
+  /** Sticky site header height. */
+  navHeight: number;
+  /** Sticky contents bar height below `drawerBelow`. */
+  barHeight: number;
+}
+
+const V3_LAYOUT: DocsNavLayout = { drawerBelow: MOBILE_MAX, navHeight: 56, barHeight: 48 };
+
 interface DocsNavState {
   page: DocsPage;
   /** Heading in view (scrollspy), from page.toc. */
@@ -34,18 +46,22 @@ interface DocsNavState {
 
 const DocsNavContext = createContext<DocsNavState | null>(null);
 
-function useDocsNav(): DocsNavState {
+export function useDocsNav(): DocsNavState {
   const ctx = useContext(DocsNavContext);
   if (!ctx) throw new Error("useDocsNav must be used inside <DocsNavProvider>");
   return ctx;
 }
 
 /** Scroll offset the design uses for headings: nav (56) + mobile contents bar (48) + 24. */
-function headingOffset(): number {
-  return 56 + (window.innerWidth < MOBILE_MAX ? 48 : 0) + 24;
+function headingOffset({ drawerBelow, navHeight, barHeight }: DocsNavLayout): number {
+  return navHeight + (window.innerWidth < drawerBelow ? barHeight : 0) + 24;
 }
 
-export function DocsNavProvider({ children }: { children: ReactNode }) {
+interface DocsNavProviderProps extends Partial<DocsNavLayout> {
+  children: ReactNode;
+}
+
+export function DocsNavProvider({ children, drawerBelow = V3_LAYOUT.drawerBelow, navHeight = V3_LAYOUT.navHeight, barHeight = V3_LAYOUT.barHeight }: DocsNavProviderProps) {
   const pathname = usePathname();
   const page = docsPageByPath(pathname) ?? DOCS_PAGES[0];
   const [spy, setSpy] = useState<{ path: string; at: string }>({ path: page.path, at: page.toc[0].id });
@@ -58,7 +74,7 @@ export function DocsNavProvider({ children }: { children: ReactNode }) {
     let frame = 0;
     const update = () => {
       frame = 0;
-      const line = headingOffset() + 48;
+      const line = headingOffset({ drawerBelow, navHeight, barHeight }) + 48;
       let at = page.toc[0].id;
       for (const { id } of page.toc) {
         const el = document.getElementById(id);
@@ -79,30 +95,30 @@ export function DocsNavProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, [page]);
+  }, [page, drawerBelow, navHeight, barHeight]);
 
   // ⌘K / Ctrl+K focuses the search (opens the contents drawer on mobile).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        if (window.innerWidth < MOBILE_MAX) setDrawerOpen(true);
+        if (window.innerWidth < drawerBelow) setDrawerOpen(true);
         else searchRef.current?.focus();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [drawerBelow]);
 
   // The drawer only exists on the mobile layout.
   useEffect(() => {
     if (!drawerOpen) return;
     const onResize = () => {
-      if (window.innerWidth >= MOBILE_MAX) setDrawerOpen(false);
+      if (window.innerWidth >= drawerBelow) setDrawerOpen(false);
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [drawerOpen]);
+  }, [drawerOpen, drawerBelow]);
 
   const at = spy.path === page.path ? spy.at : page.toc[0].id;
   const sideAt = useMemo(() => {
@@ -138,11 +154,17 @@ interface GroupsProps {
   onNavigate?: () => void;
 }
 
+/** Sidebar groups (one per docs page) whose entries match the search query; empty groups are dropped. */
+export function useSidebarGroups(): { p: DocsPage; items: DocsPage["sidebar"] }[] {
+  const { query } = useDocsNav();
+  const q = query.trim().toLowerCase();
+  return DOCS_PAGES.map((p) => ({ p, items: p.sidebar.filter((s) => !q || s.label.toLowerCase().includes(q)) })).filter((g) => g.items.length);
+}
+
 /** Sidebar groups filtered by the search query. Active entry: the current page's section in view. */
 function SidebarGroups({ large, onNavigate }: GroupsProps) {
-  const { page, sideAt, query } = useDocsNav();
-  const q = query.trim().toLowerCase();
-  const groups = DOCS_PAGES.map((p) => ({ p, items: p.sidebar.filter((s) => !q || s.label.toLowerCase().includes(q)) })).filter((g) => g.items.length);
+  const { page, sideAt } = useDocsNav();
+  const groups = useSidebarGroups();
 
   if (!groups.length) return <span className="text-sm text-fg-faint">No matching pages</span>;
 
@@ -237,9 +259,12 @@ export function DocsRail() {
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Mobile (<760px): sticky 48px contents bar and the full-screen contents drawer. */
-export function DocsMobileBar() {
-  const { page, sideAt, query, setQuery, drawerOpen, setDrawerOpen } = useDocsNav();
+/**
+ * The contents drawer's behaviour: focus moves to the close button on open and back to the opening button on close;
+ * Escape closes; Tab cycles inside. `current` is the sidebar entry in view (for the bar label).
+ */
+export function useContentsDrawer() {
+  const { page, sideAt, drawerOpen, setDrawerOpen } = useDocsNav();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -278,6 +303,14 @@ export function DocsMobileBar() {
   };
 
   const current = page.sidebar.find((s) => s.id === sideAt) ?? page.sidebar[0];
+
+  return { buttonRef, dialogRef, closeRef, close, onKeyDown, current };
+}
+
+/** Mobile (<760px): sticky 48px contents bar and the full-screen contents drawer. */
+export function DocsMobileBar() {
+  const { page, query, setQuery, drawerOpen, setDrawerOpen } = useDocsNav();
+  const { buttonRef, dialogRef, closeRef, close, onKeyDown, current } = useContentsDrawer();
 
   return (
     <>

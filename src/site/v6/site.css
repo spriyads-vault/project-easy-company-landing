@@ -1,0 +1,149 @@
+/*
+ * v6 rules for the docs, legal and 404 pages (SCRUM-296). Loaded only through src/site/v6.ts, so with
+ * NEXT_PUBLIC_FF_HOMEPAGE_V6 off no page sees it. Tokens live in src/styles/design-system.css (v6-*).
+ */
+
+/* Light page: light scrollbars and form controls, the page colour behind overscroll, anchors land 24px below the
+   sticky header (and below the docs contents bar under 1024px). */
+:root:has([data-site-v6]) {
+  color-scheme: light;
+  background: var(--color-v6-page);
+  scroll-padding-top: calc(var(--v6-nav-height) + 24px);
+}
+
+@media (max-width: 1023px) {
+  :root:has([data-docs-v6]) {
+    scroll-padding-top: calc(var(--v6-nav-height) + var(--v6-docs-bar) + 24px);
+  }
+}
+
+@layer base {
+  /*
+   * The docs content components are shared with the v3 docs and are frozen, so they keep their v3 utility classes
+   * (text-fg-4, border-line-2, bg-surface-1…). Inside a v6 page those tokens resolve to the v6 light palette instead:
+   * text to Ink or Muted, surfaces to Card or Alt, lines to the hairlines, accent to Primary, status colours to their
+   * AA inks, and the three faces to IBM Plex.
+   */
+  [data-site-v6] {
+    --color-bg: var(--color-v6-page);
+    --color-bg-raised: var(--color-v6-card);
+    --color-surface-0: var(--color-v6-card);
+    --color-surface-0b: var(--color-v6-card);
+    --color-surface-1: var(--color-v6-card);
+    --color-surface-1b: var(--color-v6-card);
+    --color-surface-2: var(--color-v6-card);
+    --color-surface-2b: var(--color-v6-card);
+    --color-surface-3: var(--color-v6-alt);
+    --color-surface-4: var(--color-v6-alt);
+    --color-surface-5: var(--color-v6-line);
+    --color-surface-6: var(--color-v6-line);
+    --color-surface-7: var(--color-v6-line);
+    --color-line-1: var(--color-v6-line);
+    --color-line-1b: var(--color-v6-line);
+    --color-line-2: var(--color-v6-line);
+    --color-line-3: var(--color-v6-line);
+    --color-line-4: var(--color-v6-line);
+    --color-line-4b: var(--color-v6-line);
+    --color-line-5: var(--color-v6-line-strong);
+    --color-line-5b: var(--color-v6-line-strong);
+    --color-line-6: var(--color-v6-line-strong);
+    --color-line-7: var(--color-v6-line-strong);
+    --color-line-8: var(--color-v6-line-strong);
+    --color-fg: var(--color-v6-ink);
+    --color-fg-2: var(--color-v6-ink);
+    --color-fg-3: var(--color-v6-ink);
+    --color-fg-4: var(--color-v6-muted);
+    --color-fg-5: var(--color-v6-muted);
+    --color-fg-6: var(--color-v6-muted);
+    --color-fg-muted: var(--color-v6-muted);
+    --color-fg-faint: var(--color-v6-muted);
+    --color-fg-dim: var(--color-v6-muted);
+    --color-accent: var(--color-v6-primary);
+    --color-accent-strong: var(--color-v6-primary-hover);
+    --color-accent-text: var(--color-v6-primary);
+    --color-accent-soft: var(--color-v6-sky);
+    --color-ok: var(--color-v6-ok-ink);
+    --color-warn: var(--color-v6-warn-ink);
+    --color-danger: var(--color-v6-missing-ink);
+    --color-info: var(--color-v6-primary);
+    --color-violet: var(--color-v6-muted);
+    --font-display: var(--font-plex-serif), Georgia, serif;
+    --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+    --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+    /* Focus ring: primary on light surfaces; dark bands set it to on-dark. */
+    --v6-ring: var(--color-v6-primary);
+  }
+
+  [data-site-v6] [data-band="dark"] {
+    --v6-ring: var(--color-v6-on-dark);
+  }
+
+  [data-site-v6] :focus-visible {
+    outline: 2px solid var(--v6-ring);
+    outline-offset: 2px;
+  }
+
+  [data-site-v6] a {
+    color: var(--color-v6-primary);
+    transition: color 150ms var(--ease-v6-ui);
+  }
+
+  [data-site-v6] a:hover {
+    color: var(--color-v6-primary-hover);
+  }
+
+  [data-site-v6] ::selection {
+    background: var(--color-v6-sky);
+    color: var(--color-v6-ink);
+  }
+
+  /* Plex Serif is served at 400 only (the v6 design sets no other weight), so serif text never gets a faux bold. */
+  [data-site-v6] .font-display {
+    font-weight: 400;
+  }
+}
+
+/* The footer's legacy anchors (#join) sit at the top edge of the waitlist block, as on the homepage. */
+[data-site-v6] [data-legacy-anchor] {
+  position: absolute;
+  top: 0;
+}
+
+/* Legal pages print as a plain document: no announcement, header, contents or footer, black on white. */
+@media print {
+  :root:has([data-site-v6]) {
+    background: #fff;
+  }
+
+  [data-site-v6] {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  [data-site-v6] > aside,
+  [data-site-v6] > header,
+  [data-site-v6] > footer,
+  [data-site-v6] > a[href="#main"],
+  [data-site-v6] [data-print-hide] {
+    display: none !important;
+  }
+
+  [data-site-v6] [data-legal] {
+    max-width: none;
+    padding: 0;
+    color: #000;
+  }
+
+  [data-site-v6] [data-legal] * {
+    color: #000 !important;
+  }
+
+  [data-site-v6] [data-legal] a {
+    text-decoration: underline;
+  }
+
+  [data-site-v6] [data-legal] h2 {
+    break-after: avoid;
+  }
+}

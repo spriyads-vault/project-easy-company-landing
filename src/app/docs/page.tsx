@@ -1,4 +1,4 @@
-import DocsArticle from "@/components/docs-site/DocsArticle";
+import { DocsArticle } from "@crado/site-active";
 import Introduction from "@/components/docs-site/content/Introduction";
 import { DOCS_PAGES, docsMetadata } from "@/lib/docs-pages";
 

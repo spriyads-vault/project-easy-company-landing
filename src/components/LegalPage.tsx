@@ -3,15 +3,17 @@ import SiteShell from "@/components/site/SiteShell";
 import type { LegalDoc } from "@/lib/legal";
 import { CONTACT_EMAIL } from "@/lib/site";
 
-// Turn bare mentions of the contact address into mailto links.
-function linkify(text: string): ReactNode {
+const LINK = "text-fg underline underline-offset-[3px]";
+
+/** Turns bare mentions of the contact address into mailto links (shared with the v6 legal page). */
+export function linkify(text: string, className = LINK): ReactNode {
   const parts = text.split(CONTACT_EMAIL);
   if (parts.length === 1) return text;
   return parts.flatMap((part, i) =>
     i === 0
       ? [part]
       : [
-          <a key={i} href={`mailto:${CONTACT_EMAIL}`} className="text-fg underline underline-offset-[3px]">
+          <a key={i} href={`mailto:${CONTACT_EMAIL}`} className={className}>
             {CONTACT_EMAIL}
           </a>,
           part,
