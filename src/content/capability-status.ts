@@ -12,31 +12,33 @@ export type CapabilityStatus = "LIVE" | "EARLY ACCESS" | "ROADMAP";
 export interface Capability {
   /** Human name, used in llms.txt. */
   name: string;
+  /** Lower-case phrase for running text (the generated "Which parts are live today?" answer). */
+  summary: string;
   status: CapabilityStatus;
 }
 
 export const CAPABILITIES = {
   // Live today
-  emcInvestigator: { name: "EMC investigator (radiated-emissions investigation under 47 CFR 15.109(a))", status: "LIVE" },
-  productMemory: { name: "Product memory (reports, facts and likely causes filed with each product)", status: "LIVE" },
-  changeAndRetest: { name: "Change and retest comparison", status: "LIVE" },
-  evidenceStatePerRevision: { name: "Evidence state per revision", status: "LIVE" },
+  emcInvestigator: { name: "EMC investigator (radiated-emissions investigation under 47 CFR 15.109(a))", summary: "radiated-emissions investigation under 47 CFR 15.109(a)", status: "LIVE" },
+  productMemory: { name: "Product memory (reports, facts and likely causes filed with each product)", summary: "product memory", status: "LIVE" },
+  changeAndRetest: { name: "Change and retest comparison", summary: "change and retest comparison", status: "LIVE" },
+  evidenceStatePerRevision: { name: "Evidence state per revision", summary: "evidence state per revision", status: "LIVE" },
 
   // Agents not yet live
-  changeReviewer: { name: "Change reviewer agent", status: "ROADMAP" },
-  retestPlanner: { name: "Retest planner agent", status: "ROADMAP" },
-  labLiaison: { name: "Lab liaison agent", status: "ROADMAP" },
-  complianceWriter: { name: "Compliance writer agent", status: "ROADMAP" },
-  evidenceAuditor: { name: "Evidence auditor agent", status: "ROADMAP" },
+  changeReviewer: { name: "Change reviewer agent", summary: "the change reviewer agent", status: "ROADMAP" },
+  retestPlanner: { name: "Retest planner agent", summary: "the retest planner agent", status: "ROADMAP" },
+  labLiaison: { name: "Lab liaison agent", summary: "the lab liaison agent", status: "ROADMAP" },
+  complianceWriter: { name: "Compliance writer agent", summary: "the compliance writer agent", status: "ROADMAP" },
+  evidenceAuditor: { name: "Evidence auditor agent", summary: "the evidence auditor agent", status: "ROADMAP" },
 
   // Sources beyond lab reports
-  sourcesEmailChatTickets: { name: "Reading email, team chat and change tickets", status: "ROADMAP" },
+  sourcesEmailChatTickets: { name: "Reading email, team chat and change tickets", summary: "reading email, team chat and change tickets", status: "ROADMAP" },
 
   // Regulations beyond 47 CFR 15.109(a)
-  fcc15109b: { name: "47 CFR 15.109(b), Class A at 10 m", status: "ROADMAP" },
-  euEmcRed: { name: "EU EMC and Radio Equipment Directives", status: "ROADMAP" },
-  euMachinery: { name: "EU Machinery Regulation 2023/1230", status: "ROADMAP" },
-  rtcaDo160: { name: "RTCA DO-160", status: "ROADMAP" },
+  fcc15109b: { name: "47 CFR 15.109(b), Class A at 10 m", summary: "47 CFR 15.109(b)", status: "ROADMAP" },
+  euEmcRed: { name: "EU EMC and Radio Equipment Directives", summary: "the EU EMC and Radio Equipment Directives", status: "ROADMAP" },
+  euMachinery: { name: "EU Machinery Regulation 2023/1230", summary: "the EU Machinery Regulation 2023/1230", status: "ROADMAP" },
+  rtcaDo160: { name: "RTCA DO-160", summary: "RTCA DO-160", status: "ROADMAP" },
 } as const satisfies Record<string, Capability>;
 
 export type CapabilityId = keyof typeof CAPABILITIES;
