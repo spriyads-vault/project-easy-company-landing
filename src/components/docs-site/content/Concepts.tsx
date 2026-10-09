@@ -4,7 +4,7 @@ import { Callout, H2, H3, Lead, Mono, P, StateBadge, Table } from "../ui";
 const STATES = [
   { tone: "info", label: "OBSERVED", body: "Recorded measurements and physical test results." },
   { tone: "ok", label: "KNOWN", body: "Confirmed product facts with supporting sources." },
-  { tone: "warn", label: "INFERRED", body: "Candidate explanations requiring investigation." },
+  { tone: "warn", label: "INFERRED", body: "Likely causes requiring investigation." },
   { tone: "muted", label: "MISSING", body: "Information needed before a check or decision can proceed." },
 ] as const;
 

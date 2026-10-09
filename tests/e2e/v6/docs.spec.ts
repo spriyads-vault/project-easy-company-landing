@@ -12,13 +12,6 @@ const BANNED = ["AI-powered", "leverage", "unlock", "transform", "empower", "rev
 const OTHER_PAGES = ["/privacy", "/terms", "/no-such-page"];
 const ALL_PAGES = [...DOCS_PAGES.map((p) => p.path), ...OTHER_PAGES];
 
-/**
- * Known content conflicts, listed in the PR and not fixed here (content is frozen): /docs/reference goes from the H1
- * straight to an H3 ("Not covered"), as it does on main. axe reports it as moderate.
- */
-const KNOWN_A11Y: Record<string, string[]> = { "/docs/reference": ["moderate heading-order: #not-covered"] };
-const HEADING_SKIPS: Record<string, number> = { "/docs/reference": 1 };
-
 async function scan(page: Page) {
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"]).analyze();
   return results.violations.map((v) => `${v.impact} ${v.id}: ${v.nodes.map((n) => n.target.join(" ")).slice(0, 5).join(", ")}`);
@@ -101,9 +94,23 @@ test.describe("v6 docs", () => {
       await expect(page.getByText("Last updated 8 Oct 2026")).toBeVisible();
       const levels = await page.locator("main h1, main h2, main h3").evaluateAll((els) => els.map((e) => Number(e.tagName[1])));
       const skips = levels.filter((l, i) => i > 0 && l - levels[i - 1] > 1).length;
-      expect(skips, "skipped heading levels").toBe(HEADING_SKIPS[p.path] ?? 0);
+      expect(skips, "skipped heading levels").toBe(0);
     });
   }
+
+  test("approved copy: Not covered is an H2 in the reference contents; likely causes, not candidate explanations", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/docs/reference");
+    await expect(page.getByRole("heading", { level: 2, name: "Not covered" })).toHaveAttribute("id", "not-covered");
+    await page.getByRole("complementary", { name: "On this page" }).getByRole("link", { name: "Not covered" }).click();
+    await expect(page).toHaveURL(/#not-covered$/);
+    for (const path of ["/docs", "/docs/concepts"]) {
+      await page.goto(path);
+      const text = await page.locator("main").innerText();
+      expect(text, path).not.toMatch(/candidate explanation/i);
+      expect(text, path).toMatch(/likely causes/i);
+    }
+  });
 
   test("type: H1 Plex Serif 52/58, H2 34/40, H3 24/32, body Plex Sans 17/28, code Plex Mono 14/22", async ({ page }) => {
     await page.goto("/docs/evaluation");
@@ -348,7 +355,7 @@ test.describe("v6 docs quality", () => {
       await page.setViewportSize({ width, height: 900 });
       for (const path of ["/docs", "/docs/concepts", "/docs/evaluation", "/docs/reference", "/privacy", "/terms", "/no-such-page"]) {
         await page.goto(path);
-        expect(await scan(page), `${path} at ${width}`).toEqual(KNOWN_A11Y[path] ?? []);
+        expect(await scan(page), `${path} at ${width}`).toEqual([]);
       }
       if (width < 1024) {
         await page.goto("/docs/concepts");
