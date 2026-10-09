@@ -1,0 +1,42 @@
+/* v6 waitlist form grid (design: --wl-cols / --wl-areas). DOM order is email, role, checkbox, button, consent;
+   from 641px the button sits on the first row, its top offset by the label height (20px + 8px gap). */
+.form {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "email" "role" "check" "btn" "consent";
+}
+
+.email {
+  grid-area: email;
+}
+
+.role {
+  grid-area: role;
+}
+
+.check {
+  grid-area: check;
+}
+
+.btn {
+  grid-area: btn;
+  height: 52px;
+}
+
+.consent {
+  grid-area: consent;
+}
+
+@media (min-width: 641px) {
+  .form {
+    grid-template-columns: minmax(0, 1fr) 220px auto;
+    grid-template-areas: "email role btn" "check check check" "consent consent consent";
+  }
+
+  .btn {
+    height: 48px;
+    margin-top: 28px;
+  }
+}
