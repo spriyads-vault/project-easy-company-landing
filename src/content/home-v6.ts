@@ -2,7 +2,7 @@
  * Homepage v6 copy, verbatim from Claude Design "Crado Homepage v6.dc.html". The page, its FAQPage JSON-LD and
  * llms.txt all render from these lists. Statuses are capability ids resolved through capability-status.ts.
  */
-import type { CapabilityId } from "./capability-status";
+import { CAPABILITIES, statusOf, type CapabilityId, type CapabilityStatus } from "./capability-status";
 
 export const V6_TITLE = "Crado | The evidence layer for regulated hardware";
 export const V6_CATEGORY = "The evidence layer for regulated hardware";
@@ -99,7 +99,7 @@ export const AGENTS_INTRO = "Specialist agents that each own one part of the com
 export const AGENTS: Agent[] = [
   {
     capability: "emcInvestigator",
-    stage: "In development",
+    stage: "When a test fails",
     name: "EMC investigator",
     body: "Ranks likely causes of a failed radiated-emissions test, each with its evidence, and suggests the next test.",
     ask: '"Why did Rev D fail at 144.2 MHz?"',
@@ -127,7 +127,7 @@ export const AGENTS: Agent[] = [
   },
   {
     capability: "complianceWriter",
-    stage: "For review",
+    stage: "Before review",
     name: "Compliance writer",
     body: "Drafts review packages for engineers to check and approve.",
     ask: '"Draft the Rev E review package."',
@@ -177,6 +177,30 @@ export const COMMITMENT_CARDS: CommitmentCard[] = [
   },
 ];
 
+/** Every capability whose status the page shows: agent tags, coverage rows and the sources note. */
+export const PAGE_CAPABILITIES: CapabilityId[] = [...AGENTS.map((a) => a.capability), ...COVERAGE.map((r) => r.capability), SOURCES_NOTE.capability];
+
+/** Sentence-case status names as the FAQ writes them. */
+export const STATUS_IN_PROSE: Record<CapabilityStatus, string> = { LIVE: "Live", "EARLY ACCESS": "Early access", ROADMAP: "Roadmap" };
+
+function listOf(items: string[]): string {
+  return items.length < 2 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
+/**
+ * FAQ 06, generated from capability-status.ts: the LIVE capabilities, then only the other statuses that some item on
+ * the page actually has (tests/unit/capability-status.test.ts fails if it names one that none has).
+ */
+export function liveTodayAnswer(): string {
+  const live = Object.values(CAPABILITIES)
+    .filter((c) => c.status === "LIVE")
+    .map((c) => c.summary);
+  const others = (["EARLY ACCESS", "ROADMAP"] as const).filter((s) => PAGE_CAPABILITIES.some((id) => statusOf(id) === s)).map((s) => STATUS_IN_PROSE[s]);
+  const first = live[0] ? live[0][0].toUpperCase() + live[0].slice(1) : "";
+  const lead = live.length ? `${listOf([first, ...live.slice(1)])}.` : "Nothing yet.";
+  return others.length ? `${lead} Everything else on this page is marked ${others.join(" or ")}.` : lead;
+}
+
 export interface FaqEntry {
   q: string;
   a: string;
@@ -203,12 +227,9 @@ export const FAQ_V6: FaqEntry[] = [
   },
   {
     q: "Where does my data go?",
-    a: "Into your workspace. Checks learn only from your own history. Contributing to a benchmark is opt-in and off by default.",
+    a: "Into your workspace. Crado does not use your data for other customers. Contributing to a shared benchmark would need your explicit opt-in, and it is off by default.",
   },
-  {
-    q: "Which parts are live today?",
-    a: "Radiated-emissions investigation under 47 CFR 15.109. Everything else on this page is marked Early access or Roadmap.",
-  },
+  { q: "Which parts are live today?", a: liveTodayAnswer() },
 ];
 
 export const CLOSING_H2 = "The evidence layer for regulated hardware.";

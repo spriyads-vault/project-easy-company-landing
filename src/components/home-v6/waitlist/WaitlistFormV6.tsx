@@ -147,7 +147,7 @@ export default function WaitlistFormV6() {
   const emailDesc = v.showError ? "wl-email-error" : v.showPersonalHint ? "wl-email-hint" : undefined;
 
   return (
-    <div className="flex flex-col">
+    <div className={`${s.wrap} flex flex-col`}>
       {v.formVisible && (
         <form onSubmit={submit} noValidate aria-label={C.submit} className={s.form}>
           {/* Honeypot: hidden from people and assistive tech; any value marks a bot. */}
