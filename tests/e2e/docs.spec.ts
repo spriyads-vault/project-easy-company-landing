@@ -58,8 +58,13 @@ test.describe("docs", () => {
 
   test("Cmd/Ctrl+K focuses the search", async ({ page }) => {
     await page.goto("/docs");
-    await page.keyboard.press("ControlOrMeta+k");
-    await expect(page.getByRole("complementary", { name: "Documentation" }).getByRole("searchbox")).toBeFocused();
+    const search = page.getByRole("complementary", { name: "Documentation" }).getByRole("searchbox");
+    // The shortcut listener is attached after hydration, which can land after page.goto resolves when the machine is
+    // busy. Retry the press until it is live (SCRUM-298).
+    await expect(async () => {
+      await page.keyboard.press("ControlOrMeta+k");
+      await expect(search).toBeFocused({ timeout: 500 });
+    }).toPass({ timeout: 10_000 });
   });
 
   test("on this page rail follows the scroll position", async ({ page }) => {
