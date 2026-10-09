@@ -1,5 +1,6 @@
-/* v6 waitlist form grid (design: --wl-cols / --wl-areas). DOM order is email, role, checkbox, button, consent;
-   from 641px the button sits on the first row, its top offset by the label height (20px + 8px gap). */
+/* v6 waitlist form grid (design: --wl-cols / --wl-areas, except the role column, which is sized to its options).
+   DOM order is email, role, checkbox, button, consent; from 641px the button sits on the first row, its top offset
+   by the label height (20px + 8px gap). */
 .form {
   display: grid;
   gap: 12px;
@@ -29,14 +30,37 @@
   grid-area: consent;
 }
 
+/* The form's column decides the layout (it is half the page on desktop, the full width on tablet). */
+.wrap {
+  container: waitlist / inline-size;
+}
+
+/* From 641px the role select is as wide as its longest option (the live labels are longer than the design's), 220px
+   to 300px. Where email, role and button do not fit on one row (the desktop half column), the email takes the first
+   row and the role and button share the second. */
 @media (min-width: 641px) {
   .form {
-    grid-template-columns: minmax(0, 1fr) 220px auto;
-    grid-template-areas: "email role btn" "check check check" "consent consent consent";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "email email" "role btn" "check check" "consent consent";
+  }
+
+  .role {
+    width: max-content;
+    min-width: 220px;
+    max-width: 300px;
   }
 
   .btn {
     height: 48px;
     margin-top: 28px;
+    justify-self: start;
+  }
+}
+
+/* One row, as in the design, once the email can keep at least ~190px beside a full-width role and the button. */
+@container waitlist (min-width: 680px) {
+  .form {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "email role btn" "check check check" "consent consent consent";
   }
 }

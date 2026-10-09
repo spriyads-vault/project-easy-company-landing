@@ -11,6 +11,13 @@
 - Capability statuses (LIVE / EARLY ACCESS / ROADMAP) on the v6 homepage and llms.txt come from
   `src/content/capability-status.ts`; components never write a status (a unit test enforces it).
 
+# Workflow
+
+- The owner merges. Agents never merge, deploy, change Vercel settings or write to the hosted Supabase database
+  without the owner's typed approval.
+- New features sit behind a flag.
+- One Jira ticket (SCRUM), one PR.
+
 # Copy rules
 
 - Present tense describes only what is live today: radiated-emissions investigation, report confirmation, revision

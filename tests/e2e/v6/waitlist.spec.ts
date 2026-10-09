@@ -155,3 +155,30 @@ test("keyboard order: email, role, checkbox, button", async ({ page }) => {
   await page.keyboard.press("Tab");
   await expect(form.getByRole("button", { name: "Join the waitlist" })).toBeFocused();
 });
+
+test("role select fits its longest label (220 to 300px from 641px, full width on mobile) and the email keeps its room", async ({ page }) => {
+  await mockWaitlistApi(page);
+  for (const width of [1440, 1024, 834, 641, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    const form = await openForm(page);
+    await form.getByLabel("Work email").fill("eng@acme.io");
+    const role = form.getByLabel("Your role");
+    const m = await role.evaluate((el: HTMLSelectElement) => {
+      const s = getComputedStyle(el);
+      const ctx = document.createElement("canvas").getContext("2d")!;
+      ctx.font = `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
+      const longest = Math.max(...[...el.options].map((o) => ctx.measureText(o.text).width));
+      const formWidth = el.closest("form")!.getBoundingClientRect().width;
+      return { box: el.getBoundingClientRect().width, need: longest + parseFloat(s.paddingLeft) + parseFloat(s.paddingRight) + 2, formWidth };
+    });
+    if (width >= 641) {
+      expect(m.box, `${width}px`).toBeGreaterThanOrEqual(220);
+      expect(m.box, `${width}px`).toBeLessThanOrEqual(300);
+    } else {
+      expect(Math.round(m.box), `${width}px`).toBe(Math.round(m.formWidth));
+    }
+    expect(m.box, `${width}px: no label truncates`).toBeGreaterThanOrEqual(m.need);
+    // The email keeps room for its placeholder wherever the role sits beside it.
+    expect((await form.getByLabel("Work email").boundingBox())!.width, `${width}px email`).toBeGreaterThanOrEqual(190);
+  }
+});

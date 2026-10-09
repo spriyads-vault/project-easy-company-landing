@@ -1,8 +1,8 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { CAPABILITIES, STATUS_LABELS, statusOf } from "@/content/capability-status";
-import { AGENTS, COVERAGE } from "@/content/home-v6";
+import { CAPABILITIES, STATUS_LABELS, statusOf, type CapabilityStatus } from "@/content/capability-status";
+import { AGENTS, COVERAGE, FAQ_V6, PAGE_CAPABILITIES, STATUS_IN_PROSE, liveTodayAnswer } from "@/content/home-v6";
 import { llmsTxtV6 } from "@/content/llms";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
@@ -88,4 +88,28 @@ describe("capability statuses", () => {
     expect(txt).toContain("- EMC investigator (LIVE)");
     expect(txt).toContain("- 47 CFR 15.109(b), Class A, 10 m, Radiated emissions, quasi-peak: ROADMAP");
   });
+
+  it("FAQ 06 lists every LIVE item and names only statuses an item on the page has", () => {
+    const faq = FAQ_V6.find((f) => f.q === "Which parts are live today?")!;
+    expect(faq.a).toBe(liveTodayAnswer());
+    for (const c of Object.values(CAPABILITIES)) if (c.status === "LIVE") expect(faq.a.toLowerCase()).toContain(c.summary.toLowerCase());
+    expect(namedStatusesMissingFromPage(faq.a)).toEqual([]);
+    expect(faq.a).toBe(
+      "Radiated-emissions investigation under 47 CFR 15.109(a), product memory, change and retest comparison and evidence state per revision. Everything else on this page is marked Roadmap.",
+    );
+  });
+
+  it("the FAQ check catches a status no item has", () => {
+    expect(namedStatusesMissingFromPage("Everything else on this page is marked Early access or Roadmap.")).toEqual(["EARLY ACCESS"]);
+  });
 });
+
+/** Statuses the text names (outside the "Live today" list) that no capability shown on the page has. */
+function namedStatusesMissingFromPage(text: string): CapabilityStatus[] {
+  const onPage = new Set(PAGE_CAPABILITIES.map(statusOf));
+  const named = (Object.entries(STATUS_IN_PROSE) as [CapabilityStatus, string][])
+    .filter(([s]) => s !== "LIVE")
+    .filter(([, prose]) => new RegExp(`\\b${prose}\\b`, "i").test(text))
+    .map(([s]) => s);
+  return named.filter((s) => !onPage.has(s));
+}
