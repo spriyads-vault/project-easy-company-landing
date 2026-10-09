@@ -1,0 +1,49 @@
+/*
+ * Homepage v6 page-level rules. Loaded only with the v6 homepage (imported by src/home/v6/HomePage.tsx), so the
+ * dark pages never see it. Tokens live in src/styles/design-system.css (v6-*).
+ */
+
+/* The page is light: light scrollbars and form controls, the page colour behind overscroll, anchors land 64px
+   below the sticky header. Smooth scrolling only when motion is allowed (globals.css). */
+:root:has([data-home-v6]) {
+  color-scheme: light;
+  background: var(--color-v6-page);
+  scroll-padding-top: var(--v6-nav-height);
+}
+
+@layer base {
+  [data-home-v6] {
+    /* Focus ring: primary on light bands; dark bands set it to on-dark (design: "Rings are #F8F7F6 on dark bands"). */
+    --v6-ring: var(--color-v6-primary);
+  }
+
+  [data-home-v6] [data-band="dark"] {
+    --v6-ring: var(--color-v6-on-dark);
+  }
+
+  [data-home-v6] :focus-visible {
+    outline: 2px solid var(--v6-ring);
+    outline-offset: 2px;
+  }
+
+  [data-home-v6] a {
+    color: var(--color-v6-primary);
+    transition: color 150ms var(--ease-v6-ui);
+  }
+
+  [data-home-v6] a:hover {
+    color: var(--color-v6-primary-hover);
+  }
+
+  [data-home-v6] ::selection {
+    background: var(--color-v6-sky);
+    color: var(--color-v6-ink);
+  }
+}
+
+/* The legacy anchors sit at the top edge of their section (which is position: relative), so they land exactly like
+   the section itself; absolutely positioned so they never take a grid cell or a flex gap. */
+[data-home-v6] [data-legacy-anchor] {
+  position: absolute;
+  top: 0;
+}

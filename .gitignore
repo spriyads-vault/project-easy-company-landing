@@ -57,3 +57,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Flag-on build used by Playwright (NEXT_DIST_DIR=.next-v6)
+/.next-v6/

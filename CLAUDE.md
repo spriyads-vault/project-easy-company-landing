@@ -3,9 +3,13 @@
 # Project conventions
 
 - Package manager: npm (`package-lock.json`). Do not switch to pnpm or yarn.
-- Theme: dark only. The site defines one dark theme; do not add a light theme or a theme toggle. Design-prototype
+- Theme: light theme (v6 design system); tokens in docs/design/system/DESIGN.md. No theme toggle. Until
+  NEXT_PUBLIC_FF_HOMEPAGE_V6 ships, the flag-off homepage, docs and legal pages keep the dark v3 tokens. Design-prototype
   tweak panels (accent/theme tweaks) never ship to production.
-- Design tokens live in `src/styles/design-system.css`. Add new tokens there rather than hard-coding values.
+- Design tokens live in `src/styles/design-system.css` (v6 tokens are prefixed `v6-`). Add new tokens there rather than
+  hard-coding values.
+- Capability statuses (LIVE / EARLY ACCESS / ROADMAP) on the v6 homepage and llms.txt come from
+  `src/content/capability-status.ts`; components never write a status (a unit test enforces it).
 
 # Copy rules
 

@@ -1,3 +1,4 @@
+// Homepage v3 and every other page. With NEXT_PUBLIC_FF_HOMEPAGE_V6 on, fonts-v6.ts replaces this module.
 import { Geist, Geist_Mono, Inter, Instrument_Serif } from "next/font/google";
 
 // Inter (OFL) is the display and text face. It is the variable font with the optical size axis, so headings set

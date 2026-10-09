@@ -1,5 +1,5 @@
 /*
- * Crado design system: tokens for the public site (dark only).
+ * Crado design system: tokens for the public site. Dark (v3 and docs) plus the v6 light homepage tokens (v6-*).
  * Source: Claude Design project "Crado Homepage" (Crado Homepage.dc.html, Crado Docs.dc.html, 404.dc.html).
  * Homepage v3 (2026-10-08) added the hero band, announcement, vivid accent and mockup tokens marked "v3" below.
  *
@@ -170,6 +170,71 @@
   --breakpoint-md: 1000px;
   --breakpoint-lg: 1100px;
   --breakpoint-xl: 1180px;
+
+  /*
+   * Homepage v6 (light), behind NEXT_PUBLIC_FF_HOMEPAGE_V6. Source: Claude Design "Crado Homepage v6.dc.html",
+   * Design system frame; documented in docs/design/system/DESIGN.md. Prefixed v6- so they never collide with the
+   * dark tokens above (bg-v6-page, text-v6-ink, border-v6-line…). Bright colours always carry Ink text.
+   */
+  --color-v6-page: #f8f7f6;
+  --color-v6-alt: #f1efea;
+  --color-v6-card: #ffffff;
+  --color-v6-line: #e2e0da;
+  --color-v6-line-strong: #cfcbc2;
+  --color-v6-line-input: #d1cfc8;
+  --color-v6-ink: #141821;
+  --color-v6-muted: #5c6270;
+  --color-v6-missing-ink: #8a2e2e;
+  /* Evidence states: sky observed, mint known, sun inferred, lilac missing; tag-grey for ROADMAP */
+  --color-v6-sun: #ffe36e;
+  --color-v6-lilac: #f2c4ff;
+  --color-v6-sky: #afd9fa;
+  --color-v6-mint: #c7ebcf;
+  --color-v6-tag-grey: #e2e0da;
+  /* Dark bands */
+  --color-v6-forest: #12302a;
+  --color-v6-rust: #6e2b12;
+  --color-v6-on-dark: #f8f7f6;
+  --color-v6-on-dark-muted: #c9c4ba;
+  --color-v6-dark-line: rgb(248 247 246 / 0.14);
+  --color-v6-nav-scrolled: rgb(248 247 246 / 0.9);
+  --color-v6-primary: #1430b8;
+  --color-v6-primary-hover: #0f2696;
+  --color-v6-on-primary: #ffffff;
+  --color-v6-spinner-track: rgb(255 255 255 / 0.35);
+
+  /* Radii: 6 buttons and inputs, 8 cards, 20 tables and the footer card, pills */
+  --radius-v6-button: 6px;
+  --radius-v6-card: 8px;
+  --radius-v6-panel: 20px;
+
+  /* Motion: 150ms for hover and colour, 300ms for entrances */
+  --ease-v6-ui: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-v6-in: cubic-bezier(0, 0, 0.2, 1);
+  --animate-v6-in: v6-in 300ms cubic-bezier(0, 0, 0.2, 1) both;
+  --animate-v6-spin: spin 700ms linear infinite;
+
+  @keyframes v6-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+  }
+
+  /* Container 1200 plus gutters; v6 breakpoints: tablet from 641px, desktop from 1024px */
+  --container-v6: 1200px;
+  --breakpoint-v6t: 641px;
+  --breakpoint-v6d: 1024px;
+}
+
+/*
+ * v6 faces. `inline` makes the utilities use these values directly, because next/font's --font-plex-* variables are
+ * set on the v6 page root rather than on <html> (the root layout serves the v3 faces to every other page).
+ */
+@theme inline {
+  --font-v6-serif: var(--font-plex-serif), Georgia, serif;
+  --font-v6-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-v6-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
 :root {
@@ -191,6 +256,54 @@
   /* v3: pixel-serif accent size = Inter 600 cap height / Instrument Serif cap height (72.75 / 72 at 100px, as the
      design measures it at runtime), so the accent shares Inter's baseline and cap height. */
   --pixel-serif-scale: 1.01em;
+}
+
+/*
+ * v6 type scale and rhythm (desktop / tablet ≤1023 / mobile ≤640), used as text-[length:var(--v6-h1)] etc.
+ * 4px spacing base; sections pad 136 / 100 / 64; gutters 40 / 32 / 20.
+ */
+:root {
+  --v6-h1: 68px;
+  --v6-h1-lh: 74.8px;
+  --v6-h2: 60px;
+  --v6-h2-lh: 66px;
+  --v6-h3: 26px;
+  --v6-h3-lh: 36.4px;
+  --v6-intro: 24px;
+  --v6-intro-lh: 31.2px;
+  --v6-body: 17px;
+  --v6-body-lh: 27px;
+  --v6-section: 136px;
+  --v6-gutter: 40px;
+  --v6-nav-height: 64px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --v6-h1: 52px;
+    --v6-h1-lh: 57.2px;
+    --v6-h2: 46px;
+    --v6-h2-lh: 50.6px;
+    --v6-section: 100px;
+    --v6-gutter: 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --v6-h1: 40px;
+    --v6-h1-lh: 44px;
+    --v6-h2: 34px;
+    --v6-h2-lh: 38px;
+    --v6-h3: 22px;
+    --v6-h3-lh: 30px;
+    --v6-intro: 19px;
+    --v6-intro-lh: 27px;
+    --v6-body: 16px;
+    --v6-body-lh: 25px;
+    --v6-section: 64px;
+    --v6-gutter: 20px;
+  }
 }
 
 /* v3: the home nav is taller (64px mobile, 72px from 760px). Docs and legal pages keep 56px. */
