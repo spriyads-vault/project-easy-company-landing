@@ -1,4 +1,7 @@
-// Homepage v3 and every other page. With NEXT_PUBLIC_FF_HOMEPAGE_V6 on, fonts-v6.ts replaces this module.
+// Root layout fonts while NEXT_PUBLIC_FF_HOMEPAGE_V6 is on (next.config.ts swaps this in for fonts.ts). The faces are
+// the same as fonts.ts, but none is preloaded: the v6 homepage uses IBM Plex (src/home/v6/fonts.ts, preloaded on
+// "/" only), so preloading these would only compete with it. Docs and legal pages still get them, swapping in
+// behind next/font's size-adjusted fallbacks. next/font needs literal options, hence a second module.
 import { Geist, Geist_Mono, Inter, Instrument_Serif } from "next/font/google";
 
 // Inter (OFL) is the display and text face. It is the variable font with the optical size axis, so headings set
@@ -8,6 +11,7 @@ const inter = Inter({
   subsets: ["latin"],
   axes: ["opsz"],
   variable: "--font-inter",
+  preload: false,
 });
 
 // Geist and Geist Mono (OFL) for mockup UI and labels, self-hosted by next/font as Latin subsets. Geist is not
@@ -27,6 +31,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   adjustFontFallback: false,
   fallback: ["monospace"],
+  preload: false,
 });
 
 // Pixel-serif accent ("loop", step numbers). The canvas pixel effect draws over the real text.

@@ -11,8 +11,13 @@ import JsonLd from "@/components/site/JsonLd";
 import SiteShell from "@/components/site/SiteShell";
 import { FAQ_PAGE_LD } from "@/lib/faq";
 import { HOME_DESCRIPTION, HOME_TITLE, HOME_URL, ORGANIZATION_LD, SOFTWARE_APPLICATION_LD, WEBSITE_LD, pageMetadata } from "@/lib/site";
+import type { Viewport } from "next";
 
+/** Homepage v3 (dark). Served at "/" while NEXT_PUBLIC_FF_HOMEPAGE_V6 is off; see next.config.ts. */
 export const metadata = pageMetadata({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" });
+
+/** The root layout's dark viewport applies unchanged. */
+export const viewport: Viewport = {};
 
 export default function Home() {
   return (

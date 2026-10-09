@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { HOME_DESCRIPTION, HOME_TITLE, SITE_NAME, SITE_URL } from "@/lib/site";
-import { FONT_VARIABLES } from "./fonts";
+import { FONT_VARIABLES } from "@crado/fonts-active";
 import "./globals.css";
 
 export const metadata: Metadata = {

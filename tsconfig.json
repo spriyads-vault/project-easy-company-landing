@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@crado/home-active": ["./src/home/v3/HomePage.tsx"],
+      "@crado/fonts-active": ["./src/app/fonts.ts"]
     }
   },
   "include": [
@@ -28,6 +30,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
+    ".next-v6/types/**/*.ts",
+    ".next-v6/dev/types/**/*.ts",
     "**/*.mts"
   ],
   "exclude": ["node_modules"]
