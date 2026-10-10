@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { CTA, NAV_LINKS } from "@/content/home-v6";
 import { CLEAN_URLS, SECTION_PAGES } from "@/lib/flags";
-import { SECTION_DOM_IDS, SECTION_PATHS, bookHref, sectionHref, type SectionId } from "./links";
+import { SECTION_DOM_IDS, SECTION_PATHS, bookHref, sectionHref, sectionLabel, type SectionId } from "./links";
 import LogoMark from "./LogoMark";
 import { BUTTON_PRIMARY, CONTAINER } from "./ui";
 
@@ -139,7 +139,7 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
                 aria-current={active === id ? (SECTION_PAGES ? "page" : "true") : undefined}
                 className={`${NAV_LINK} ${active === id ? "border-v6-primary" : "border-transparent"}`}
               >
-                {label}
+                {sectionLabel(id, label)}
               </SectionLink>
             ))}
           </nav>
@@ -207,7 +207,7 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
               aria-current={SECTION_PAGES && SECTION_PATHS[id] === pathname ? "page" : undefined}
               className="border-b border-v6-line py-4 font-v6-serif text-[34px] leading-[38px] tracking-[-.02em] text-v6-ink hover:text-v6-ink"
             >
-              {label}
+              {sectionLabel(id, label)}
             </SectionLink>
           ))}
         </nav>

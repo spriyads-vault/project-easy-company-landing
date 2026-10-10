@@ -15,8 +15,8 @@ export const HOMEPAGE_V6 = on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V6);
 export const SECTION_PAGES = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SECTION_PAGES) && !on(process.env.NEXT_PUBLIC_FF_SCROLL_SECTIONS);
 
 /**
- * One scrolling homepage with clean section URLs (SCRUM-314): /how-it-works, /agents, /coverage, /faq and /waitlist
- * render the homepage and scroll to their section. Default off; needs HOMEPAGE_V6. When on it overrides
+ * One scrolling homepage with clean section URLs (SCRUM-314): /product (was /how-it-works, SCRUM-316), /agents,
+ * /coverage, /faq and /waitlist render the homepage and scroll to their section. Default off; needs HOMEPAGE_V6. When on it overrides
  * SECTION_PAGES (which is then off): the full sections stay on the homepage and the section pages are unused.
  */
 export const SCROLL_SECTIONS = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SCROLL_SECTIONS);

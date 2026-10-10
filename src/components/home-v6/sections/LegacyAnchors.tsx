@@ -5,7 +5,7 @@ export default function LegacyAnchors({ section, skip }: { section: string; skip
   return (
     <>
       {Object.entries(LEGACY_ANCHORS)
-        // `skip`: an id the section itself now has (#how-it-works with SCROLL_SECTIONS on), so it is not repeated.
+        // `skip`: an id the section itself now has (with SCROLL_SECTIONS on), so it is not repeated.
         .filter(([id, to]) => to === section && id !== skip)
         .map(([id]) => (
           <span key={id} id={id} data-legacy-anchor aria-hidden="true" />

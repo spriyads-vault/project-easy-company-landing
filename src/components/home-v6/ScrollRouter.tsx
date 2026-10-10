@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { HASH_PATHS, ROUTE_EVENT, SECTION_DOM_IDS, sectionForPath, type SectionId } from "./links";
+import { HASH_PATHS, ROUTE_EVENT, SECTION_DOM_IDS, canonicalPath, sectionForPath, type SectionId } from "./links";
 
 /** The sticky header's height (--v6-nav-height); sections land just below it. */
 const HEADER_OFFSET = 64;
@@ -40,7 +40,10 @@ function scrollToTarget(target: HTMLElement, smooth: boolean): number {
 
 /** Goes to the section the current URL names (or the top for "/"). Returns where it scrolled to. */
 function goToCurrent({ smooth, focus }: { smooth: boolean; focus: boolean }): number | undefined {
-  const id = sectionForPath(window.location.pathname);
+  // An old path (/how-it-works) lands on its section with the current one (/product) in the address bar.
+  const current = canonicalPath(window.location.pathname);
+  if (current !== window.location.pathname) history.replaceState(null, "", current + window.location.search);
+  const id = sectionForPath(current);
   window.dispatchEvent(new Event(ROUTE_EVENT));
   if (!id) {
     if (window.location.pathname !== "/" || window.location.hash) return undefined;
@@ -69,8 +72,8 @@ function sectionLinkFrom(e: MouseEvent): { anchor: HTMLAnchorElement; url: URL }
 
 /**
  * One scrolling homepage with clean section URLs (SCRUM-314, rendered only while SCROLL_SECTIONS is on).
- * - /how-it-works, /agents, /coverage, /faq and /waitlist are rewrites of "/" (next.config.ts); on arrival the page
- *   jumps to that section (/waitlist also focuses the email field, /faq?q=<slug> opens that answer).
+ * - /product, /agents, /coverage, /faq and /waitlist are rewrites of "/" (next.config.ts); on arrival the page
+ *   jumps to that section (the old /how-it-works too, shown as /product) (/waitlist also focuses the email field, /faq?q=<slug> opens that answer).
  * - On the page, a click on any section link (nav, mobile menu, footer, announcement, calls to action) scrolls
  *   instead of navigating and pushes the path; the mobile menu closes first. The section heading then takes focus.
  * - Back and Forward scroll to the section of the entry; Back from another page returns to where the visitor was. Scrolling never changes the URL (the header's scrollspy
@@ -122,7 +125,7 @@ export default function ScrollRouter() {
       }
       e.preventDefault();
       settled = true;
-      const next = link.url.pathname + link.url.search;
+      const next = canonicalPath(link.url.pathname) + link.url.search;
       if (next !== window.location.pathname + window.location.search || window.location.hash) history.pushState(null, "", next);
       // The mobile menu is a modal <dialog>: close it first, then scroll once the page is back.
       const menu = link.anchor.closest("dialog");
