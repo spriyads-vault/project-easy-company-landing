@@ -18,8 +18,12 @@ const HOMEPAGE_V6 = on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V6);
  * They are served by src/app/section-pages/[section] through rewrites added only while the flag is on, so with it
  * off the site has no new top-level route at all and every other URL behaves as before. Same rule as
  * src/lib/flags.ts SECTION_PAGES.
+ *
+ * NEXT_PUBLIC_FF_SCROLL_SECTIONS (SCRUM-314, needs HOMEPAGE_V6, overrides SECTION_PAGES): the same five paths are
+ * rewrites of "/" (not redirects), and the homepage scrolls to the section (src/components/home-v6/ScrollRouter).
  */
-const SECTION_PAGES = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SECTION_PAGES);
+const SCROLL_SECTIONS = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SCROLL_SECTIONS);
+const SECTION_PAGES = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SECTION_PAGES) && !SCROLL_SECTIONS;
 const SECTION_SLUGS = ["how-it-works", "agents", "coverage", "faq", "waitlist"];
 
 const ALIASES = {
@@ -37,6 +41,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   async rewrites() {
+    if (SCROLL_SECTIONS) return SECTION_SLUGS.map((slug) => ({ source: `/${slug}`, destination: "/" }));
     if (!SECTION_PAGES) return [];
     return SECTION_SLUGS.map((slug) => ({ source: `/${slug}`, destination: `/section-pages/${slug}` }));
   },

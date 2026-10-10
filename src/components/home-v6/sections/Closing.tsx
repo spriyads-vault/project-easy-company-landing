@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CLOSING_BODY, CLOSING_H2, CTA, WAITLIST_COPY } from "@/content/home-v6";
 import { SECTION_CLOSING_BODY, SECTION_CLOSING_H2, SECTION_WAITLIST_TITLE } from "@/content/section-pages";
-import { SECTION_PAGES } from "@/lib/flags";
+import { CLEAN_URLS } from "@/lib/flags";
 import { BOOKING_URL, CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
 import type { WaitlistSource } from "@/lib/waitlist/schema";
 import { HOW_IT_WORKS_DOCS, SECTION_PATHS, bookHref, sectionHref } from "../links";
@@ -79,7 +79,7 @@ export function Footer({ linkBase = "", source, waitlistHeading: WaitlistHeading
               <LegacyAnchors section="waitlist" />
               <div className="col-[1/-1] flex flex-col gap-3 v6d:col-[1/6]">
                 <Pill tone="sun">{WAITLIST_COPY.tag}</Pill>
-                <WaitlistHeading className={`${H3} mt-2 text-balance`}>{SECTION_PAGES ? SECTION_WAITLIST_TITLE : WAITLIST_COPY.title}</WaitlistHeading>
+                <WaitlistHeading className={`${H3} mt-2 text-balance`}>{CLEAN_URLS ? SECTION_WAITLIST_TITLE : WAITLIST_COPY.title}</WaitlistHeading>
                 <p className="m-0 max-w-[64ch] text-pretty text-v6-muted">{WAITLIST_COPY.body}</p>
               </div>
               <div className="col-[1/-1] flex flex-col v6d:col-[7/13]">
@@ -104,7 +104,7 @@ export function Footer({ linkBase = "", source, waitlistHeading: WaitlistHeading
             <div className="flex flex-col py-5 pr-5">
               <div className={FOOT_HEAD}>Company</div>
               {/* No booking link with the section pages on. */}
-              {!SECTION_PAGES && (
+              {!CLEAN_URLS && (
                 <a href={bookHref(linkBase)} className={FOOT_LINK}>
                   {CTA.book}
                 </a>

@@ -2,7 +2,7 @@ import { statusOf } from "@/content/capability-status";
 import Link from "next/link";
 import { PRINCIPLES, SOURCES_NOTE, STACK, type StackLayer } from "@/content/home-v6";
 import { TEASER_LINKS } from "@/content/section-pages";
-import { SECTION_PATHS } from "../links";
+import { SECTION_DOM_IDS, SECTION_PATHS } from "../links";
 import { CONTAINER, H2, H3, LABEL, MONO, Pill, SMALL, TEASER_LINK } from "../ui";
 import LegacyAnchors from "./LegacyAnchors";
 
@@ -19,8 +19,8 @@ const LAYER: Record<StackLayer["tone"], { box: string; body: string }> = {
  */
 export default function HowItWorks({ teaser = false }: { teaser?: boolean }) {
   return (
-    <section id="how" data-screen-label="How it works" className="relative bg-v6-alt py-(--v6-section)">
-      <LegacyAnchors section="how" />
+    <section id={SECTION_DOM_IDS.how} data-screen-label="How it works" className="relative bg-v6-alt py-(--v6-section)">
+      <LegacyAnchors section="how" skip={SECTION_DOM_IDS.how} />
       <div className={`${CONTAINER} flex flex-col gap-16`}>
         <div className="flex flex-col gap-5">
           <Pill tone="sky">How it works</Pill>

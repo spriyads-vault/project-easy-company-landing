@@ -1,6 +1,6 @@
 import { CTA, EVIDENCE_CARDS, V6_H1, V6_INTRO } from "@/content/home-v6";
 import Link from "next/link";
-import { SECTION_PAGES } from "@/lib/flags";
+import { CLEAN_URLS } from "@/lib/flags";
 import { HOW_IT_WORKS_DOCS, SECTION_PATHS } from "../links";
 import RecordBlockCanvas from "../RecordBlockCanvas";
 import { BUTTON_PRIMARY, BUTTON_SECONDARY, CONTAINER, H3, INTRO, Pill, SMALL } from "../ui";
@@ -15,8 +15,8 @@ export default function Hero() {
             <h1 className="m-0 font-v6-serif text-[length:var(--v6-h1)] leading-(--v6-h1-lh) font-normal tracking-[-.02em] text-balance">{V6_H1}</h1>
             <p className={`${INTRO} max-w-[44ch] text-v6-muted`}>{V6_INTRO}</p>
             <div className="mt-2 flex flex-wrap gap-3">
-              {SECTION_PAGES ? (
-                // Section pages (SCRUM-310): the waitlist and the how-it-works page; no booking link, no anchors.
+              {CLEAN_URLS ? (
+                // Clean URLs (SCRUM-310, SCRUM-314): the waitlist and the how-it-works page; no booking link, no anchors.
                 <>
                   <Link href={SECTION_PATHS.waitlist} className={BUTTON_PRIMARY}>
                     {CTA.join}

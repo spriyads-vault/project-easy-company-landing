@@ -8,7 +8,10 @@ const UPDATED = new Date("2026-10-08");
 
 const PATHS = ["/", "/docs", "/docs/concepts", "/docs/evaluation", "/docs/reference", "/docs/trust", "/docs/changelog"];
 
-/** The section pages (SCRUM-310), while they are on; /waitlist is indexable, so it is listed too. */
+/**
+ * The section pages (SCRUM-310), while they are on; /waitlist is indexable, so it is listed too. With SCROLL_SECTIONS
+ * on they are off: the section paths are the homepage (canonical "/"), so only "/" is listed.
+ */
 const SECTION_PATHS = SECTION_PAGES ? SECTION_SLUGS.map((s) => `/${s}`) : [];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { readAttribution, rememberAttribution } from "@/components/waitlist/attribution";
 import { WAITLIST_COPY as C } from "@/content/home-v6";
-import { SECTION_PAGES } from "@/lib/flags";
+import { CLEAN_URLS } from "@/lib/flags";
 import { BOOKING_URL, CONTACT_EMAIL } from "@/lib/site";
 import {
   MARKET_OPTIONS,
@@ -312,8 +312,8 @@ export default function WaitlistFormV6({ source = SOURCE }: WaitlistFormV6Props)
               <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
                 {step2 === "closed" &&
                   token &&
-                  (SECTION_PAGES ? (
-                    // Section pages: a button, so no call to action carries a #; it opens step 2 in place.
+                  (CLEAN_URLS ? (
+                    // Clean URLs: a button, so no call to action carries a #; it opens step 2 in place.
                     <button type="button" onClick={() => setStep2("open")} className={`${LINK} cursor-pointer border-0 bg-transparent p-0 text-left`}>
                       {C.step2Link}
                     </button>
@@ -329,8 +329,8 @@ export default function WaitlistFormV6({ source = SOURCE }: WaitlistFormV6Props)
                       {C.step2Link}
                     </a>
                   ))}
-                {/* No booking link with the section pages on. */}
-                {!SECTION_PAGES && (
+                {/* No booking link with clean URLs on. */}
+                {!CLEAN_URLS && (
                   <a href={BOOKING_URL} target="_blank" rel="noopener" className={LINK}>
                     {C.book}
                     <span className="sr-only"> (opens in a new tab)</span>

@@ -1,6 +1,6 @@
 import { CAPABILITIES, statusOf } from "./capability-status";
-import { SECTION_PAGES } from "@/lib/flags";
-import { AGENTS, COVERAGE, FAQ_V6, PRINCIPLES, SOURCES_NOTE, STACK, V6_CATEGORY, V6_H1, V6_INTRO } from "./home-v6";
+import { SCROLL_SECTIONS, SECTION_PAGES } from "@/lib/flags";
+import { AGENTS, COVERAGE, FAQ_V6, PRINCIPLES, SOURCES_NOTE, STACK, V6_CATEGORY, V6_DESCRIPTION, V6_H1, V6_INTRO } from "./home-v6";
 import { SECTION_PAGES_COPY, SECTION_SLUGS } from "./section-pages";
 
 /** The section pages (SCRUM-310), while they are on. /waitlist is left out: it is a form, not content. */
@@ -11,7 +11,13 @@ ${SECTION_SLUGS.filter((s) => s !== "waitlist")
   .join("\n")}
 
 `
-  : "";
+  : SCROLL_SECTIONS
+    ? // One scrolling homepage (SCRUM-314): its sections are not separate pages, so the homepage is the one listed.
+      `## Pages
+- [Home](https://www.crado.io/): ${V6_DESCRIPTION}
+
+`
+    : "";
 
 const DOCS = `## Docs
 - [Introduction](https://www.crado.io/docs): what Crado does and how it reaches a result

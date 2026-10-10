@@ -35,6 +35,8 @@
     ".next-v6/dev/types/**/*.ts",
     ".next-sections/types/**/*.ts",
     ".next-sections/dev/types/**/*.ts",
+    ".next-scroll/types/**/*.ts",
+    ".next-scroll/dev/types/**/*.ts",
     "**/*.mts"
   ],
   "exclude": ["node_modules"]
