@@ -1,5 +1,4 @@
 import { SECTION_PAGES } from "@/lib/flags";
-import { BOOKING_URL } from "@/lib/site";
 
 /** "Read how it works": the docs section that explains how Crado reaches a result. */
 export const HOW_IT_WORKS_DOCS = "/docs#how-it-works";
@@ -24,13 +23,10 @@ export function sectionHref(id: SectionId, linkBase: "" | "/" = ""): string {
   return id === "waitlist" ? "#waitlist" : `${linkBase}#${id}`;
 }
 
-/** "Book a case review": the booking page with SECTION_PAGES on (no #), otherwise the homepage's #book band. */
+/** "Book a case review" (v6 without section pages only): the homepage's #book band. */
 export function bookHref(linkBase: "" | "/" = ""): string {
-  return SECTION_PAGES ? BOOKING_URL : `${linkBase}#book`;
+  return `${linkBase}#book`;
 }
-
-/** True when bookHref() leaves the site (new tab). */
-export const BOOK_IS_EXTERNAL = SECTION_PAGES;
 
 /**
  * Old homepage hashes (v6 sections and the v3 anchors) and the page each now lives on. With SECTION_PAGES on, the
@@ -48,4 +44,6 @@ export const HASH_PATHS: Record<string, string> = {
   faq: SECTION_PATHS.faq,
   waitlist: SECTION_PATHS.waitlist,
   join: SECTION_PATHS.waitlist,
+  // The booking band is gone with the section pages on; its old links go to the waitlist.
+  book: SECTION_PATHS.waitlist,
 };

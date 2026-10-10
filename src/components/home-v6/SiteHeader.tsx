@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { CTA, NAV_LINKS } from "@/content/home-v6";
 import { SECTION_PAGES } from "@/lib/flags";
-import { BOOK_IS_EXTERNAL, SECTION_PATHS, bookHref, sectionHref, type SectionId } from "./links";
+import { SECTION_PATHS, bookHref, sectionHref, type SectionId } from "./links";
 import LogoMark from "./LogoMark";
 import { BUTTON_PRIMARY, CONTAINER } from "./ui";
 
@@ -36,11 +36,14 @@ interface SiteHeaderProps {
 /** With SECTION_PAGES on, section links are page links (client navigation); otherwise plain anchors as before. */
 const SectionLink = SECTION_PAGES ? Link : "a";
 
-/** Booking opens in a new tab while SECTION_PAGES is on (it goes straight to the booking page). */
-const BOOK_TARGET = BOOK_IS_EXTERNAL ? { target: "_blank", rel: "noopener" } : {};
-function BookExtra() {
-  return BOOK_IS_EXTERNAL ? <span className="sr-only"> (opens in a new tab)</span> : null;
-}
+/**
+ * The header's call to action. With SECTION_PAGES on: "Join the waitlist" to /waitlist (no booking link anywhere).
+ * Otherwise "Book a case review" (short "Book" on mobile) to the homepage's #book band, as before.
+ */
+const CTA_LINK = SECTION_PAGES ? { href: SECTION_PATHS.waitlist, label: CTA.join, short: CTA.join } : null;
+
+/** Mobile menu items: the four sections, plus the waitlist when it is not already the menu's button. */
+const MENU_LINKS: { id: SectionId; label: string }[] = SECTION_PAGES ? [...NAV_LINKS] : [...NAV_LINKS, { id: "waitlist", label: CTA.join }];
 
 /**
  * Sticky header (design: header). Over the page it is solid; once scrolled it turns translucent with a blur and a
@@ -50,7 +53,8 @@ function BookExtra() {
 export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [spyActive, setActive] = useState("");
-  const pathname = usePathname();
+  // The section pages are rewrites of /section-pages/<slug> (next.config.ts); compare the public path.
+  const pathname = usePathname().replace(/^\/section-pages(?=\/)/, "");
   // Section pages: the current page's item. Otherwise: the section in view (scrollspy).
   const active = SECTION_PAGES ? (NAV_LINKS.find(({ id }) => SECTION_PATHS[id] === pathname)?.id ?? "") : spyActive;
   const menuRef = useRef<HTMLDialogElement>(null);
@@ -136,16 +140,26 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
             ))}
           </nav>
           <div className="hidden v6t:block">
-            <a href={bookHref(linkBase)} {...BOOK_TARGET} className={BUTTON_PRIMARY}>
-              {CTA.book}
-              <BookExtra />
-            </a>
+            {CTA_LINK ? (
+              <Link href={CTA_LINK.href} className={BUTTON_PRIMARY}>
+                {CTA_LINK.label}
+              </Link>
+            ) : (
+              <a href={bookHref(linkBase)} className={BUTTON_PRIMARY}>
+                {CTA.book}
+              </a>
+            )}
           </div>
           <div className="flex items-center gap-2 v6t:hidden">
-            <a href={bookHref(linkBase)} {...BOOK_TARGET} className={BUTTON_PRIMARY}>
-              {CTA.bookShort}
-              <BookExtra />
-            </a>
+            {CTA_LINK ? (
+              <Link href={CTA_LINK.href} className={BUTTON_PRIMARY}>
+                {CTA_LINK.short}
+              </Link>
+            ) : (
+              <a href={bookHref(linkBase)} className={BUTTON_PRIMARY}>
+                {CTA.bookShort}
+              </a>
+            )}
             <button
               type="button"
               aria-label="Open menu"
@@ -181,7 +195,7 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
           </button>
         </div>
         <nav aria-label="Menu links" className="flex flex-col px-(--v6-gutter) py-6">
-          {[...NAV_LINKS, { id: "waitlist" as const, label: CTA.join }].map(({ id, label }: { id: SectionId; label: string }) => (
+          {MENU_LINKS.map(({ id, label }) => (
             <SectionLink
               key={id}
               href={sectionHref(id, linkBase)}
@@ -194,15 +208,13 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
           ))}
         </nav>
         <div className="mt-auto px-(--v6-gutter) py-6">
-          <a
-            href={bookHref(linkBase)}
-            {...BOOK_TARGET}
-            onClick={(e) => menuLink(e, "book")}
+          <SectionLink
+            href={CTA_LINK ? CTA_LINK.href : bookHref(linkBase)}
+            onClick={(e: MouseEvent<HTMLAnchorElement>) => menuLink(e, "book")}
             className="flex h-12 items-center justify-center rounded-v6-button bg-v6-primary font-v6-sans text-[15px] leading-none font-medium text-v6-on-primary hover:bg-v6-primary-hover hover:text-v6-on-primary"
           >
-            {CTA.book}
-            <BookExtra />
-          </a>
+            {CTA_LINK ? CTA_LINK.label : CTA.book}
+          </SectionLink>
         </div>
       </dialog>
     </>

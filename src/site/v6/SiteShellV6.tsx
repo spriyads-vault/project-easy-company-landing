@@ -20,7 +20,8 @@ interface SiteShellV6Props {
 
 /**
  * The v6 homepage's announcement, header and footer (with the waitlist) around a docs, legal or 404 page. Section
- * links and "Book a case review" go to the homepage; "Join the waitlist" scrolls to this page's footer form.
+ * links and "Book a case review" go to the homepage; "Join the waitlist" scrolls to this page's footer form. With the
+ * section pages on (SCRUM-310) every one of these links is a path instead, and there is no booking link.
  */
 export default function SiteShellV6({ source, docs, waitlistHeading, waitlist, children }: SiteShellV6Props) {
   return (

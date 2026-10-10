@@ -4,8 +4,8 @@ import { SECTION_SLUGS, type SectionSlug } from "@/content/section-pages";
 import { SECTION_PAGES } from "@/lib/flags";
 import SectionPage, { sectionMetadata } from "@/site/v6/sections/SectionPage";
 
-// /how-it-works, /agents, /coverage, /faq and /waitlist (SCRUM-310). With the section pages off there are no params,
-// so these paths are 404s exactly as before; any other single-segment path is a 404 either way.
+// /how-it-works, /agents, /coverage, /faq and /waitlist (SCRUM-310), rewritten here by next.config.ts while the
+// section pages are on. The canonical URLs are the clean paths. With the flag off there are no rewrites and no params.
 export const dynamicParams = false;
 
 interface SectionProps {

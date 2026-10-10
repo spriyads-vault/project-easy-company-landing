@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import { AGENTS, COVERAGE, FAQ_V6 } from "../../../src/content/home-v6";
-import { SECTION_CLOSING_H2, SECTION_PAGES_COPY, SECTION_SLUGS } from "../../../src/content/section-pages";
+import { SECTION_CLOSING_BODY, SECTION_CLOSING_H2, SECTION_PAGES_COPY, SECTION_SLUGS, SECTION_WAITLIST_TITLE } from "../../../src/content/section-pages";
 import { CAPABILITIES } from "../../../src/content/capability-status";
 import { ROLE_OPTIONS, WAITLIST_ERRORS } from "../../../src/lib/waitlist/schema";
 import { humanPause, mockWaitlistApi } from "../helpers";
@@ -10,10 +10,9 @@ import { humanPause, mockWaitlistApi } from "../helpers";
 // (playwright.config.ts project "chromium-sections").
 
 const SITE = "https://www.crado.io";
-const BOOKING = "https://cal.com/crado-a7dbr4/30min";
 const PATHS = SECTION_SLUGS.map((s) => `/${s}`);
 /** Every page with the v6 shell. */
-const ALL = ["/", ...PATHS, "/docs", "/docs/reference", "/privacy", "/terms", "/no-such-page"];
+const ALL = ["/", ...PATHS, "/docs", "/docs/concepts", "/docs/evaluation", "/docs/reference", "/docs/trust", "/docs/changelog", "/privacy", "/terms", "/no-such-page"];
 const slugify = (t: string) =>
   t
     .toLowerCase()
@@ -52,15 +51,20 @@ test.describe("section pages", () => {
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /index, follow/);
 
       const closing = page.getByRole("heading", { level: 2, name: SECTION_CLOSING_H2 });
-      await expect(closing).toBeVisible();
-      const band = page.locator("section", { has: closing });
-      await expect(band.getByRole("link", { name: /Book a case review/ })).toHaveAttribute("href", BOOKING);
-      await expect(band.getByRole("link", { name: "Join the waitlist" })).toHaveCount(slug === "waitlist" ? 0 : 1);
-      if (slug !== "waitlist") await expect(band.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
+      if (slug === "waitlist") {
+        // The form is the page: no closing block.
+        await expect(closing).toHaveCount(0);
+      } else {
+        await expect(closing).toBeVisible();
+        const band = page.locator("section", { has: closing });
+        await expect(band.getByText(SECTION_CLOSING_BODY, { exact: true })).toBeVisible();
+        await expect(band.getByRole("link")).toHaveCount(1);
+        await expect(band.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
+      }
 
       for (const prop of ['meta[property="og:image"]', 'meta[name="twitter:image"]']) {
         const url = (await page.locator(prop).getAttribute("content"))!;
-        expect(url).toContain(`${SITE}/${slug}/`);
+        expect(url).toContain(`${SITE}/section-pages/${slug}/`);
         const img = await request.get(url.replace(SITE, ""));
         expect(img.status(), prop).toBe(200);
         expect(img.headers()["content-type"]).toBe("image/png");
@@ -77,6 +81,11 @@ test.describe("section pages", () => {
       for (let i = 1; i < levels.length; i++) expect(levels[i] - levels[i - 1], `heading ${i}`).toBeLessThanOrEqual(1);
     });
   }
+
+  test("the internal route redirects to the clean path", async ({ page }) => {
+    await page.goto("/section-pages/agents");
+    await expect(page).toHaveURL(/\/agents$/);
+  });
 
   test("/how-it-works: the essay with its chart, the layer stack and the three beliefs", async ({ page }) => {
     await page.goto("/how-it-works");
@@ -147,6 +156,12 @@ test.describe("section pages", () => {
     await expect(page.getByRole("status").filter({ hasText: "You're on the list." })).toBeVisible();
     expect(calls.step1).toHaveLength(1);
     expect(calls.step1[0].postDataJSON()).toMatchObject({ email: "eng@acme.io", source: "final_cta_inline" });
+    // Success panel: no booking link; the optional step 2 opens in place.
+    const main = page.locator("main");
+    await expect(main.locator('a[href*="cal.com"]')).toHaveCount(0);
+    await expect(main.getByText(/case review/i)).toHaveCount(0);
+    await main.getByRole("button", { name: "Tell us about your product (optional)" }).click();
+    await expect(page.getByRole("heading", { name: "Help us shape your pilot" })).toBeFocused();
   });
 
   for (const [name, status, body, message] of [
@@ -188,8 +203,11 @@ test.describe("clean URLs", () => {
     const footer = page.getByRole("navigation", { name: "Footer" });
     await expect(footer.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
     await expect(footer.getByRole("link", { name: "How it works" })).toHaveAttribute("href", "/how-it-works");
-    await expect(footer.getByRole("link", { name: /Book a case review/ })).toHaveAttribute("href", BOOKING);
-    await expect(page.getByRole("banner").getByRole("link", { name: /Book a case review/ })).toHaveAttribute("target", "_blank");
+    await expect(footer.getByRole("link", { name: /case review/i })).toHaveCount(0);
+    const cta = page.getByRole("banner").getByRole("link", { name: "Join the waitlist" });
+    await expect(cta).toHaveAttribute("href", "/waitlist");
+    await expect(cta).not.toHaveAttribute("target", /.+/);
+    await expect(page.locator("footer").getByRole("heading", { name: SECTION_WAITLIST_TITLE })).toBeVisible();
     await expect(nav.locator("[aria-current]")).toHaveCount(0);
 
     for (const [path, label] of [["/how-it-works", "How it works"], ["/agents", "Agents"], ["/coverage", "Coverage"], ["/faq", "FAQ"]]) {
@@ -204,7 +222,10 @@ test.describe("clean URLs", () => {
     await page.goto("/");
     await page.getByRole("button", { name: "Open menu" }).click();
     const menu = page.getByRole("navigation", { name: "Menu links" });
-    await expect(menu.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
+    const dialog = page.getByRole("dialog", { name: "Menu" });
+    await expect(dialog.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
+    await expect(dialog.getByRole("link", { name: "Join the waitlist" })).toHaveCount(1);
+    await expect(dialog.getByText(/case review/i)).toHaveCount(0);
     await menu.getByRole("link", { name: "Coverage" }).click();
     await expect(page).toHaveURL(/\/coverage$/);
     await expect(page.getByRole("dialog", { name: "Menu" })).toBeHidden();
@@ -224,6 +245,7 @@ test.describe("clean URLs", () => {
     ["faq", "/faq"],
     ["waitlist", "/waitlist"],
     ["join", "/waitlist"],
+    ["book", "/waitlist"],
   ];
   for (const [hash, path] of OLD) {
     test(`/#${hash} ends on ${path}, without an extra history entry`, async ({ page }) => {
@@ -236,11 +258,21 @@ test.describe("clean URLs", () => {
     });
   }
 
-  test("/#book and /#product stay on the homepage", async ({ page }) => {
-    for (const hash of ["book", "product"]) {
-      await page.goto(`/#${hash}`);
-      await page.waitForTimeout(300);
-      await expect(page).toHaveURL(new RegExp(`/#${hash}$`));
+  test("/#product stays on the homepage", async ({ page }) => {
+    await page.goto("/#product");
+    await page.waitForTimeout(300);
+    await expect(page).toHaveURL(/\/#product$/);
+  });
+
+  test("no page links to cal.com or mentions a case review; no call to action contains #", async ({ page }) => {
+    const CTA_TEXT = /Join the waitlist|Read how it works|How Crado works|All agents|Full coverage|See all questions|Book|Regulatory coverage in the docs|Go to homepage|Read the docs/;
+    for (const path of ALL) {
+      await page.goto(path);
+      const links = await page.locator("a").evaluateAll((els) => els.map((e) => ({ href: e.getAttribute("href") ?? "", text: (e.textContent ?? "").trim() })));
+      expect(links.filter((l) => /cal\.com/i.test(l.href)), path).toEqual([]);
+      expect(links.filter((l) => CTA_TEXT.test(l.text) && l.href.includes("#")), path).toEqual([]);
+      expect(await page.locator("body").innerText(), path).not.toMatch(/case review/i);
+      await expect(page.locator("#book"), path).toHaveCount(0);
     }
   });
 });
@@ -250,6 +282,16 @@ test.describe("homepage teasers", () => {
     await page.goto("/");
     const labels = await page.locator("main > section").evaluateAll((els) => els.map((e) => e.getAttribute("data-screen-label")));
     expect(labels).toEqual(["Hero", "Commitments", "Essay", "How it works", "In the product", "Agents", "Coverage", "Commitment cards", "FAQ", "Closing"]);
+
+    const hero = page.locator('section[data-screen-label="Hero"]');
+    await expect(hero.getByRole("link")).toHaveCount(2);
+    await expect(hero.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
+    await expect(hero.getByRole("link", { name: "Read how it works" })).toHaveAttribute("href", "/how-it-works");
+    const closing = page.locator('section[data-screen-label="Closing"]');
+    await expect(closing.getByRole("heading", { name: SECTION_CLOSING_H2 })).toBeVisible();
+    await expect(closing.getByText(SECTION_CLOSING_BODY, { exact: true })).toBeVisible();
+    await expect(closing.getByRole("link")).toHaveCount(1);
+    await expect(closing.getByRole("link", { name: "Join the waitlist" })).toHaveAttribute("href", "/waitlist");
 
     await expect(page.getByRole("img", { name: "Chart: the evidence gap" })).toBeVisible();
     await expect(page.locator("#how").getByText("Your product record")).toHaveCount(0);

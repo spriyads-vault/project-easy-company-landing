@@ -69,15 +69,19 @@ export const SECTION_PAGES_COPY: Record<SectionSlug, SectionPageCopy> = {
     name: "Join the waitlist",
     title: "Join the waitlist | Crado",
     h1: "Join the waitlist",
-    intro: "Not ready to bring a report yet? We'll invite you as places open.",
+    intro: "We invite engineering teams in small groups as places open.",
     description: WAITLIST_COPY.body,
   },
 };
 
 export const SECTION_SLUGS = Object.keys(SECTION_PAGES_COPY) as SectionSlug[];
 
-/** Closing block on every section page. */
+/** Closing block on the homepage and every section page except /waitlist. */
 export const SECTION_CLOSING_H2 = "Bring us your next design change.";
+export const SECTION_CLOSING_BODY = "Join the waitlist. We invite engineering teams in small groups, starting with one of your own test reports.";
+
+/** Footer waitlist block title while the section pages are on (the body is WAITLIST_COPY.body, unchanged). */
+export const SECTION_WAITLIST_TITLE = "Get early access.";
 
 /** Homepage teaser links. */
 export const TEASER_LINKS = {

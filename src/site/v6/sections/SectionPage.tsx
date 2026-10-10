@@ -97,7 +97,8 @@ export default function SectionPage({ slug }: { slug: SectionSlug }) {
       <main id="main" data-section-page={slug}>
         <PageIntro slug={slug} titleId="page-title" />
         {BODY[slug]}
-        <SectionClosing waitlistButton={!isWaitlist} />
+        {/* /waitlist is the form; it has no closing block. */}
+        {!isWaitlist && <SectionClosing />}
       </main>
     </SiteShellV6>
   );

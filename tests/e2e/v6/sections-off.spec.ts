@@ -4,7 +4,7 @@ import { AGENTS, FAQ_V6 } from "../../../src/content/home-v6";
 // v6 on, NEXT_PUBLIC_FF_SECTION_PAGES off (SCRUM-310): the section pages do not exist and the homepage is as on main.
 
 test("section page paths are 404s", async ({ request }) => {
-  for (const p of ["/how-it-works", "/agents", "/coverage", "/faq", "/waitlist", "/agents/opengraph-image/card"]) expect((await request.get(p)).status(), p).toBe(404);
+  for (const p of ["/how-it-works", "/agents", "/coverage", "/faq", "/waitlist", "/section-pages/agents/opengraph-image/card"]) expect((await request.get(p)).status(), p).toBe(404);
 });
 
 test("homepage keeps the anchor links, the full sections and FAQPage", async ({ page }) => {

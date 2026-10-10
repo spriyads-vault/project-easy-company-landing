@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Agents from "@/components/home-v6/sections/Agents";
 import Announcement from "@/components/home-v6/sections/Announcement";
 import { Commitments, Essay } from "@/components/home-v6/sections/Bands";
-import { Closing, Footer } from "@/components/home-v6/sections/Closing";
+import { Closing, Footer, SectionClosing } from "@/components/home-v6/sections/Closing";
 import { CommitmentCards, Coverage } from "@/components/home-v6/sections/Coverage";
 import Faq from "@/components/home-v6/sections/Faq";
 import Hero from "@/components/home-v6/sections/Hero";
@@ -61,7 +61,7 @@ export default function HomePage() {
         <CommitmentCards />
         {/* Client component: props only when on, so the flag-off page data stays exactly as before. */}
         <Faq {...(SECTION_PAGES ? { teaser: true } : {})} />
-        <Closing />
+        {SECTION_PAGES ? <SectionClosing /> : <Closing />}
       </main>
       <Footer />
     </div>
