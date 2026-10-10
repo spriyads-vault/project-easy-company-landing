@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { CONTAINER, H3, MONO, Pill, SMALL } from "../ui";
+import { PRODUCT_BAND_ID } from "../links";
 import LegacyAnchors from "./LegacyAnchors";
 
 /*
@@ -170,7 +171,7 @@ const CARDS = [
 
 export default function Product() {
   return (
-    <section id="product" data-screen-label="In the product" className="relative py-(--v6-section)">
+    <section id={PRODUCT_BAND_ID} data-screen-label="In the product" className="relative py-(--v6-section)">
       <LegacyAnchors section="product" />
       <div className={`${CONTAINER} flex flex-col gap-10`}>
         <Pill tone="mint">In the product</Pill>

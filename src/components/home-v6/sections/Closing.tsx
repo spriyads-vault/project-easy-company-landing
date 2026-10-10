@@ -5,7 +5,7 @@ import { SECTION_CLOSING_BODY, SECTION_CLOSING_H2, SECTION_WAITLIST_TITLE } from
 import { CLEAN_URLS } from "@/lib/flags";
 import { BOOKING_URL, CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
 import type { WaitlistSource } from "@/lib/waitlist/schema";
-import { HOW_IT_WORKS_DOCS, SECTION_PATHS, bookHref, sectionHref } from "../links";
+import { HOW_IT_WORKS_DOCS, SECTION_PATHS, bookHref, sectionHref, sectionLabel } from "../links";
 import { BUTTON_ON_DARK, BUTTON_PRIMARY, CONTAINER, H2, H3, INTRO, LABEL, MONO, Pill } from "../ui";
 import WaitlistFormV6 from "../waitlist/WaitlistFormV6";
 import LegacyAnchors from "./LegacyAnchors";
@@ -92,7 +92,7 @@ export function Footer({ linkBase = "", source, waitlistHeading: WaitlistHeading
             <div className="flex flex-col py-5 pr-5">
               <div className={FOOT_HEAD}>Product</div>
               <a href={sectionHref("how", linkBase)} className={FOOT_LINK}>
-                How it works
+                {sectionLabel("how", "How it works")}
               </a>
               <a href={sectionHref("agents", linkBase)} className={FOOT_LINK}>
                 Agents

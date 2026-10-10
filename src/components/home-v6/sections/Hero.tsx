@@ -16,7 +16,7 @@ export default function Hero() {
             <p className={`${INTRO} max-w-[44ch] text-v6-muted`}>{V6_INTRO}</p>
             <div className="mt-2 flex flex-wrap gap-3">
               {CLEAN_URLS ? (
-                // Clean URLs (SCRUM-310, SCRUM-314): the waitlist and the how-it-works page; no booking link, no anchors.
+                // Clean URLs (SCRUM-310, SCRUM-314): the waitlist and the how-it-works section (/product with SCROLL_SECTIONS); no booking link, no anchors.
                 <>
                   <Link href={SECTION_PATHS.waitlist} className={BUTTON_PRIMARY}>
                     {CTA.join}

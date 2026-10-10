@@ -1,3 +1,4 @@
+import { NAV_PRODUCT } from "@/content/home-v6";
 import { CLEAN_URLS, SCROLL_SECTIONS } from "@/lib/flags";
 
 /** "Read how it works": the docs section that explains how Crado reaches a result. */
@@ -7,7 +8,8 @@ export const HOW_IT_WORKS_DOCS = "/docs#how-it-works";
 export type SectionId = "how" | "agents" | "coverage" | "faq" | "waitlist";
 
 export const SECTION_PATHS: Record<SectionId, string> = {
-  how: "/how-it-works",
+  // SCROLL_SECTIONS (SCRUM-316): the section is "Product" in the nav, at /product; /how-it-works still lands there.
+  how: SCROLL_SECTIONS ? "/product" : "/how-it-works",
   agents: "/agents",
   coverage: "/coverage",
   faq: "/faq",
@@ -30,22 +32,42 @@ export function bookHref(linkBase: "" | "/" = ""): string {
 
 /**
  * The element id of each section on the homepage. With SCROLL_SECTIONS on, "How it works" takes its path's name
- * (how-it-works); otherwise it stays "how" as on main.
+ * (product; the "In the product" band moves to PRODUCT_BAND_ID); otherwise it stays "how" as on main.
  */
 export const SECTION_DOM_IDS: Record<SectionId, string> = {
-  how: SCROLL_SECTIONS ? "how-it-works" : "how",
+  how: SCROLL_SECTIONS ? "product" : "how",
   agents: "agents",
   coverage: "coverage",
   faq: "faq",
   waitlist: "waitlist",
 };
 
+/** The "In the product" band's id: "product" as on main, or "in-the-product" once the section above takes "product". */
+export const PRODUCT_BAND_ID = SCROLL_SECTIONS ? "in-the-product" : "product";
+
+/** The nav, mobile menu and footer label of a section (SCROLL_SECTIONS: "How it works" reads "Product"). */
+export function sectionLabel(id: SectionId, label: string): string {
+  return SCROLL_SECTIONS && id === "how" ? NAV_PRODUCT : label;
+}
+
+/**
+ * Old section paths that still land on their section, and the path the address bar shows instead (replaced, no
+ * extra history entry). SCROLL_SECTIONS only.
+ */
+export const PATH_ALIASES: Record<string, string> = SCROLL_SECTIONS ? { "/how-it-works": SECTION_PATHS.how } : {};
+
+/** The current name of a path: an old alias becomes its new path, anything else is unchanged. */
+export function canonicalPath(pathname: string): string {
+  return PATH_ALIASES[pathname] ?? pathname;
+}
+
 /** Fired by the ScrollRouter after it lands on a URL, so the FAQ can open a ?q= answer. */
 export const ROUTE_EVENT = "crado:route";
 
-/** The section a path names ("/agents" → "agents"), or undefined. */
+/** The section a path names ("/agents" → "agents", an old alias too), or undefined. */
 export function sectionForPath(pathname: string): SectionId | undefined {
-  return (Object.keys(SECTION_PATHS) as SectionId[]).find((id) => SECTION_PATHS[id] === pathname);
+  const path = canonicalPath(pathname);
+  return (Object.keys(SECTION_PATHS) as SectionId[]).find((id) => SECTION_PATHS[id] === path);
 }
 
 /**

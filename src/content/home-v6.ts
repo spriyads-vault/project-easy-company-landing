@@ -266,6 +266,9 @@ export const CTA = {
   join: "Join the waitlist",
 } as const;
 
+/** The "How it works" nav item's label with NEXT_PUBLIC_FF_SCROLL_SECTIONS on (SCRUM-316); the section keeps its pill and H2. */
+export const NAV_PRODUCT = "Product";
+
 export const NAV_LINKS = [
   { id: "how", label: "How it works" },
   { id: "agents", label: "Agents" },

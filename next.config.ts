@@ -19,8 +19,8 @@ const HOMEPAGE_V6 = on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V6);
  * off the site has no new top-level route at all and every other URL behaves as before. Same rule as
  * src/lib/flags.ts SECTION_PAGES.
  *
- * NEXT_PUBLIC_FF_SCROLL_SECTIONS (SCRUM-314, needs HOMEPAGE_V6, overrides SECTION_PAGES): the same five paths are
- * rewrites of "/" (not redirects), and the homepage scrolls to the section (src/components/home-v6/ScrollRouter).
+ * NEXT_PUBLIC_FF_SCROLL_SECTIONS (SCRUM-314, needs HOMEPAGE_V6, overrides SECTION_PAGES): the same five paths, plus
+ * /product (SCRUM-316), are rewrites of "/" (not redirects), and the homepage scrolls to the section (src/components/home-v6/ScrollRouter).
  */
 const SCROLL_SECTIONS = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SCROLL_SECTIONS);
 const SECTION_PAGES = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SECTION_PAGES) && !SCROLL_SECTIONS;
@@ -41,7 +41,8 @@ const nextConfig: NextConfig = {
     return config;
   },
   async rewrites() {
-    if (SCROLL_SECTIONS) return SECTION_SLUGS.map((slug) => ({ source: `/${slug}`, destination: "/" }));
+    // SCRUM-316: "How it works" is /product in the scroll mode; /how-it-works stays a rewrite and shows /product.
+    if (SCROLL_SECTIONS) return ["product", ...SECTION_SLUGS].map((slug) => ({ source: `/${slug}`, destination: "/" }));
     if (!SECTION_PAGES) return [];
     return SECTION_SLUGS.map((slug) => ({ source: `/${slug}`, destination: `/section-pages/${slug}` }));
   },
