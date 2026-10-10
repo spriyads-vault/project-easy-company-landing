@@ -9,11 +9,12 @@ import Hero from "@/components/home-v6/sections/Hero";
 import HowItWorks from "@/components/home-v6/sections/HowItWorks";
 import Product from "@/components/home-v6/sections/Product";
 import HashRedirect from "@/components/home-v6/HashRedirect";
+import ScrollRouter from "@/components/home-v6/ScrollRouter";
 import SiteHeader from "@/components/home-v6/SiteHeader";
 import JsonLd from "@/components/site/JsonLd";
 import SkipLink from "@/components/site/SkipLink";
 import { V6_DESCRIPTION, V6_TITLE } from "@/content/home-v6";
-import { SECTION_PAGES } from "@/lib/flags";
+import { CLEAN_URLS, SCROLL_SECTIONS, SECTION_PAGES } from "@/lib/flags";
 import { HOME_URL, SITE_NAME } from "@/lib/site";
 import { V6_FONT_VARIABLES } from "./fonts";
 import { V6_JSON_LD } from "./structuredData";
@@ -47,6 +48,7 @@ export default function HomePage() {
         <JsonLd key={d["@type"]} data={d} />
       ))}
       {SECTION_PAGES && <HashRedirect />}
+      {SCROLL_SECTIONS && <ScrollRouter />}
       <SkipLink target="main" />
       <Announcement />
       <SiteHeader />
@@ -60,8 +62,8 @@ export default function HomePage() {
         <Coverage teaser={SECTION_PAGES} />
         <CommitmentCards />
         {/* Client component: props only when on, so the flag-off page data stays exactly as before. */}
-        <Faq {...(SECTION_PAGES ? { teaser: true } : {})} />
-        {SECTION_PAGES ? <SectionClosing /> : <Closing />}
+        <Faq {...(SECTION_PAGES ? { teaser: true } : SCROLL_SECTIONS ? { routed: true } : {})} />
+        {CLEAN_URLS ? <SectionClosing /> : <Closing />}
       </main>
       <Footer />
     </div>

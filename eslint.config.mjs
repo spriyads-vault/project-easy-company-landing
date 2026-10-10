@@ -11,6 +11,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     ".next-v6/**",
     ".next-sections/**",
+    ".next-scroll/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

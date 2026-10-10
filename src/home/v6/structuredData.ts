@@ -48,7 +48,10 @@ export const V6_BREADCRUMB_LD = {
   itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: HOME_URL }],
 };
 
-/** With SECTION_PAGES on, the FAQPage graph moves to /faq (where all the questions are) and leaves the homepage. */
+/**
+ * With SECTION_PAGES on, the FAQPage graph moves to /faq (where all the questions are) and leaves the homepage. With
+ * SCROLL_SECTIONS on, SECTION_PAGES is off and it stays here: the homepage has all six questions.
+ */
 export const V6_JSON_LD = SECTION_PAGES
   ? [V6_ORGANIZATION_LD, V6_WEBSITE_LD, V6_SOFTWARE_APPLICATION_LD, V6_BREADCRUMB_LD]
   : [V6_ORGANIZATION_LD, V6_WEBSITE_LD, V6_SOFTWARE_APPLICATION_LD, V6_FAQ_PAGE_LD, V6_BREADCRUMB_LD];

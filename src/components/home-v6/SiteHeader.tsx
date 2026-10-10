@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { CTA, NAV_LINKS } from "@/content/home-v6";
-import { SECTION_PAGES } from "@/lib/flags";
-import { SECTION_PATHS, bookHref, sectionHref, type SectionId } from "./links";
+import { CLEAN_URLS, SECTION_PAGES } from "@/lib/flags";
+import { SECTION_DOM_IDS, SECTION_PATHS, bookHref, sectionHref, type SectionId } from "./links";
 import LogoMark from "./LogoMark";
 import { BUTTON_PRIMARY, CONTAINER } from "./ui";
 
@@ -33,17 +33,20 @@ interface SiteHeaderProps {
   linkBase?: "" | "/";
 }
 
-/** With SECTION_PAGES on, section links are page links (client navigation); otherwise plain anchors as before. */
-const SectionLink = SECTION_PAGES ? Link : "a";
+/**
+ * With clean URLs on, section links are path links (client navigation; on the homepage with SCROLL_SECTIONS the
+ * ScrollRouter turns them into a scroll). Otherwise plain anchors as before.
+ */
+const SectionLink = CLEAN_URLS ? Link : "a";
 
 /**
- * The header's call to action. With SECTION_PAGES on: "Join the waitlist" to /waitlist (no booking link anywhere).
+ * The header's call to action. With clean URLs on: "Join the waitlist" to /waitlist (no booking link anywhere).
  * Otherwise "Book a case review" (short "Book" on mobile) to the homepage's #book band, as before.
  */
-const CTA_LINK = SECTION_PAGES ? { href: SECTION_PATHS.waitlist, label: CTA.join, short: CTA.join } : null;
+const CTA_LINK = CLEAN_URLS ? { href: SECTION_PATHS.waitlist, label: CTA.join, short: CTA.join } : null;
 
 /** Mobile menu items: the four sections, plus the waitlist when it is not already the menu's button. */
-const MENU_LINKS: { id: SectionId; label: string }[] = SECTION_PAGES ? [...NAV_LINKS] : [...NAV_LINKS, { id: "waitlist", label: CTA.join }];
+const MENU_LINKS: { id: SectionId; label: string }[] = CLEAN_URLS ? [...NAV_LINKS] : [...NAV_LINKS, { id: "waitlist", label: CTA.join }];
 
 /**
  * Sticky header (design: header). Over the page it is solid; once scrolled it turns translucent with a blur and a
@@ -55,7 +58,7 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
   const [spyActive, setActive] = useState("");
   // The section pages are rewrites of /section-pages/<slug> (next.config.ts); compare the public path.
   const pathname = usePathname().replace(/^\/section-pages(?=\/)/, "");
-  // Section pages: the current page's item. Otherwise: the section in view (scrollspy).
+  // Section pages: the current page's item. Otherwise: the section in view (scrollspy; the URL never changes on scroll).
   const active = SECTION_PAGES ? (NAV_LINKS.find(({ id }) => SECTION_PATHS[id] === pathname)?.id ?? "") : spyActive;
   const menuRef = useRef<HTMLDialogElement>(null);
 
@@ -67,7 +70,7 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
       if (SECTION_PAGES) return;
       let current = "";
       for (const { id } of NAV_LINKS) {
-        const r = document.getElementById(id)?.getBoundingClientRect();
+        const r = document.getElementById(SECTION_DOM_IDS[id])?.getBoundingClientRect();
         if (r && r.top <= SPY_LINE && r.bottom > SPY_LINE) current = id;
       }
       setActive(current);
@@ -104,8 +107,9 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
   };
 
   const menuLink = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
-    // Section pages: every menu link is a navigation; just close the menu.
-    if (SECTION_PAGES) {
+    // Clean URLs: every menu link is a path; close the menu (on the homepage the ScrollRouter has already closed
+    // it and scrolls once it is gone).
+    if (CLEAN_URLS) {
       menuRef.current?.close();
       return;
     }
