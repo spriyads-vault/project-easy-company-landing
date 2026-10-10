@@ -29,3 +29,12 @@ test("sitemap and llms.txt do not list the section pages", async ({ request }) =
     expect(llms).not.toContain(`crado.io${p})`);
   }
 });
+
+test("scroll sections off (SCRUM-314): no scroll router, #how keeps its id, nav clicks stay hash anchors", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("section#how")).toHaveCount(1);
+  await expect(page.locator("section#how-it-works")).toHaveCount(0);
+  await expect(page.locator("html")).not.toHaveAttribute("data-scroll-router", /.*/);
+  await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "FAQ" }).click();
+  await expect(page).toHaveURL(/\/#faq$/);
+});
