@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { readAttribution, rememberAttribution } from "@/components/waitlist/attribution";
 import { WAITLIST_COPY as C } from "@/content/home-v6";
+import { SECTION_PAGES } from "@/lib/flags";
 import { BOOKING_URL, CONTACT_EMAIL } from "@/lib/site";
 import {
   MARKET_OPTIONS,
@@ -309,22 +310,32 @@ export default function WaitlistFormV6({ source = SOURCE }: WaitlistFormV6Props)
               <p className="m-0 mt-2 font-v6-sans text-[15px] leading-[22px] font-medium">Thanks. Your details are saved.</p>
             ) : (
               <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1">
-                {step2 === "closed" && token && (
-                  <a
-                    href="#waitlist-step-2"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setStep2("open");
-                    }}
-                    className={LINK}
-                  >
-                    {C.step2Link}
+                {step2 === "closed" &&
+                  token &&
+                  (SECTION_PAGES ? (
+                    // Section pages: a button, so no call to action carries a #; it opens step 2 in place.
+                    <button type="button" onClick={() => setStep2("open")} className={`${LINK} cursor-pointer border-0 bg-transparent p-0 text-left`}>
+                      {C.step2Link}
+                    </button>
+                  ) : (
+                    <a
+                      href="#waitlist-step-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setStep2("open");
+                      }}
+                      className={LINK}
+                    >
+                      {C.step2Link}
+                    </a>
+                  ))}
+                {/* No booking link with the section pages on. */}
+                {!SECTION_PAGES && (
+                  <a href={BOOKING_URL} target="_blank" rel="noopener" className={LINK}>
+                    {C.book}
+                    <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                 )}
-                <a href={BOOKING_URL} target="_blank" rel="noopener" className={LINK}>
-                  {C.book}
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
               </div>
             )}
 

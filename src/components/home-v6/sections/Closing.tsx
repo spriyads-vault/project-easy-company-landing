@@ -1,9 +1,11 @@
 import Image from "next/image";
-import type { WaitlistSource } from "@/lib/waitlist/schema";
 import Link from "next/link";
 import { CLOSING_BODY, CLOSING_H2, CTA, WAITLIST_COPY } from "@/content/home-v6";
+import { SECTION_CLOSING_BODY, SECTION_CLOSING_H2, SECTION_WAITLIST_TITLE } from "@/content/section-pages";
+import { SECTION_PAGES } from "@/lib/flags";
 import { BOOKING_URL, CONTACT_EMAIL, LINKEDIN_URL } from "@/lib/site";
-import { HOW_IT_WORKS_DOCS } from "../links";
+import type { WaitlistSource } from "@/lib/waitlist/schema";
+import { HOW_IT_WORKS_DOCS, SECTION_PATHS, bookHref, sectionHref } from "../links";
 import { BUTTON_ON_DARK, BUTTON_PRIMARY, CONTAINER, H2, H3, INTRO, LABEL, MONO, Pill } from "../ui";
 import WaitlistFormV6 from "../waitlist/WaitlistFormV6";
 import LegacyAnchors from "./LegacyAnchors";
@@ -29,6 +31,26 @@ export function Closing() {
   );
 }
 
+/**
+ * Closing block with the section pages on (SCRUM-310): the homepage and every section page except /waitlist. Rust
+ * band, "Bring us your next design change.", one line and one button to the waitlist. No booking link.
+ */
+export function SectionClosing() {
+  return (
+    <section data-screen-label="Closing" data-band="dark" className="bg-v6-rust py-(--v6-section) text-v6-on-dark">
+      <div className={`${CONTAINER} flex flex-col items-center gap-6 text-center`}>
+        <h2 className={`${H2} max-w-[20ch]`}>{SECTION_CLOSING_H2}</h2>
+        <p className={`${INTRO} max-w-[44ch] text-v6-on-dark-muted`}>{SECTION_CLOSING_BODY}</p>
+        <div className="mt-3 flex flex-wrap justify-center gap-3">
+          <Link href={SECTION_PATHS.waitlist} className={BUTTON_PRIMARY}>
+            {CTA.join}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const FOOT_LINK = "py-[11px] text-v6-ink hover:text-v6-muted";
 const FOOT_HEAD = `${LABEL} mb-2 text-v6-muted uppercase`;
 const ICON_LINK =
@@ -41,45 +63,53 @@ interface FooterProps {
   source?: WaitlistSource;
   /** The waitlist title's level: h3 under the page's h2 sections; h2 on a page with none (the 404). */
   waitlistHeading?: "h2" | "h3";
+  /** Leave out the waitlist block (on /waitlist, which has the form already). */
+  waitlist?: boolean;
 }
 
+
 /** Footer: the waitlist, link columns and the NVIDIA Inception badge, on a page card over forest (design: FOOTER). */
-export function Footer({ linkBase = "", source, waitlistHeading: WaitlistHeading = "h3" }: FooterProps) {
+export function Footer({ linkBase = "", source, waitlistHeading: WaitlistHeading = "h3", waitlist = true }: FooterProps) {
   return (
     <footer className="bg-v6-forest p-6">
       <div className="rounded-v6-panel bg-v6-page pt-16 pb-7">
         <div className={`${CONTAINER} flex flex-col gap-12`}>
-          <div id="waitlist" data-screen-label="Waitlist" className="relative grid grid-cols-12 items-start gap-x-6 gap-y-7">
-            <LegacyAnchors section="waitlist" />
-            <div className="col-[1/-1] flex flex-col gap-3 v6d:col-[1/6]">
-              <Pill tone="sun">{WAITLIST_COPY.tag}</Pill>
-              <WaitlistHeading className={`${H3} mt-2 text-balance`}>{WAITLIST_COPY.title}</WaitlistHeading>
-              <p className="m-0 max-w-[64ch] text-pretty text-v6-muted">{WAITLIST_COPY.body}</p>
+          {waitlist && (
+            <div id="waitlist" data-screen-label="Waitlist" className="relative grid grid-cols-12 items-start gap-x-6 gap-y-7">
+              <LegacyAnchors section="waitlist" />
+              <div className="col-[1/-1] flex flex-col gap-3 v6d:col-[1/6]">
+                <Pill tone="sun">{WAITLIST_COPY.tag}</Pill>
+                <WaitlistHeading className={`${H3} mt-2 text-balance`}>{SECTION_PAGES ? SECTION_WAITLIST_TITLE : WAITLIST_COPY.title}</WaitlistHeading>
+                <p className="m-0 max-w-[64ch] text-pretty text-v6-muted">{WAITLIST_COPY.body}</p>
+              </div>
+              <div className="col-[1/-1] flex flex-col v6d:col-[7/13]">
+                <WaitlistFormV6 source={source} />
+              </div>
             </div>
-            <div className="col-[1/-1] flex flex-col v6d:col-[7/13]">
-              <WaitlistFormV6 source={source} />
-            </div>
-          </div>
+          )}
 
-          <nav aria-label="Footer" className="grid grid-cols-1 border-t border-v6-line pt-7 font-v6-sans text-[15px] leading-[22px] v6t:grid-cols-2 v6d:grid-cols-4">
+          <nav aria-label="Footer" className={`grid grid-cols-1 ${waitlist ? "border-t border-v6-line pt-7" : "-mt-5"} font-v6-sans text-[15px] leading-[22px] v6t:grid-cols-2 v6d:grid-cols-4`}>
             <div className="flex flex-col py-5 pr-5">
               <div className={FOOT_HEAD}>Product</div>
-              <a href={`${linkBase}#how`} className={FOOT_LINK}>
+              <a href={sectionHref("how", linkBase)} className={FOOT_LINK}>
                 How it works
               </a>
-              <a href={`${linkBase}#agents`} className={FOOT_LINK}>
+              <a href={sectionHref("agents", linkBase)} className={FOOT_LINK}>
                 Agents
               </a>
-              <a href={`${linkBase}#coverage`} className={FOOT_LINK}>
+              <a href={sectionHref("coverage", linkBase)} className={FOOT_LINK}>
                 Coverage
               </a>
             </div>
             <div className="flex flex-col py-5 pr-5">
               <div className={FOOT_HEAD}>Company</div>
-              <a href={`${linkBase}#book`} className={FOOT_LINK}>
-                {CTA.book}
-              </a>
-              <a href="#waitlist" className={FOOT_LINK}>
+              {/* No booking link with the section pages on. */}
+              {!SECTION_PAGES && (
+                <a href={bookHref(linkBase)} className={FOOT_LINK}>
+                  {CTA.book}
+                </a>
+              )}
+              <a href={sectionHref("waitlist")} className={FOOT_LINK}>
                 {CTA.join}
               </a>
               <a href={`mailto:${CONTACT_EMAIL}`} className={FOOT_LINK}>

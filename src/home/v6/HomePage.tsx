@@ -2,16 +2,18 @@ import type { Metadata, Viewport } from "next";
 import Agents from "@/components/home-v6/sections/Agents";
 import Announcement from "@/components/home-v6/sections/Announcement";
 import { Commitments, Essay } from "@/components/home-v6/sections/Bands";
-import { Closing, Footer } from "@/components/home-v6/sections/Closing";
+import { Closing, Footer, SectionClosing } from "@/components/home-v6/sections/Closing";
 import { CommitmentCards, Coverage } from "@/components/home-v6/sections/Coverage";
 import Faq from "@/components/home-v6/sections/Faq";
 import Hero from "@/components/home-v6/sections/Hero";
 import HowItWorks from "@/components/home-v6/sections/HowItWorks";
 import Product from "@/components/home-v6/sections/Product";
+import HashRedirect from "@/components/home-v6/HashRedirect";
 import SiteHeader from "@/components/home-v6/SiteHeader";
 import JsonLd from "@/components/site/JsonLd";
 import SkipLink from "@/components/site/SkipLink";
 import { V6_DESCRIPTION, V6_TITLE } from "@/content/home-v6";
+import { SECTION_PAGES } from "@/lib/flags";
 import { HOME_URL, SITE_NAME } from "@/lib/site";
 import { V6_FONT_VARIABLES } from "./fonts";
 import { V6_JSON_LD } from "./structuredData";
@@ -44,6 +46,7 @@ export default function HomePage() {
       {V6_JSON_LD.map((d) => (
         <JsonLd key={d["@type"]} data={d} />
       ))}
+      {SECTION_PAGES && <HashRedirect />}
       <SkipLink target="main" />
       <Announcement />
       <SiteHeader />
@@ -51,13 +54,14 @@ export default function HomePage() {
         <Hero />
         <Commitments />
         <Essay />
-        <HowItWorks />
+        <HowItWorks teaser={SECTION_PAGES} />
         <Product />
-        <Agents />
-        <Coverage />
+        <Agents teaser={SECTION_PAGES} />
+        <Coverage teaser={SECTION_PAGES} />
         <CommitmentCards />
-        <Faq />
-        <Closing />
+        {/* Client component: props only when on, so the flag-off page data stays exactly as before. */}
+        <Faq {...(SECTION_PAGES ? { teaser: true } : {})} />
+        {SECTION_PAGES ? <SectionClosing /> : <Closing />}
       </main>
       <Footer />
     </div>

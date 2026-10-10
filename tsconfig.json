@@ -33,6 +33,8 @@
     ".next/dev/types/**/*.ts",
     ".next-v6/types/**/*.ts",
     ".next-v6/dev/types/**/*.ts",
+    ".next-sections/types/**/*.ts",
+    ".next-sections/dev/types/**/*.ts",
     "**/*.mts"
   ],
   "exclude": ["node_modules"]

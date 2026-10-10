@@ -1,7 +1,8 @@
 import { FAQ_V6, V6_DESCRIPTION } from "@/content/home-v6";
+import { SECTION_PAGES } from "@/lib/flags";
 import { CONTACT_EMAIL, HOME_URL, LINKEDIN_URL, LOGO_PATH, SITE_NAME, SITE_URL } from "@/lib/site";
 
-/** JSON-LD for the v6 homepage: Organization, WebSite, SoftwareApplication, FAQPage and BreadcrumbList. */
+/** JSON-LD for the v6 homepage: Organization, WebSite, SoftwareApplication, FAQPage (until section pages) and BreadcrumbList. */
 export const V6_ORGANIZATION_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -47,4 +48,7 @@ export const V6_BREADCRUMB_LD = {
   itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: HOME_URL }],
 };
 
-export const V6_JSON_LD = [V6_ORGANIZATION_LD, V6_WEBSITE_LD, V6_SOFTWARE_APPLICATION_LD, V6_FAQ_PAGE_LD, V6_BREADCRUMB_LD];
+/** With SECTION_PAGES on, the FAQPage graph moves to /faq (where all the questions are) and leaves the homepage. */
+export const V6_JSON_LD = SECTION_PAGES
+  ? [V6_ORGANIZATION_LD, V6_WEBSITE_LD, V6_SOFTWARE_APPLICATION_LD, V6_BREADCRUMB_LD]
+  : [V6_ORGANIZATION_LD, V6_WEBSITE_LD, V6_SOFTWARE_APPLICATION_LD, V6_FAQ_PAGE_LD, V6_BREADCRUMB_LD];

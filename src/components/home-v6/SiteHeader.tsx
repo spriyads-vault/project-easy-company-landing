@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { CTA, NAV_LINKS } from "@/content/home-v6";
+import { SECTION_PAGES } from "@/lib/flags";
+import { SECTION_PATHS, bookHref, sectionHref, type SectionId } from "./links";
 import LogoMark from "./LogoMark";
 import { BUTTON_PRIMARY, CONTAINER } from "./ui";
 
@@ -30,6 +33,18 @@ interface SiteHeaderProps {
   linkBase?: "" | "/";
 }
 
+/** With SECTION_PAGES on, section links are page links (client navigation); otherwise plain anchors as before. */
+const SectionLink = SECTION_PAGES ? Link : "a";
+
+/**
+ * The header's call to action. With SECTION_PAGES on: "Join the waitlist" to /waitlist (no booking link anywhere).
+ * Otherwise "Book a case review" (short "Book" on mobile) to the homepage's #book band, as before.
+ */
+const CTA_LINK = SECTION_PAGES ? { href: SECTION_PATHS.waitlist, label: CTA.join, short: CTA.join } : null;
+
+/** Mobile menu items: the four sections, plus the waitlist when it is not already the menu's button. */
+const MENU_LINKS: { id: SectionId; label: string }[] = SECTION_PAGES ? [...NAV_LINKS] : [...NAV_LINKS, { id: "waitlist", label: CTA.join }];
+
 /**
  * Sticky header (design: header). Over the page it is solid; once scrolled it turns translucent with a blur and a
  * hairline. The current section's link is underlined. At 640px and below the links move into a full-screen menu
@@ -37,7 +52,11 @@ interface SiteHeaderProps {
  */
 export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("");
+  const [spyActive, setActive] = useState("");
+  // The section pages are rewrites of /section-pages/<slug> (next.config.ts); compare the public path.
+  const pathname = usePathname().replace(/^\/section-pages(?=\/)/, "");
+  // Section pages: the current page's item. Otherwise: the section in view (scrollspy).
+  const active = SECTION_PAGES ? (NAV_LINKS.find(({ id }) => SECTION_PATHS[id] === pathname)?.id ?? "") : spyActive;
   const menuRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -45,6 +64,7 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
     const update = () => {
       raf = 0;
       setScrolled(window.scrollY > 8);
+      if (SECTION_PAGES) return;
       let current = "";
       for (const { id } of NAV_LINKS) {
         const r = document.getElementById(id)?.getBoundingClientRect();
@@ -84,6 +104,11 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
   };
 
   const menuLink = (e: MouseEvent<HTMLAnchorElement>, id: string) => {
+    // Section pages: every menu link is a navigation; just close the menu.
+    if (SECTION_PAGES) {
+      menuRef.current?.close();
+      return;
+    }
     // Off the homepage, section links are ordinary navigations to "/#id"; only the waitlist is on every page.
     if (linkBase && id !== "waitlist") return;
     e.preventDefault();
@@ -104,20 +129,37 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
           </Link>
           <nav aria-label="Main" className="hidden gap-9 v6t:flex">
             {NAV_LINKS.map(({ id, label }) => (
-              <a key={id} href={`${linkBase}#${id}`} aria-current={active === id ? "true" : undefined} className={`${NAV_LINK} ${active === id ? "border-v6-primary" : "border-transparent"}`}>
+              <SectionLink
+                key={id}
+                href={sectionHref(id, linkBase)}
+                aria-current={active === id ? (SECTION_PAGES ? "page" : "true") : undefined}
+                className={`${NAV_LINK} ${active === id ? "border-v6-primary" : "border-transparent"}`}
+              >
                 {label}
-              </a>
+              </SectionLink>
             ))}
           </nav>
           <div className="hidden v6t:block">
-            <a href={`${linkBase}#book`} className={BUTTON_PRIMARY}>
-              {CTA.book}
-            </a>
+            {CTA_LINK ? (
+              <Link href={CTA_LINK.href} className={BUTTON_PRIMARY}>
+                {CTA_LINK.label}
+              </Link>
+            ) : (
+              <a href={bookHref(linkBase)} className={BUTTON_PRIMARY}>
+                {CTA.book}
+              </a>
+            )}
           </div>
           <div className="flex items-center gap-2 v6t:hidden">
-            <a href={`${linkBase}#book`} className={BUTTON_PRIMARY}>
-              {CTA.bookShort}
-            </a>
+            {CTA_LINK ? (
+              <Link href={CTA_LINK.href} className={BUTTON_PRIMARY}>
+                {CTA_LINK.short}
+              </Link>
+            ) : (
+              <a href={bookHref(linkBase)} className={BUTTON_PRIMARY}>
+                {CTA.bookShort}
+              </a>
+            )}
             <button
               type="button"
               aria-label="Open menu"
@@ -153,25 +195,26 @@ export default function SiteHeader({ linkBase = "" }: SiteHeaderProps) {
           </button>
         </div>
         <nav aria-label="Menu links" className="flex flex-col px-(--v6-gutter) py-6">
-          {[...NAV_LINKS, { id: "waitlist", label: CTA.join }].map(({ id, label }) => (
-            <a
+          {MENU_LINKS.map(({ id, label }) => (
+            <SectionLink
               key={id}
-              href={id === "waitlist" ? "#waitlist" : `${linkBase}#${id}`}
-              onClick={(e) => menuLink(e, id)}
+              href={sectionHref(id, linkBase)}
+              onClick={(e: MouseEvent<HTMLAnchorElement>) => menuLink(e, id)}
+              aria-current={SECTION_PAGES && SECTION_PATHS[id] === pathname ? "page" : undefined}
               className="border-b border-v6-line py-4 font-v6-serif text-[34px] leading-[38px] tracking-[-.02em] text-v6-ink hover:text-v6-ink"
             >
               {label}
-            </a>
+            </SectionLink>
           ))}
         </nav>
         <div className="mt-auto px-(--v6-gutter) py-6">
-          <a
-            href={`${linkBase}#book`}
-            onClick={(e) => menuLink(e, "book")}
+          <SectionLink
+            href={CTA_LINK ? CTA_LINK.href : bookHref(linkBase)}
+            onClick={(e: MouseEvent<HTMLAnchorElement>) => menuLink(e, "book")}
             className="flex h-12 items-center justify-center rounded-v6-button bg-v6-primary font-v6-sans text-[15px] leading-none font-medium text-v6-on-primary hover:bg-v6-primary-hover hover:text-v6-on-primary"
           >
-            {CTA.book}
-          </a>
+            {CTA_LINK ? CTA_LINK.label : CTA.book}
+          </SectionLink>
         </div>
       </dialog>
     </>

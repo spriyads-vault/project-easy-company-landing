@@ -12,9 +12,10 @@ export const SOCIAL_ALT = HOMEPAGE_V6 ? `Crado: ${V6_H1}` : OG_IMAGE.alt;
 
 /**
  * v6: page colour, the official mark (white, on a forest tile so it is never recoloured), the H1 in Plex Serif and
- * the category line in Plex Mono. With the flag off it serves the existing v3 card unchanged.
+ * the category line in Plex Mono. With the flag off it serves the existing v3 card unchanged. `title` is the page's
+ * H1 for the section pages (SCRUM-310); the homepage uses its own.
  */
-export async function socialImage(): Promise<Response> {
+export async function socialImage(title: string = V6_H1): Promise<Response> {
   if (!HOMEPAGE_V6) {
     const png = await readFile(join(process.cwd(), "public/og/crado-og-1200x630.png"));
     return new Response(new Uint8Array(png), { headers: { "Content-Type": "image/png" } });
@@ -34,7 +35,7 @@ export async function socialImage(): Promise<Response> {
             {/* eslint-disable-next-line @next/next/no-img-element -- ImageResponse renders plain <img> */}
             <img src={`data:image/png;base64,${logo.toString("base64")}`} width={53} height={60} alt="" />
           </div>
-          <div style={{ fontFamily: "Plex Serif", fontSize: 84, lineHeight: 1.08, letterSpacing: "-0.02em", maxWidth: 900 }}>{V6_H1}</div>
+          <div style={{ fontFamily: "Plex Serif", fontSize: 84, lineHeight: 1.08, letterSpacing: "-0.02em", maxWidth: 900 }}>{title}</div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ fontFamily: "Plex Mono", fontSize: 24, letterSpacing: "0.06em", textTransform: "uppercase", color: "#5C6270" }}>{V6_CATEGORY}</div>
             <div style={{ display: "flex", gap: 10 }}>
