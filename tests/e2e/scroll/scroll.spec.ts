@@ -7,9 +7,9 @@ import { AGENTS, FAQ_V6, V6_TITLE } from "../../../src/content/home-v6";
 
 const SITE = "https://www.crado.io";
 /** Path → the id of the section it lands on. */
-const SECTIONS = { "/how-it-works": "how-it-works", "/agents": "agents", "/coverage": "coverage", "/faq": "faq", "/waitlist": "waitlist" } as const;
+const SECTIONS = { "/product": "product", "/agents": "agents", "/coverage": "coverage", "/faq": "faq", "/waitlist": "waitlist" } as const;
 const PATHS = Object.keys(SECTIONS) as (keyof typeof SECTIONS)[];
-const NAV = { "How it works": "/how-it-works", Agents: "/agents", Coverage: "/coverage", FAQ: "/faq" } as const;
+const NAV = { Product: "/product", Agents: "/agents", Coverage: "/coverage", FAQ: "/faq" } as const;
 const HEADER = 64;
 const slugify = (t: string) =>
   t
@@ -75,8 +75,8 @@ test.describe("nav scrolls on the homepage", () => {
 
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
     await page.locator("main").getByRole("link", { name: "Read how it works" }).first().click();
-    await expect(page).toHaveURL("/how-it-works");
-    await expectLanded(page, section(page, "/how-it-works"));
+    await expect(page).toHaveURL("/product");
+    await expectLanded(page, section(page, "/product"));
     expect(await marked(page)).toBe(1);
   });
 
@@ -142,6 +142,28 @@ test.describe("direct loads and history", () => {
     });
   }
 
+  test("/how-it-works lands on the same section and shows /product, with no extra history entry", async ({ page }) => {
+    await page.goto("/how-it-works");
+    await expect(page).toHaveURL("/product");
+    expect(await page.evaluate(() => history.length)).toBe(2);
+    await expectLanded(page, page.locator("#product"));
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `${SITE}/`);
+  });
+
+  test("Product in the nav, mobile menu and footer; the section keeps its pill and H2; the hero button keeps its text", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Product", exact: true })).toHaveAttribute("href", "/product");
+    await expect(page.getByRole("contentinfo").getByRole("link", { name: "Product", exact: true })).toHaveAttribute("href", "/product");
+    await expect(page.getByRole("dialog", { name: "Menu", includeHidden: true }).getByRole("link", { name: "Product", exact: true, includeHidden: true })).toHaveAttribute("href", "/product");
+    await expect(page.getByRole("link", { name: "How it works", exact: true })).toHaveCount(0);
+    await expect(page.locator("#product").getByText("How it works", { exact: true })).toBeVisible();
+    await expect(page.locator("#product h2")).toHaveText("A record your engineers can check");
+    await expect(page.locator("main").getByRole("link", { name: "Read how it works" }).first()).toHaveAttribute("href", "/product");
+    // The "In the product" band moved aside for the section id.
+    await expect(page.locator("#in-the-product")).toHaveCount(1);
+    await expect(page.locator("[id=product]")).toHaveCount(1);
+  });
+
   test("/waitlist focuses the email field", async ({ page }) => {
     await page.goto("/waitlist");
     await expect(page.locator('#waitlist input[type="email"]')).toBeFocused();
@@ -193,7 +215,7 @@ test.describe("direct loads and history", () => {
   });
 
   test("old hash links end on their path without a new history entry", async ({ context }) => {
-    const OLD = { agents: "/agents", faq: "/faq", "change-review": "/agents", "failure-investigation": "/agents", evidence: "/how-it-works", book: "/waitlist" } as const;
+    const OLD = { agents: "/agents", faq: "/faq", "change-review": "/agents", "failure-investigation": "/agents", evidence: "/product", "how-it-works": "/product", book: "/waitlist" } as const;
     for (const [hash, path] of Object.entries(OLD)) {
       const page = await context.newPage();
       await page.goto(`/#${hash}`);
@@ -242,7 +264,7 @@ test.describe("links and SEO", () => {
     await page.goto("/");
     await expect(page.locator("#agents li")).toHaveCount(AGENTS.length);
     await expect(page.locator("#faq h3 button")).toHaveCount(FAQ_V6.length);
-    await expect(page.locator("#how-it-works h3").first()).toBeVisible();
+    await expect(page.locator("#product h3").first()).toBeVisible();
     await expect(page.locator("#coverage table, #coverage [role=table]").first()).toBeVisible();
     await expect(page.getByRole("link", { name: /All agents|Full coverage|See all questions|How Crado works →/ })).toHaveCount(0);
     expect((await request.get("/section-pages/agents")).status()).toBe(404);
