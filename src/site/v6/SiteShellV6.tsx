@@ -13,6 +13,8 @@ interface SiteShellV6Props {
   docs?: boolean;
   /** Level of the footer waitlist title (h2 when the page has no h2 of its own). */
   waitlistHeading?: "h2" | "h3";
+  /** Leave the footer waitlist out (/waitlist, which is the form). */
+  waitlist?: boolean;
   children: ReactNode;
 }
 
@@ -20,7 +22,7 @@ interface SiteShellV6Props {
  * The v6 homepage's announcement, header and footer (with the waitlist) around a docs, legal or 404 page. Section
  * links and "Book a case review" go to the homepage; "Join the waitlist" scrolls to this page's footer form.
  */
-export default function SiteShellV6({ source, docs, waitlistHeading, children }: SiteShellV6Props) {
+export default function SiteShellV6({ source, docs, waitlistHeading, waitlist, children }: SiteShellV6Props) {
   return (
     <div
       data-site-v6
@@ -31,7 +33,7 @@ export default function SiteShellV6({ source, docs, waitlistHeading, children }:
       <Announcement />
       <SiteHeader linkBase="/" />
       {children}
-      <Footer linkBase="/" source={source} waitlistHeading={waitlistHeading} />
+      <Footer linkBase="/" source={source} waitlistHeading={waitlistHeading} waitlist={waitlist} />
     </div>
   );
 }

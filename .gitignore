@@ -60,3 +60,5 @@ node_modules/
 
 # Flag-on build used by Playwright (NEXT_DIST_DIR=.next-v6)
 /.next-v6/
+# Section pages build used by Playwright (NEXT_DIST_DIR=.next-sections)
+/.next-sections/

@@ -47,6 +47,11 @@ export function statusOf(id: CapabilityId): CapabilityStatus {
   return CAPABILITIES[id].status;
 }
 
+/** True for a capability on the roadmap (the homepage agents teaser shows the first two). */
+export function isRoadmap(id: CapabilityId): boolean {
+  return statusOf(id) === "ROADMAP";
+}
+
 export function isLive(id: CapabilityId): boolean {
   return statusOf(id) === "LIVE";
 }

@@ -24,6 +24,13 @@ export const BUTTON_SECONDARY = `${BUTTON_BASE} border border-v6-line-strong tex
 /** Outline on a dark band; fills on hover. */
 export const BUTTON_ON_DARK = `${BUTTON_BASE} border border-v6-on-dark text-v6-on-dark hover:bg-v6-on-dark hover:text-v6-rust`;
 
+/** "All agents →" style link at the end of a homepage teaser (SCRUM-310). Primary on light bands. */
+export const TEASER_LINK =
+  "self-start font-v6-sans text-[17px] leading-6 font-medium text-v6-primary underline-offset-[4px] hover:text-v6-primary-hover hover:underline";
+/** The same on a dark band. */
+export const TEASER_LINK_ON_DARK =
+  "self-start font-v6-sans text-[17px] leading-6 font-medium text-v6-on-dark underline-offset-[4px] hover:text-v6-on-dark hover:underline";
+
 export type Tone = "sky" | "mint" | "sun" | "lilac";
 
 const TONE_BG: Record<Tone, string> = {
