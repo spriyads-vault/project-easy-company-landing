@@ -241,6 +241,9 @@
   --color-v8-panel: #161619;
   --color-v8-start: #141518;
   --color-v8-card: #18181b;
+  /* Elevated surface for highlighted cards inside dark artifacts (never a white card), with its hairline */
+  --color-v8-elevated: #161618;
+  --color-v8-line-elevated: rgb(255 255 255 / 0.12);
   --color-v8-chip: #1f1f23;
   --color-v8-inset: #0b0c0e;
   --color-v8-input: #0e0e10;
@@ -295,9 +298,9 @@
   --font-v6-sans: var(--font-plex-sans), system-ui, sans-serif;
   --font-v6-mono: var(--font-plex-mono), ui-monospace, monospace;
   /* v8 faces, set on the v8 home root by src/home/v8/fonts.ts */
-  --font-v8-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-v8-sans: var(--font-google-sans-flex), system-ui, sans-serif;
   --font-v8-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
-  --font-v8-brand: var(--font-google-sans-flex), var(--font-figtree), system-ui, sans-serif;
+  --font-v8-brand: var(--font-google-sans-flex), system-ui, sans-serif;
 }
 
 :root {

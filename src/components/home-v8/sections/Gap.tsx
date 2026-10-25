@@ -1,12 +1,12 @@
-import { GAP, SAMPLE } from "@/content/home-v8";
+import { GAP, IDS, SAMPLE } from "@/content/home-v8";
 import SampleCase from "../SampleCase";
 import { Glyph, H2, LEAD, MONO, SECTION } from "../ui";
 
-/** The structural gap (design: SECTION 2), then the sample case workbench. */
+/** The product graph (SECTION 2): the structural gap, then the sample case workbench. */
 export default function Gap() {
   const [a, b, c, d] = GAP.after.parts;
   return (
-    <section id="gap" aria-labelledby="gap-title" className={SECTION}>
+    <section id={IDS.productGraph} aria-labelledby="gap-title" className={SECTION}>
       <div className="mx-auto max-w-[1120px]">
         <h2 id="gap-title" data-reveal="" className={`${H2} mx-auto max-w-[960px] text-center leading-[1.08]`}>
           {GAP.h2} <span className="text-v8-muted">{GAP.h2Muted}</span>

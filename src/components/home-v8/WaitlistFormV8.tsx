@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { INITIAL_STEP1, INITIAL_STEP2, applyStep1Outcome, deriveStep1View, step1Outcome, step2Body, step2IsEmpty, step2Outcome, toggleMarket, toggleProductType, withEmail, type Step1State, type Step2State } from "@/components/home-v6/waitlist/formState";
 import { readAttribution, rememberAttribution } from "@/components/waitlist/attribution";
-import { FORM } from "@/content/home-v8";
+import { FORM, IDS, START } from "@/content/home-v8";
 import { BOOKING_URL } from "@/lib/site";
 import { MARKET_OPTIONS, NEXT_TEST_WINDOW_OPTIONS, PRODUCT_TYPE_OPTIONS, ROLE_OPTIONS, SOURCES, type WaitlistResponse, type WaitlistSource } from "@/lib/waitlist/schema";
 import { WL_SOURCE_EVENT } from "./Motion";
@@ -243,6 +243,9 @@ export default function WaitlistFormV8() {
               {v.loading && <Spinner />}
               <span>{v.loading ? FORM.loading : FORM.submit}</span>
             </button>
+            <a href={`#${IDS.sample}`} className={TEXT_LINK}>
+              {START.sample}
+            </a>
             <a href={BOOKING_URL} target="_blank" rel="noopener" className={TEXT_LINK}>
               {FORM.book.label}
               <span className="sr-only"> (opens in a new tab)</span>
