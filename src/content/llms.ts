@@ -1,5 +1,5 @@
 import { CAPABILITIES, statusOf } from "./capability-status";
-import { SCROLL_SECTIONS, SECTION_PAGES } from "@/lib/flags";
+import { DOCS_SPEC, SCROLL_SECTIONS, SECTION_PAGES } from "@/lib/flags";
 import { AGENTS, COVERAGE, FAQ_V6, PRINCIPLES, SOURCES_NOTE, STACK, V6_CATEGORY, V6_DESCRIPTION, V6_H1, V6_INTRO } from "./home-v6";
 import { CONTINUITY, FAQ_V8, HERO, LEDGER, METHOD, V8_H1, WORKFLOW } from "./home-v8";
 import { SECTION_PAGES_COPY, SECTION_SLUGS } from "./section-pages";
@@ -20,7 +20,15 @@ ${SECTION_SLUGS.filter((s) => s !== "waitlist")
 `
     : "";
 
-const DOCS = `## Docs
+const DOCS = DOCS_SPEC
+  ? `## Docs
+- [Method & Coverage](https://www.crado.io/docs): overview of the method, coverage and security specification
+- [The four truth states](https://www.crado.io/docs/concepts): observed, known, inferred and missing, and the confirmation boundary
+- [Deterministic arithmetic and coverage](https://www.crado.io/docs/reference): the engine pipeline, post-generation checks, 47 CFR 15.109 limit tables and refusal rules
+- [Validation](https://www.crado.io/docs/evaluation): test suites and the public FCC report benchmark
+- [Security and workspace isolation](https://www.crado.io/docs/trust): workspace isolation, no cross-customer training, engineer authority
+- [Changelog](https://www.crado.io/docs/changelog)`
+  : `## Docs
 - [Introduction](https://www.crado.io/docs): what Crado does and how it reaches a result
 - [Concepts](https://www.crado.io/docs/concepts): revisions, requirements, evidence, evidence states, agents, rules and review
 - [Evaluation](https://www.crado.io/docs/evaluation): report confirmation, rule evaluation, measurement comparisons, blocked checks
@@ -97,7 +105,7 @@ ${FAQ_V8.map((f) => `- ${f.q} ${f.a}`).join("\n")}
 ${DOCS}
 
 ## Contact
-- Waitlist: https://www.crado.io/#start
+- Waitlist: https://www.crado.io/#get-started
 - Email: hello@crado.io
 `;
 }

@@ -31,7 +31,15 @@ export const CAPABILITIES = {
   publicCaseLibrary: { name: "Public case library (workspace history stays in its own workspace)", summary: "the public case library", status: "LIVE" },
 
   // Sources not yet live
-  bomIntake: { name: "BOM intake", summary: "BOM intake", status: "ROADMAP" },
+  bomIntake: { name: "BOM intake", summary: "automated BOM file intake", status: "ROADMAP" },
+  preTestRiskReview: { name: "Pre-test risk review in the console", summary: "pre-test risk review in the console", status: "ROADMAP" },
+
+  // Measurements and regimes beyond the live 15.109(a) scope
+  fcc15107: { name: "47 CFR 15.107 conducted emissions", summary: "conducted emissions (47 CFR 15.107)", status: "ROADMAP" },
+  radiatedAbove1GHz: { name: "Radiated emissions above 1 GHz", summary: "radiated emissions above 1 GHz", status: "ROADMAP" },
+  detectorConversion: { name: "Peak and average detector conversions", summary: "peak and average detector conversions", status: "ROADMAP" },
+  distanceExtrapolation: { name: "Measurement distance extrapolation", summary: "distance extrapolation", status: "ROADMAP" },
+  cispr32: { name: "EU CE marking under CISPR 32 / EN 55032", summary: "EU CE / CISPR 32", status: "ROADMAP" },
 
   // Agents not yet live
   changeReviewer: { name: "Change reviewer agent", summary: "the change reviewer agent", status: "ROADMAP" },
@@ -44,7 +52,7 @@ export const CAPABILITIES = {
   sourcesEmailChatTickets: { name: "Reading email, team chat and change tickets", summary: "reading email, team chat and change tickets", status: "ROADMAP" },
 
   // Regulations beyond 47 CFR 15.109(a)
-  fcc15109b: { name: "47 CFR 15.109(b), Class A at 10 m", summary: "47 CFR 15.109(b)", status: "ROADMAP" },
+  fcc15109b: { name: "47 CFR 15.109(b), Class A at 10 m", summary: "Class A at 10 m (47 CFR 15.109(b))", status: "ROADMAP" },
   euEmcRed: { name: "EU EMC and Radio Equipment Directives", summary: "the EU EMC and Radio Equipment Directives", status: "ROADMAP" },
   euMachinery: { name: "EU Machinery Regulation 2023/1230", summary: "the EU Machinery Regulation 2023/1230", status: "ROADMAP" },
   rtcaDo160: { name: "RTCA DO-160", summary: "RTCA DO-160", status: "ROADMAP" },
