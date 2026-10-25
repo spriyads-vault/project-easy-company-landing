@@ -3,12 +3,14 @@
 # Project conventions
 
 - Package manager: npm (`package-lock.json`). Do not switch to pnpm or yarn.
-- Theme: light theme (v6 design system); tokens in docs/design/system/DESIGN.md. No theme toggle. Until
-  NEXT_PUBLIC_FF_HOMEPAGE_V6 ships, the flag-off homepage, docs and legal pages keep the dark v3 tokens. Design-prototype
-  tweak panels (accent/theme tweaks) never ship to production.
-- Design tokens live in `src/styles/design-system.css` (v6 tokens are prefixed `v6-`). Add new tokens there rather than
+- Theme: the v8 dark homepage (Claude Design "Crado_Landing_v8") is the homepage design going forward, behind
+  NEXT_PUBLIC_FF_HOMEPAGE_V8 (default off; when on it wins over v6). Code in src/home/v8 and src/components/home-v8,
+  copy in src/content/home-v8.ts. The v3 (dark) and v6 (light, tokens in docs/design/system/DESIGN.md) homepages stay
+  until v8 is switched on and checked; with v8 on, docs, legal pages and the 404 keep the v3 design. No theme toggle.
+  Design-prototype tweak panels (accent/theme tweaks) never ship to production.
+- Design tokens live in `src/styles/design-system.css` (v6 tokens are prefixed `v6-`, v8 tokens `v8-`). Add new tokens there rather than
   hard-coding values.
-- Capability statuses (LIVE / EARLY ACCESS / ROADMAP) on the v6 homepage and llms.txt come from
+- Capability statuses (LIVE / EARLY ACCESS / ROADMAP) on the v6 and v8 homepages and llms.txt come from
   `src/content/capability-status.ts`; components never write a status (a unit test enforces it).
 
 # Workflow

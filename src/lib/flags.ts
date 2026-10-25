@@ -4,8 +4,15 @@
  */
 const on = (v: string | undefined) => ["1", "true", "on"].includes((v ?? "").toLowerCase());
 
-/** Homepage v6 (light design). Default off: the v3 homepage stays. */
-export const HOMEPAGE_V6 = on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V6);
+/**
+ * Homepage v8 (dark design, Claude Design "Crado_Landing_v8"). Default off. When on it replaces the homepage and
+ * wins over HOMEPAGE_V6 (which, with the section flags below, is then off); docs, legal pages and the 404 keep the
+ * v3 dark design.
+ */
+export const HOMEPAGE_V8 = on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V8);
+
+/** Homepage v6 (light design). Default off: the v3 homepage stays. Off whenever HOMEPAGE_V8 is on. */
+export const HOMEPAGE_V6 = !HOMEPAGE_V8 && on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V6);
 
 /**
  * Section pages with clean URLs (SCRUM-310): /how-it-works, /agents, /coverage, /faq and /waitlist, and path links

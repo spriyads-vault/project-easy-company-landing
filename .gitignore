@@ -64,3 +64,5 @@ node_modules/
 /.next-sections/
 # Scroll sections build used by Playwright (NEXT_DIST_DIR=.next-scroll)
 /.next-scroll/
+# v8 homepage build used by Playwright (NEXT_DIST_DIR=.next-v8)
+/.next-v8/
