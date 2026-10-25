@@ -37,6 +37,8 @@
     ".next-sections/dev/types/**/*.ts",
     ".next-scroll/types/**/*.ts",
     ".next-scroll/dev/types/**/*.ts",
+    ".next-v8/types/**/*.ts",
+    ".next-v8/dev/types/**/*.ts",
     "**/*.mts"
   ],
   "exclude": ["node_modules"]

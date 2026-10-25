@@ -1,0 +1,224 @@
+/*
+ * Homepage v8 page-level rules. Loaded only with the v8 homepage (imported by src/home/v8/HomePage.tsx), so no other
+ * page sees them. Tokens live in src/styles/design-system.css (v8-*).
+ */
+
+/* Dark page colour behind overscroll; anchors land 72px down, below the fixed 64px header (design: offset -72). */
+:root:has([data-home-v8]) {
+  color-scheme: dark;
+  background: var(--color-v8-page);
+  scroll-padding-top: 72px;
+}
+
+:root:has([data-home-v8]) body {
+  background: var(--color-v8-page);
+}
+
+@layer base {
+  [data-home-v8] a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  [data-home-v8] :focus-visible {
+    outline: 2px solid var(--color-v8-focus);
+    outline-offset: 2px;
+  }
+
+  [data-home-v8] ::selection {
+    background: #0038ff;
+    color: #fff;
+  }
+}
+
+/*
+ * Sections below the hero skip style, layout and paint until they near the viewport (keeps the hero's first render
+ * cheap on phones). The intrinsic size is remembered once a section has rendered, so the scrollbar settles.
+ */
+[data-home-v8] main > section:not(#hero),
+[data-home-v8] > footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1200px;
+}
+
+/* The hero diagram, below the fold on phones (on wide screens it is in view and renders at once). */
+[data-home-v8] .v8-defer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1100px;
+}
+
+@media (min-width: 1100px) {
+  [data-home-v8] .v8-defer {
+    contain-intrinsic-size: auto 600px;
+  }
+}
+
+/*
+ * The hero diagram's 1200px stage, zoomed to fit (design: zoom min(1, (vw - 96) / 1200)) in 14px steps, each
+ * rounded down so the stage never overflows.
+ */
+  @media (min-width: 1100px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.8367;
+    }
+  }
+  @media (min-width: 1114px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.8483;
+    }
+  }
+  @media (min-width: 1128px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.8600;
+    }
+  }
+  @media (min-width: 1142px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.8717;
+    }
+  }
+  @media (min-width: 1156px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.8833;
+    }
+  }
+  @media (min-width: 1170px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.8950;
+    }
+  }
+  @media (min-width: 1184px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9067;
+    }
+  }
+  @media (min-width: 1198px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9183;
+    }
+  }
+  @media (min-width: 1212px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9300;
+    }
+  }
+  @media (min-width: 1226px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9417;
+    }
+  }
+  @media (min-width: 1240px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9533;
+    }
+  }
+  @media (min-width: 1254px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9650;
+    }
+  }
+  @media (min-width: 1268px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9767;
+    }
+  }
+  @media (min-width: 1282px) {
+    [data-home-v8] .v8-dz {
+      zoom: 0.9883;
+    }
+  }
+  @media (min-width: 1296px) {
+    [data-home-v8] .v8-dz {
+      zoom: 1;
+    }
+  }
+
+@keyframes v8-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/*
+ * Scroll motion (src/components/home-v8/Motion.tsx). Everything below needs html[data-v8-motion], which is set before
+ * first paint only when motion is allowed: without it every element shows its final state.
+ *
+ * Timed elements ([data-a], delay --t, duration --d) wait in their first frame until their [data-anim-root] gets
+ * .v8-play (20% in view). Easing as in the design: cubic-bezier(.22,1,.36,1), ease-out for pulses and the ring.
+ */
+[data-v8-motion] [data-home-v8] [data-a] {
+  animation-duration: var(--d, 300ms);
+  animation-delay: var(--t, 0ms);
+  animation-timing-function: var(--ease-v8-out);
+  animation-fill-mode: both;
+  animation-play-state: paused;
+}
+
+[data-v8-motion] [data-home-v8] .v8-play [data-a] {
+  animation-play-state: running;
+}
+
+[data-v8-motion] [data-a="draw-r"] { animation-name: v8-draw-r; }
+[data-v8-motion] [data-a="draw-l"] { animation-name: v8-draw-l; }
+[data-v8-motion] [data-a="draw-d"] { animation-name: v8-draw-d; }
+[data-v8-motion] [data-a="draw-u"],
+[data-v8-motion] [data-a="rise"] { animation-name: v8-draw-u; }
+[data-v8-motion] [data-a="fade"] { animation-name: v8-fade; }
+[data-v8-motion] [data-a="rise-up"] { animation-name: v8-rise-up; }
+[data-v8-motion] [data-a="hl"] { animation-name: v8-hl; }
+[data-v8-motion] [data-a="skel"] { animation-name: v8-skel; }
+[data-v8-motion] [data-a="pulse"] { animation-name: v8-pulse; animation-timing-function: ease-out; }
+[data-v8-motion] [data-a="ring"] { animation-name: v8-ring; animation-timing-function: ease-out; }
+[data-v8-motion] [data-a="shimmer"] { animation-name: v8-shimmer; animation-timing-function: ease-out; }
+[data-v8-motion] [data-a="trace"] { stroke-dasharray: 1; animation-name: v8-trace; }
+
+/* Without motion the skeletons over the assumption chips are gone and the highlighted report row keeps its ring. */
+[data-home-v8] [data-a="skel"] { opacity: 0; }
+[data-home-v8] [data-a="hl"] { box-shadow: inset 0 0 0 1px var(--color-v8-rust); }
+
+/* Text the motion script rewrites stays out of sight until its root plays. */
+[data-v8-motion] [data-anim-root]:not(.v8-play) [data-status],
+[data-v8-motion] [data-anim-root]:not(.v8-play) [data-type] {
+  visibility: hidden;
+}
+
+@keyframes v8-draw-r { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes v8-draw-l { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes v8-draw-d { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes v8-draw-u { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes v8-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes v8-rise-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes v8-pulse { 0% { opacity: 0; } 35% { opacity: 0.5; } 100% { opacity: 0; } }
+@keyframes v8-ring {
+  0% { opacity: 0; transform: scale(1); }
+  2% { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 0; transform: scale(3.6); }
+}
+@keyframes v8-hl { from { box-shadow: inset 0 0 0 1px rgb(171 81 46 / 0); } to { box-shadow: inset 0 0 0 1px var(--color-v8-rust); } }
+@keyframes v8-skel { from { opacity: 1; } to { opacity: 0; } }
+@keyframes v8-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@keyframes v8-trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* Section reveals: below the fold they start 16px down and transparent, and rise in over 600ms (design: expo out). */
+[data-v8-motion] [data-home-v8] .v8-pre {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+[data-v8-motion] [data-home-v8] .v8-pre.v8-in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-home-v8] *,
+  [data-home-v8] *::before,
+  [data-home-v8] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

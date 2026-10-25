@@ -3,7 +3,9 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { CAPABILITIES, STATUS_LABELS, statusOf, type CapabilityStatus } from "@/content/capability-status";
 import { AGENTS, COVERAGE, FAQ_V6, PAGE_CAPABILITIES, STATUS_IN_PROSE, liveTodayAnswer } from "@/content/home-v6";
-import { llmsTxtV6 } from "@/content/llms";
+import { FAQ_V8, LEDGER, V8_DESCRIPTION, V8_PAGE_CAPABILITIES } from "@/content/home-v8";
+import * as V8 from "@/content/home-v8";
+import { llmsTxtV6, llmsTxtV8 } from "@/content/llms";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const SCANNED = ["src/components", "src/home", "src/app"];
@@ -72,12 +74,14 @@ describe("capability statuses", () => {
     for (const rel of LEGACY_V3) expect(hardcodedStatuses(readFileSync(path.join(ROOT, rel), "utf8")).length, rel).toBeGreaterThan(0);
   });
 
-  it("uses the SCRUM-294 defaults", () => {
+  it("uses the SCRUM-294 defaults plus the owner-confirmed v8 statuses", () => {
     const live = Object.entries(CAPABILITIES)
       .filter(([, c]) => c.status === "LIVE")
       .map(([id]) => id)
       .sort();
-    expect(live).toEqual(["changeAndRetest", "emcInvestigator", "evidenceStatePerRevision", "productMemory"]);
+    expect(live).toEqual(["changeAndRetest", "derivedResultAtSigning", "emcInvestigator", "evidenceStatePerRevision", "productMemory", "publicCaseLibrary", "singleReading"]);
+    expect(statusOf("bomIntake")).toBe("ROADMAP");
+    expect(statusOf("fcc15109b")).toBe("ROADMAP");
     for (const c of Object.values(CAPABILITIES)) expect(STATUS_LABELS).toContain(c.status);
   });
 
@@ -95,8 +99,24 @@ describe("capability statuses", () => {
     for (const c of Object.values(CAPABILITIES)) if (c.status === "LIVE") expect(faq.a.toLowerCase()).toContain(c.summary.toLowerCase());
     expect(namedStatusesMissingFromPage(faq.a)).toEqual([]);
     expect(faq.a).toBe(
-      "Radiated-emissions investigation under 47 CFR 15.109(a), product memory, change and retest comparison and evidence state per revision. Everything else on this page is marked Roadmap.",
+      "Radiated-emissions investigation under 47 CFR 15.109(a), product memory, change and retest comparison, evidence state per revision, typing a single bench reading, the derived result at signing and the public case library. Everything else on this page is marked Roadmap.",
     );
+  });
+
+  it("v8: the ledger, its FAQ and llms.txt resolve through the status file", () => {
+    expect(LEDGER.filter((r) => statusOf(r.capability) !== "LIVE").map((r) => r.title)).toEqual(["FCC 15.109(b) Class A Evaluator", "BOM Intake"]);
+    const faq = FAQ_V8.find((f) => f.q === "Which parts are live today?")!;
+    for (const c of Object.values(CAPABILITIES)) if (c.status === "LIVE") expect(faq.a.toLowerCase()).toContain(c.summary.toLowerCase());
+    const onPage = new Set(V8_PAGE_CAPABILITIES.map(statusOf));
+    if (!onPage.has("EARLY ACCESS")) expect(faq.a).not.toMatch(/early access/i);
+    expect(llmsTxtV8()).toContain("- BOM Intake (ROADMAP)");
+  });
+
+  it("v8 copy: no em dashes, a meta description under 160 characters, no certification or compliance-state claim", () => {
+    const all = JSON.stringify(V8);
+    expect(all).not.toContain("—");
+    expect(V8_DESCRIPTION.length).toBeLessThanOrEqual(160);
+    expect(all).not.toMatch(/compliance state|Northfield|Create a workspace|15\.109\(c\)|in minutes/i);
   });
 
   it("the FAQ check catches a status no item has", () => {
