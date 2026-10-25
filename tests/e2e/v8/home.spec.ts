@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { statusOf } from "../../../src/content/capability-status";
-import { CATEGORY_LABEL, FAQ_V8, HERO, LEDGER, SAMPLE, V8_DESCRIPTION, V8_H1, V8_TITLE } from "../../../src/content/home-v8";
+import { CATEGORY_LABEL, FAQ_V8, HERO, LEDGER, SAMPLE, STATE_LEGEND, V8_DESCRIPTION, V8_H1, V8_TITLE, liveVsRoadmapAnswer } from "../../../src/content/home-v8";
 
 // Homepage v8, flag on (playwright.config.ts project "chromium-v8").
 
@@ -15,10 +15,18 @@ const BANNED = [
   "cutting-edge",
   "game-changing",
   "seamless",
-  "root cause",
-  "guaranteed",
   "certified",
   "compliance state",
+  "compliance statement",
+  "third-party AI",
+  "TypeScript",
+  "finding-peak",
+  "engine-checks",
+  "Crado Flux",
+  "Flux Scan",
+  "Jev",
+  "OpenAI",
+  "Anthropic",
   "learn across",
   "Northfield",
   "Create a workspace",
@@ -41,7 +49,12 @@ test.describe("v8 homepage", () => {
     await expect(page.locator("h1")).toHaveText(V8_H1);
     await expect(page.getByText(HERO.eyebrow)).toBeVisible();
     const ids = await page.locator("main > section").evaluateAll((els) => els.map((e) => e.id));
-    expect(ids).toEqual(["hero", "gap", "continuity", "workflows", "method", "capabilities", "faq", "start"]);
+    expect(ids).toEqual(["hero", "product-graph", "continuity", "workflow", "engine", "capabilities", "faq", "get-started"]);
+    // The epistemic legend under the hero artifact.
+    for (const l of STATE_LEGEND) await expect(page.locator("#hero dl")).toContainText(l.text);
+    // Both calls to action: the waitlist and the sample case.
+    await expect(page.locator("#hero").getByRole("link", { name: HERO.primary })).toHaveAttribute("href", "#get-started");
+    await expect(page.locator("#hero").getByRole("link", { name: HERO.secondary })).toHaveAttribute("href", "#sample-case");
     await expect(page.locator("#sample-case")).toBeVisible();
     // Heading levels never skip.
     const levels = await page.locator("h1, h2, h3, h4").evaluateAll((els) => els.filter((e) => (e as HTMLElement).offsetParent !== null).map((e) => Number(e.tagName[1])));
@@ -76,11 +89,13 @@ test.describe("v8 homepage", () => {
     expect(data[2]).toMatchObject({ description: V8_DESCRIPTION, url: "https://www.crado.io/" });
     const faq = data[3] as { mainEntity: { name: string; acceptedAnswer: { text: string } }[] };
     expect(faq.mainEntity.map((q) => [q.name, q.acceptedAnswer.text])).toEqual(FAQ_V8.map((f) => [f.q, f.a]));
+    // The FAQ is always open: every tag, question and answer is on the page exactly as in the JSON-LD.
     for (const f of FAQ_V8) {
-      const item = page.locator("#faq details", { hasText: f.q });
-      await item.locator("summary").click();
-      await expect(item.getByText(f.a, { exact: true })).toBeVisible();
+      await expect(page.locator("#faq")).toContainText(f.tag);
+      await expect(page.getByRole("heading", { name: f.q })).toBeVisible();
+      await expect(page.locator("#faq dd", { hasText: f.a.slice(0, 60) })).toHaveText(f.a);
     }
+    expect(FAQ_V8.at(-1)!.a).toBe(liveVsRoadmapAnswer());
   });
 
   test("copy: no banned words, no em dashes, sample case labelled, statuses from capability-status.ts", async ({ page }) => {
@@ -97,7 +112,11 @@ test.describe("v8 homepage", () => {
     for (const [i, r] of LEDGER.entries()) await expect(rows.nth(i).locator("[data-status-tag]")).toHaveText(statusOf(r.capability));
     // Class A and BOM intake are on the roadmap.
     await expect(page.locator("#capabilities li", { hasText: "15.109(b)" }).locator("[data-status-tag]")).toHaveText(statusOf("fcc15109b"));
-    await expect(page.locator("#start [data-status-tag]")).toHaveText(statusOf("bomIntake"));
+    await expect(page.locator("#capabilities li", { hasText: "BOM Intake" }).locator("[data-status-tag]")).toHaveText(statusOf("bomIntake"));
+    // Limits, margins and deltas are never labelled OBSERVED.
+    for (const row of await page.locator("#hero [data-a], #hero span").allTextContents()) {
+      if (/^OBSERVED/.test(row.trim())) expect(row, row).not.toMatch(/limit|margin|delta/i);
+    }
   });
 
   test("capability filter shows one category at a time", async ({ page }) => {
@@ -133,6 +152,12 @@ test.describe("v8 homepage", () => {
       await page.goto("/");
       await page.evaluate(() => document.fonts.ready);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+      // The fixed header does not count towards page scroll, so check that nothing in it is cut off at the edge.
+      const offscreen = await page.evaluate(
+        (w) => [...document.querySelectorAll<HTMLElement>("header a, header span")].filter((el) => el.checkVisibility() && el.getBoundingClientRect().right > w).map((el) => el.textContent),
+        width,
+      );
+      expect(offscreen).toEqual([]);
       // Every piece of text sits inside each bordered or filled box around it (cards, chips, pills, inputs).
       const overflowing = await page.evaluate(() => {
         const out: string[] = [];
@@ -168,7 +193,7 @@ test.describe("v8 homepage", () => {
 
   test("old homepage anchors still land on a section", async ({ page }) => {
     await page.goto("/");
-    for (const id of ["how-it-works", "use-cases", "change-review", "failure-investigation", "evidence", "agents", "join", "waitlist"]) {
+    for (const id of ["gap", "method", "workflows", "start", "how-it-works", "use-cases", "change-review", "failure-investigation", "evidence", "agents", "join", "waitlist"]) {
       await expect(page.locator(`[id="${id}"]`), id).toHaveCount(1);
     }
   });
@@ -178,6 +203,7 @@ test.describe("v8 homepage", () => {
     expect(txt).toContain(`> ${V8_H1}`);
     expect(txt).toContain(`- FCC 15.109(b) Class A Evaluator (${statusOf("fcc15109b")})`);
     expect(txt).toContain(`- BOM intake: ${statusOf("bomIntake")}`);
+    expect(txt).toContain("[Method & Coverage](https://www.crado.io/docs)");
     expect(txt).not.toContain("—");
   });
 });

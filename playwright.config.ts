@@ -29,7 +29,7 @@ export default defineConfig({
     { name: "chromium-sections", testMatch: /sections\/.*\.spec\.ts/, use: { ...devices["Desktop Chrome"], baseURL: `http://localhost:${PORT_SECTIONS}` } },
     // v6 with one scrolling homepage and clean section URLs (tests/e2e/scroll).
     { name: "chromium-scroll", testMatch: /scroll\/.*\.spec\.ts/, use: { ...devices["Desktop Chrome"], baseURL: `http://localhost:${PORT_SCROLL}` } },
-    // The v8 dark homepage (tests/e2e/v8); docs, legal pages and the 404 stay v3.
+    // The v8 dark homepage with the docs specification (tests/e2e/v8); docs, legal pages and the 404 keep the v3 design.
     { name: "chromium-v8", testMatch: /v8\/.*\.spec\.ts/, use: { ...devices["Desktop Chrome"], baseURL: `http://localhost:${PORT_V8}` } },
   ],
   webServer: [
@@ -63,7 +63,7 @@ export default defineConfig({
     },
     {
       command: `npm run build && npx next start -p ${PORT_V8}`,
-      env: { NEXT_PUBLIC_FF_HOMEPAGE_V8: "1", NEXT_DIST_DIR: ".next-v8" },
+      env: { NEXT_PUBLIC_FF_HOMEPAGE_V8: "1", NEXT_PUBLIC_FF_DOCS_SPEC: "1", NEXT_DIST_DIR: ".next-v8" },
       url: `http://localhost:${PORT_V8}`,
       reuseExistingServer: !process.env.CI,
       timeout: 240_000,

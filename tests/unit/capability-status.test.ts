@@ -3,7 +3,8 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { CAPABILITIES, STATUS_LABELS, statusOf, type CapabilityStatus } from "@/content/capability-status";
 import { AGENTS, COVERAGE, FAQ_V6, PAGE_CAPABILITIES, STATUS_IN_PROSE, liveTodayAnswer } from "@/content/home-v6";
-import { FAQ_V8, LEDGER, V8_DESCRIPTION, V8_PAGE_CAPABILITIES } from "@/content/home-v8";
+import { FAQ_ROADMAP, FAQ_V8, LEDGER, V8_DESCRIPTION, V8_PAGE_CAPABILITIES, liveVsRoadmapAnswer } from "@/content/home-v8";
+import * as DocsSpec from "@/content/docs-spec";
 import * as V8 from "@/content/home-v8";
 import { llmsTxtV6, llmsTxtV8 } from "@/content/llms";
 
@@ -105,18 +106,27 @@ describe("capability statuses", () => {
 
   it("v8: the ledger, its FAQ and llms.txt resolve through the status file", () => {
     expect(LEDGER.filter((r) => statusOf(r.capability) !== "LIVE").map((r) => r.title)).toEqual(["FCC 15.109(b) Class A Evaluator", "BOM Intake"]);
-    const faq = FAQ_V8.find((f) => f.q === "Which parts are live today?")!;
-    for (const c of Object.values(CAPABILITIES)) if (c.status === "LIVE") expect(faq.a.toLowerCase()).toContain(c.summary.toLowerCase());
-    const onPage = new Set(V8_PAGE_CAPABILITIES.map(statusOf));
-    if (!onPage.has("EARLY ACCESS")) expect(faq.a).not.toMatch(/early access/i);
+    const faq = FAQ_V8.find((f) => f.tag === "LIVE VS. ROADMAP")!;
+    expect(faq.a).toBe(liveVsRoadmapAnswer());
+    // Every LIVE capability is in the "Live today" part, and every roadmap item listed is still ROADMAP.
+    const [live, roadmap] = faq.a.split("Marked Roadmap:");
+    for (const c of Object.values(CAPABILITIES)) if (c.status === "LIVE") expect(live.toLowerCase()).toContain(c.summary.toLowerCase());
+    for (const id of FAQ_ROADMAP) {
+      if (statusOf(id) === "ROADMAP") expect(roadmap).toContain(CAPABILITIES[id].summary);
+      else expect(roadmap).not.toContain(CAPABILITIES[id].summary);
+    }
+    // Class A at 10 m stays on the roadmap (owner decision): it must not appear as live.
+    expect(live).not.toContain("Class A");
+    for (const id of V8_PAGE_CAPABILITIES) expect(STATUS_LABELS).toContain(statusOf(id));
     expect(llmsTxtV8()).toContain("- BOM Intake (ROADMAP)");
   });
 
-  it("v8 copy: no em dashes, a meta description under 160 characters, no certification or compliance-state claim", () => {
-    const all = JSON.stringify(V8);
+  it("v8 and docs-spec copy: no em dashes, a short meta description, no unapproved claims or internal names", () => {
+    const all = JSON.stringify(V8) + JSON.stringify(DocsSpec);
     expect(all).not.toContain("—");
     expect(V8_DESCRIPTION.length).toBeLessThanOrEqual(160);
-    expect(all).not.toMatch(/compliance state|Northfield|Create a workspace|15\.109\(c\)|in minutes/i);
+    expect(all).not.toMatch(/compliance state|compliance statement|Northfield|Create a workspace|15\.109\(c\)|in minutes|third-party AI|TypeScript|finding-peak|engine-checks|Crado Flux|Flux Scan|\bJev\b/i);
+    expect(all).not.toMatch(/AI-powered|leverage|unlock|transform|empower|revolutionary|cutting-edge|game-changing|seamless/i);
   });
 
   it("the FAQ check catches a status no item has", () => {

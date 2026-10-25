@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { FORM } from "../../../src/content/home-v8";
+import { FORM, HERO, START } from "../../../src/content/home-v8";
 import { BOOKING_URL } from "../../../src/lib/site";
 import { MARKET_OPTIONS, NEXT_TEST_WINDOW_OPTIONS, PRODUCT_TYPE_OPTIONS, ROLE_OPTIONS, WAITLIST_ERRORS } from "../../../src/lib/waitlist/schema";
 import { STEP2_TOKEN, humanPause, mockWaitlistApi } from "../helpers";
@@ -22,15 +22,16 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
 });
 
-test("every Join waitlist button lands on the form and focuses the email field", async ({ page }) => {
+test("every waitlist call to action lands on the form and focuses the email field", async ({ page }) => {
   await page.goto("/");
-  const joins = page.locator('a[href="#start"]');
-  expect(await joins.count()).toBeGreaterThanOrEqual(3);
-  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Join waitlist" }).click();
-  await expect(page).toHaveURL(/#start$/);
+  const joins = page.locator('a[href="#get-started"]');
+  // The header's "Start a workspace" and the hero's primary call to action.
+  expect(await joins.count()).toBeGreaterThanOrEqual(2);
+  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Start a workspace" }).click();
+  await expect(page).toHaveURL(/#get-started$/);
   await expect(form(page).getByLabel(FORM.emailLabel)).toBeFocused();
   await page.goto("/");
-  await page.locator("#hero").getByRole("link", { name: "Join waitlist" }).click();
+  await page.locator("#hero").getByRole("link", { name: HERO.primary }).click();
   await expect(form(page).getByLabel(FORM.emailLabel)).toBeFocused();
 });
 
@@ -43,6 +44,7 @@ test("step 1 fields, existing roles and the existing consent text", async ({ pag
   await expect(f).toContainText("We'll use your details to contact you about Crado early access. See our Privacy policy.");
   await expect(f.getByRole("link", { name: "Privacy policy" })).toHaveAttribute("href", "/privacy");
   await expect(f.getByRole("link", { name: /30-minute walkthrough/ })).toHaveAttribute("href", BOOKING_URL);
+  await expect(f.getByRole("link", { name: START.sample })).toHaveAttribute("href", "#sample-case");
   const button = f.getByRole("button", { name: FORM.submit });
   await expect(button).toBeDisabled();
   await f.getByLabel(FORM.emailLabel).fill("eng@acme.io");
@@ -54,7 +56,7 @@ test("step 1 fields, existing roles and the existing consent text", async ({ pag
 test("completes step 1 and step 2 against the mocked API, with the existing request bodies", async ({ page }) => {
   const calls = await mockWaitlistApi(page);
   await page.goto("/");
-  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Join waitlist" }).click();
+  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Start a workspace" }).click();
   await fillStep1(page);
   await form(page).getByLabel(FORM.updates).check();
   await humanPause(page);
