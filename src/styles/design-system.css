@@ -232,6 +232,58 @@
   --breakpoint-v6d: 1024px;
   /* Docs: the "On this page" rail joins the sidebar and content from 1280px (below it the list sits above the content) */
   --breakpoint-v6w: 1280px;
+
+  /*
+   * Homepage v8 (dark), behind NEXT_PUBLIC_FF_HOMEPAGE_V8. Source: Claude Design "Crado_Landing_v8.dc.html".
+   * Prefixed v8- so they never collide with the v3 dark tokens or the v6 light ones.
+   */
+  --color-v8-page: #0d0d0f;
+  --color-v8-panel: #161619;
+  --color-v8-start: #141518;
+  --color-v8-card: #18181b;
+  --color-v8-chip: #1f1f23;
+  --color-v8-inset: #0b0c0e;
+  --color-v8-input: #0e0e10;
+  --color-v8-line: #2e2e34;
+  --color-v8-line-faint: #232327;
+  --color-v8-dash: #3a3f48;
+  --color-v8-arrow: #5a606b;
+  --color-v8-white: #ffffff;
+  --color-v8-ink: #ededec;
+  --color-v8-link: #e6e9ee;
+  --color-v8-muted: #b2bbc5;
+  --color-v8-dim: #a3a9b2;
+  --color-v8-faint: #8a9099;
+  --color-v8-grey: #80868b;
+  --color-v8-axis: #6e747e;
+  --color-v8-button: #e9ecf1;
+  --color-v8-rust: #ab512e;
+  /* Rust for text: the design's #AB512E is 3.6:1 on the dark cards, under AA; this is the nearest that passes */
+  --color-v8-rust-text: #cc6640;
+  /* Evidence-state glyph colours: observed uses ink */
+  --color-v8-known: #a19f9a;
+  --color-v8-inferred: #d4a383;
+  --color-v8-missing: #6e6c67;
+  --color-v8-error: #e07a86;
+  --color-v8-focus: #7c9bff;
+  /* Hairline rings (box-shadow) on the page */
+  --color-v8-ring: rgb(230 234 240 / 0.12);
+  --color-v8-ring-input: rgb(230 234 240 / 0.16);
+  --color-v8-ring-pill: rgb(230 234 240 / 0.24);
+  --color-v8-ring-button: rgb(230 234 240 / 0.32);
+  --color-v8-nav-scrolled: rgb(13 13 15 / 0.8);
+
+  --radius-v8-chip: 6px;
+  --radius-v8-card: 12px;
+  --radius-v8-panel: 36px;
+  --ease-v8-ui: cubic-bezier(0.2, 0, 0, 1);
+  --ease-v8-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* v8 breakpoints (design): 2 columns from 640px, wide layout from 1020px, the full hero diagram from 1100px */
+  --breakpoint-v8n: 640px;
+  --breakpoint-v8w: 1020px;
+  --breakpoint-v8d: 1100px;
+  --breakpoint-v8x: 1200px;
 }
 
 /*
@@ -242,6 +294,10 @@
   --font-v6-serif: var(--font-plex-serif), Georgia, serif;
   --font-v6-sans: var(--font-plex-sans), system-ui, sans-serif;
   --font-v6-mono: var(--font-plex-mono), ui-monospace, monospace;
+  /* v8 faces, set on the v8 home root by src/home/v8/fonts.ts */
+  --font-v8-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-v8-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-v8-brand: var(--font-google-sans-flex), var(--font-figtree), system-ui, sans-serif;
 }
 
 :root {

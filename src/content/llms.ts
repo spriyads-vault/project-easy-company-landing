@@ -1,6 +1,7 @@
 import { CAPABILITIES, statusOf } from "./capability-status";
 import { SCROLL_SECTIONS, SECTION_PAGES } from "@/lib/flags";
 import { AGENTS, COVERAGE, FAQ_V6, PRINCIPLES, SOURCES_NOTE, STACK, V6_CATEGORY, V6_DESCRIPTION, V6_H1, V6_INTRO } from "./home-v6";
+import { CONTINUITY, FAQ_V8, HERO, LEDGER, METHOD, V8_H1, WORKFLOW } from "./home-v8";
 import { SECTION_PAGES_COPY, SECTION_SLUGS } from "./section-pages";
 
 /** The section pages (SCRUM-310), while they are on. /waitlist is left out: it is a form, not content. */
@@ -61,5 +62,42 @@ ${FAQ_V6.map((f) => `- ${f.q} ${f.a}`).join("\n")}
 ${PAGES}${DOCS}
 
 Contact: hello@crado.io
+`;
+}
+
+/** llms.txt for the v8 homepage: the v8 copy, with every status generated from capability-status.ts. */
+export function llmsTxtV8(): string {
+  const statuses = Object.values(CAPABILITIES)
+    .map((c) => `- ${c.name}: ${c.status}`)
+    .join("\n");
+  return `# Crado
+
+> ${V8_H1}
+
+${HERO.intro}
+
+## Evidence states
+${CONTINUITY.states.map((s) => `- ${s.label} (${s.title}): ${s.body}`).join("\n")}
+
+## Workflow
+${WORKFLOW.steps.map((s) => `- ${s.n} ${s.title}: ${s.body}`).join("\n")}
+
+## Method
+${METHOD.cards.map((c) => `- ${c.title}: ${c.body}`).join("\n")}
+
+## Capabilities
+${LEDGER.map((r) => `- ${r.title} (${statusOf(r.capability)}): ${r.body}`).join("\n")}
+
+## Status
+${statuses}
+
+## FAQ
+${FAQ_V8.map((f) => `- ${f.q} ${f.a}`).join("\n")}
+
+${DOCS}
+
+## Contact
+- Waitlist: https://www.crado.io/#start
+- Email: hello@crado.io
 `;
 }
