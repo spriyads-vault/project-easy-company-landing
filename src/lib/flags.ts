@@ -33,3 +33,10 @@ export const SCROLL_SECTIONS = HOMEPAGE_V6 && on(process.env.NEXT_PUBLIC_FF_SCRO
  * the booking link gives way to the waitlist, as approved for SCRUM-310.
  */
 export const CLEAN_URLS = SECTION_PAGES || SCROLL_SECTIONS;
+
+/**
+ * Docs as the method, coverage and security specification (SCRUM-TBD): /docs becomes an overview index and
+ * /docs/concepts, /docs/reference, /docs/evaluation and /docs/trust carry the spec sections. Same URLs, so nothing
+ * indexed breaks. Default off: the current docs stay. Independent of the homepage flags.
+ */
+export const DOCS_SPEC = on(process.env.NEXT_PUBLIC_FF_DOCS_SPEC);

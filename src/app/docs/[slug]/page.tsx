@@ -7,15 +7,20 @@ import Concepts from "@/components/docs-site/content/Concepts";
 import Evaluation from "@/components/docs-site/content/Evaluation";
 import Reference from "@/components/docs-site/content/Reference";
 import Trust from "@/components/docs-site/content/Trust";
+import ArithmeticCoverage from "@/components/docs-site/spec/ArithmeticCoverage";
+import Security from "@/components/docs-site/spec/Security";
+import TruthStates from "@/components/docs-site/spec/TruthStates";
+import Validation from "@/components/docs-site/spec/Validation";
 import { DOCS_SLUGS, docsMetadata, docsPageBySlug } from "@/lib/docs-pages";
+import { DOCS_SPEC } from "@/lib/flags";
 
-const CONTENT: Record<string, ComponentType> = {
-  concepts: Concepts,
-  evaluation: Evaluation,
-  reference: Reference,
-  trust: Trust,
-  changelog: Changelog,
-};
+/**
+ * Page content per slug. With NEXT_PUBLIC_FF_DOCS_SPEC on, the same URLs carry the specification sections (truth states,
+ * arithmetic and coverage, validation, security); the changelog is unchanged.
+ */
+const CONTENT: Record<string, ComponentType> = DOCS_SPEC
+  ? { concepts: TruthStates, evaluation: Validation, reference: ArithmeticCoverage, trust: Security, changelog: Changelog }
+  : { concepts: Concepts, evaluation: Evaluation, reference: Reference, trust: Trust, changelog: Changelog };
 
 export const dynamicParams = false;
 

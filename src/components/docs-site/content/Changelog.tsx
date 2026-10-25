@@ -1,4 +1,7 @@
+import { DOCS_SPEC } from "@/lib/flags";
+
 const ENTRIES: [string, string][] = [
+  ...(DOCS_SPEC ? ([["25 Oct 2026", "Documentation restructured as the method, coverage and security specification."]] as [string, string][]) : []),
   ["8 Oct 2026", "Added 'How Crado reaches a result' and the glossary."],
   ["8 Oct 2026", "Documentation restructured into guides, concepts and reference."],
 ];
