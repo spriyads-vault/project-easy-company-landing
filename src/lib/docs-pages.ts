@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DOCS_SPEC } from "@/lib/flags";
 import { SITE_NAME, SITE_URL, pageMetadata } from "@/lib/site";
 
 /** Route segment under /docs. "" is /docs itself. */
@@ -31,8 +32,9 @@ export interface DocsPage {
   toc: DocsAnchor[];
 }
 
-export const DOCS_UPDATED = "2026-10-08";
-export const DOCS_UPDATED_LABEL = "8 Oct 2026";
+/** With NEXT_PUBLIC_FF_DOCS_SPEC on, the specification pages carry their own date. */
+export const DOCS_UPDATED = DOCS_SPEC ? "2026-10-25" : "2026-10-08";
+export const DOCS_UPDATED_LABEL = DOCS_SPEC ? "25 Oct 2026" : "8 Oct 2026";
 
 type DocsPageInput = Omit<DocsPage, "toc"> & { toc?: DocsAnchor[] };
 
@@ -151,8 +153,124 @@ const PAGE_INPUTS: DocsPageInput[] = [
   },
 ];
 
+/**
+ * The method, coverage and security specification (NEXT_PUBLIC_FF_DOCS_SPEC, SCRUM-TBD): the same six URLs, so nothing
+ * indexed breaks. /docs is the overview index whose anchors the homepage footer deep-links to; each section's full
+ * text is on the page it maps to.
+ */
+const SPEC_PAGE_INPUTS: DocsPageInput[] = [
+  {
+    slug: "",
+    path: "/docs",
+    name: "Method & Coverage",
+    section: "Overview",
+    group: "SPECIFICATION",
+    eyebrow: "SPECIFICATION / OVERVIEW",
+    headline: "Method, coverage and security",
+    title: "Method & Coverage | Crado Docs",
+    description:
+      "How Crado labels every value, does its regulatory arithmetic, what it covers under 47 CFR 15.109(a), how it is validated and how workspaces are isolated.",
+    sidebar: [
+      { id: "epistemic-model", label: "The four truth states" },
+      { id: "deterministic-arithmetic", label: "Deterministic arithmetic" },
+      { id: "coverage", label: "Coverage" },
+      { id: "validation", label: "Validation" },
+      { id: "security", label: "Security" },
+    ],
+    toc: [
+      { id: "overview", label: "Overview" },
+      { id: "epistemic-model", label: "The four truth states" },
+      { id: "deterministic-arithmetic", label: "Deterministic arithmetic" },
+      { id: "coverage", label: "Coverage" },
+      { id: "validation", label: "Validation" },
+      { id: "security", label: "Security" },
+    ],
+  },
+  {
+    slug: "concepts",
+    path: "/docs/concepts",
+    name: "Truth states",
+    section: "Method",
+    group: "METHOD",
+    eyebrow: "METHOD / EPISTEMIC MODEL",
+    headline: "The four truth states",
+    title: "The four truth states | Crado Docs",
+    description:
+      "Observed, known, inferred and missing: how Crado labels every value, why nothing is silently defaulted and where a person must confirm.",
+    sidebar: [
+      { id: "truth-states", label: "The four truth states" },
+      { id: "state-observed", label: "Observed" },
+      { id: "state-known", label: "Known" },
+      { id: "state-inferred", label: "Inferred" },
+      { id: "state-missing", label: "Missing" },
+      { id: "no-silent-defaults", label: "No silent defaults" },
+      { id: "confirmation-boundary", label: "The confirmation boundary" },
+    ],
+  },
+  {
+    slug: "reference",
+    path: "/docs/reference",
+    name: "Arithmetic and coverage",
+    section: "Engine and coverage",
+    group: "ENGINE AND COVERAGE",
+    eyebrow: "ENGINE AND COVERAGE / DETERMINISTIC ARITHMETIC",
+    headline: "Deterministic arithmetic and coverage",
+    title: "Deterministic arithmetic and coverage | Crado Docs",
+    description:
+      "The engine pipeline, its post-generation checks and replayable runs, the 47 CFR 15.109 limit tables, and when Crado refuses rather than guesses.",
+    sidebar: [
+      { id: "arithmetic", label: "Deterministic arithmetic and coverage" },
+      { id: "pipeline", label: "The engine pipeline" },
+      { id: "post-checks", label: "Post-generation checks" },
+      { id: "replay", label: "Rule versions and replay" },
+      { id: "coverage", label: "Coverage: 47 CFR 15.109" },
+      { id: "refusals", label: "Refusal rules" },
+      { id: "not-covered", label: "Not covered yet" },
+      { id: "glossary", label: "Glossary" },
+    ],
+  },
+  {
+    slug: "evaluation",
+    path: "/docs/evaluation",
+    name: "Validation",
+    section: "Validation",
+    group: "VALIDATION",
+    eyebrow: "VALIDATION / TESTS AND BENCHMARKS",
+    headline: "Validation",
+    title: "Validation | Crado Docs",
+    description: "How Crado's engine is tested and benchmarked: the unit test suites, the public FCC report benchmark and what is not yet measured.",
+    sidebar: [
+      { id: "validation-overview", label: "Validation" },
+      { id: "test-suite", label: "Test suite" },
+      { id: "public-benchmark", label: "Public FCC report benchmark" },
+      { id: "not-yet-measured", label: "Not yet measured" },
+    ],
+  },
+  {
+    slug: "trust",
+    path: "/docs/trust",
+    name: "Security",
+    section: "Security",
+    group: "SECURITY",
+    eyebrow: "SECURITY / WORKSPACE ISOLATION",
+    headline: "Security and workspace isolation",
+    title: "Security and workspace isolation | Crado Docs",
+    description: "How Crado isolates each workspace, what it never trains on, where the public precedent library comes from and who has authority over results.",
+    sidebar: [
+      { id: "security-overview", label: "Security and workspace isolation" },
+      { id: "workspace-isolation", label: "Workspace isolation" },
+      { id: "no-cross-customer-training", label: "No cross-customer training" },
+      { id: "public-library", label: "Public precedent library" },
+      { id: "engineer-authority", label: "Engineer authority" },
+      { id: "data-handling", label: "Data handling" },
+      { id: "security-status", label: "Security status" },
+    ],
+  },
+  PAGE_INPUTS[PAGE_INPUTS.length - 1],
+];
+
 /** Every docs page in reading order (sidebar, prev/next). The toc defaults to the sidebar entries. */
-export const DOCS_PAGES: DocsPage[] = PAGE_INPUTS.map((p) => ({ ...p, toc: p.toc ?? p.sidebar }));
+export const DOCS_PAGES: DocsPage[] = (DOCS_SPEC ? SPEC_PAGE_INPUTS : PAGE_INPUTS).map((p) => ({ ...p, toc: p.toc ?? p.sidebar }));
 
 /** Slugs served by /docs/[slug]. */
 export const DOCS_SLUGS = DOCS_PAGES.filter((p) => p.slug !== "").map((p) => p.slug);

@@ -36,17 +36,28 @@ test("v8 header and footer links all resolve", async ({ page }) => {
   await page.goto("/");
   const header = await links(page, "header");
   const footer = await links(page, "footer");
-  for (const must of ["/docs", "/docs/changelog", "#start"]) expect(header).toContain(must);
-  for (const must of ["/privacy", "/terms", "/docs", "/docs/changelog", "/docs/concepts#evidence", "/docs/reference#coverage", "/docs/trust", "#start"]) expect(footer).toContain(must);
+  for (const must of ["#product-graph", "#engine", "#workflow", "/docs", "#faq", "#sample-case", "#get-started"]) expect(header).toContain(must);
+  for (const must of ["/privacy", "/terms", "/docs", "/docs#observed", "/docs#known", "/docs#inferred", "/docs#missing", "/docs#deterministic-arithmetic", "/docs#coverage", "/docs#security"]) {
+    expect(footer).toContain(must);
+  }
   await checkHrefs(page, [...header, ...footer], "/");
 });
 
-test("v8 header nav shows Docs and Changelog on wide screens", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+test("v8 header: centre links on wide screens, the two pills, and no sign-in", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
   const nav = page.getByRole("navigation", { name: "Primary" });
-  await expect(nav.getByRole("link", { name: "Docs" })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Changelog" })).toBeVisible();
+  for (const name of ["Product Graph", "Verification Engine", "Revision Loop", "Method & Coverage", "FAQ", "Sample case", "Start a workspace"]) {
+    await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
+  }
+  await expect(nav.getByRole("link", { name: /sign in/i })).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(nav.getByRole("link", { name: "Start a workspace" })).toBeVisible();
+});
+
+test("/docs/changelog stays reachable from the docs navigation", async ({ page }) => {
+  await page.goto("/docs");
+  await expect(page.locator('a[href="/docs/changelog"]').first()).toBeAttached();
 });
 
 for (const path of ["/docs", "/docs/changelog", "/privacy", "/terms"]) {

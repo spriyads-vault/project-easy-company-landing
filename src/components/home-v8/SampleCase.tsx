@@ -53,6 +53,13 @@ function Chart() {
       </g>
       <line x1={CHART.x0} y1={CHART.y1} x2={CHART.x1} y2={CHART.y1} stroke="var(--color-v8-dash)" pathLength={1} {...anim("trace", 300, 400)} />
       <path d={CHART.limit} fill="none" stroke="var(--color-v8-known)" strokeWidth="1.25" pathLength={1} {...anim("trace", 750, 500)} />
+      <g {...anim("fade", 1150, 300)}>
+        {CHART.limitLabels.map((l) => (
+          <text key={l.label} x={l.x} y={l.y} fontSize="9.5" className="fill-v8-known">
+            {l.label}
+          </text>
+        ))}
+      </g>
       {CHART.peaks.map((p) => (
         <g key={p.x} {...anim("rise", p.t, 400)}>
           <line x1={p.x} y1={CHART.y1} x2={p.x} y2={p.y} stroke={p.hot ? "var(--color-v8-rust)" : "var(--color-v8-ink)"} strokeOpacity="0.6" />
@@ -167,7 +174,8 @@ function Pdf() {
         <span className="text-v8-ink">{pdf.file}</span>
         <span>{pdf.page}</span>
       </div>
-      <div className="flex flex-col gap-3.5 rounded-v8-chip border border-t-2 border-v8-line border-t-v8-rust bg-v8-card p-5 text-v8-ink">
+      {/* The cited report page: an elevated dark card with the terracotta accent, never a white card. */}
+      <div className="flex flex-col gap-3.5 rounded-v8-chip border border-v8-line-elevated border-l-2 border-l-v8-rust bg-v8-elevated p-5 text-v8-ink">
         <div className="flex flex-col gap-[3px]" {...anim("fade", 250, 300)}>
           <span className="text-[13px] font-semibold">{pdf.lab}</span>
           <span className={`${MONO} text-[10.5px] text-v8-faint`}>{pdf.meta}</span>

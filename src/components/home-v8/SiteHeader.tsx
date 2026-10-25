@@ -3,9 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HERO, NAV } from "@/content/home-v8";
+import { NAV, NAV_CTA } from "@/content/home-v8";
 import { LOGO_PATH } from "@/lib/site";
-import { PILL_LIGHT } from "./ui";
+import { PILL_GHOST, PILL_LIGHT } from "./ui";
 
 /** Fixed header (design: 64px, clear at the top, blurred page colour with a hairline once scrolled past 40px). */
 export default function SiteHeader() {
@@ -38,19 +38,21 @@ export default function SiteHeader() {
                 {item.label}
               </a>
             ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-v8-muted transition-colors duration-200 hover:text-v8-white ${"wideOnly" in item && item.wideOnly ? "hidden v8x:inline" : ""}`}
-              >
+              <Link key={item.href} href={item.href} className="text-v8-muted transition-colors duration-200 hover:text-v8-white">
                 {item.label}
               </Link>
             ),
           )}
         </div>
-        <a href="#start" data-wl-source="nav" className={`${PILL_LIGHT} px-[18px] py-2 text-[15px] leading-[21px]`}>
-          {HERO.join}
-        </a>
+        <div className="flex items-center gap-2">
+          {/* The sample case pill gives way to the centre links between 1020 and 1200px, where there is no room for both. */}
+          <a href={NAV_CTA.sample.href} className={`${PILL_GHOST} px-4 py-2 text-[15px] leading-[21px] max-v8n:hidden v8w:max-v8x:hidden`}>
+            {NAV_CTA.sample.label}
+          </a>
+          <a href={NAV_CTA.start.href} data-wl-source="nav" className={`${PILL_LIGHT} px-[18px] py-2 text-[15px] leading-[21px]`}>
+            {NAV_CTA.start.label}
+          </a>
+        </div>
       </nav>
     </header>
   );

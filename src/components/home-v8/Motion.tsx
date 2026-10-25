@@ -9,7 +9,7 @@ import { useEffect } from "react";
  *   children (src/home/v8/v8.css), cycles its [data-status] text and types its [data-type] text.
  * - [data-reveal] and the children of [data-stagger]: below the fold they start hidden and rise in once their top
  *   passes 88% of the viewport. Anything already on screen is left alone.
- * - Clicking a link to #start focuses the waitlist email field after the scroll, and records which call to action
+ * - Clicking a link to #get-started focuses the waitlist email field after the scroll, and records which call to action
  *   was used (data-wl-source) for the form's attribution.
  *
  * The inline script in src/home/v8/HomePage.tsx sets html[data-v8-motion] before first paint unless the visitor
@@ -25,14 +25,14 @@ export default function Motion() {
     const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
     const motion = "v8Motion" in root.dataset && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // #start links: focus the email field once the smooth scroll has landed; tell the form where the click came from.
+    // #get-started links: focus the email field once the smooth scroll has landed; tell the form where the click came from.
     const onClick = (e: MouseEvent) => {
-      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href="#start"]');
+      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href="#get-started"]');
       if (!a) return;
       const source = a.dataset.wlSource;
       if (source) window.dispatchEvent(new CustomEvent(WL_SOURCE_EVENT, { detail: source }));
       const focus = () => document.getElementById("wl-email")?.focus({ preventScroll: true });
-      // After the browser's own jump to #start, which would otherwise take focus back to the page.
+      // After the browser's own jump to #get-started, which would otherwise take focus back to the page.
       later(focus, motion ? 700 : 50);
     };
     document.addEventListener("click", onClick);

@@ -13,7 +13,7 @@ import Start from "@/components/home-v8/sections/Start";
 import Workflows from "@/components/home-v8/sections/Workflows";
 import JsonLd from "@/components/site/JsonLd";
 import SkipLink from "@/components/site/SkipLink";
-import { V8_DESCRIPTION, V8_TITLE } from "@/content/home-v8";
+import { IDS, V8_DESCRIPTION, V8_TITLE } from "@/content/home-v8";
 import { HOME_URL, SITE_NAME } from "@/lib/site";
 import { V8_FONT_VARIABLES } from "./fonts";
 import { V8_JSON_LD } from "./structuredData";
@@ -58,18 +58,18 @@ export default function HomePage() {
       <SiteHeader />
       <main id="main">
         <Hero />
-        <LegacyAnchors section="gap" />
+        <LegacyAnchors section={IDS.productGraph} />
         <Gap />
-        <LegacyAnchors section="continuity" />
+        <LegacyAnchors section={IDS.continuity} />
         <Continuity />
-        <LegacyAnchors section="workflows" />
+        <LegacyAnchors section={IDS.workflow} />
         <Workflows />
-        <LegacyAnchors section="method" />
+        <LegacyAnchors section={IDS.engine} />
         <Method />
-        <LegacyAnchors section="capabilities" />
+        <LegacyAnchors section={IDS.capabilities} />
         <Capabilities />
         <Faq />
-        <LegacyAnchors section="start" />
+        <LegacyAnchors section={IDS.getStarted} />
         <Start />
       </main>
       <Footer />

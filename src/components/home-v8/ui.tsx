@@ -7,6 +7,10 @@ export const H2 = "m-0 text-[clamp(30px,2.9vw,42px)] leading-[1.04] font-normal 
 export const LEAD = "m-0 text-[18px] leading-[29px] text-pretty text-v8-muted";
 export const SECTION = "px-6 pt-[clamp(96px,11vw,160px)]";
 export const CARD = "rounded-v8-card border border-v8-line bg-v8-card";
+/** The elevated dark surface (never a white card) for cards that sit above the page or inside artifacts. */
+export const CARD_ELEVATED = "rounded-v8-card border border-v8-line-elevated bg-v8-elevated";
+/** The terracotta left accent that marks the highlighted card in a set. */
+export const ACCENT = "border-l-2 border-l-v8-rust";
 export const PILL_LIGHT =
   "inline-flex items-center gap-2 rounded-full bg-v8-button font-medium whitespace-nowrap text-v8-page transition-[background-color,transform] duration-200 ease-v8-ui hover:bg-v8-white hover:text-v8-page active:scale-[0.98]";
 export const PILL_GHOST =

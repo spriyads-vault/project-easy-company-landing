@@ -1,15 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FOOTER, FOOTER_COPYRIGHT, FOOTER_LEGAL, FOOTER_TAGLINE, type FooterLink } from "@/content/home-v8";
+import { isLive } from "@/content/capability-status";
+import { FOOTER, FOOTER_COPYRIGHT, FOOTER_NVIDIA, FOOTER_TAGLINE, type FooterLink } from "@/content/home-v8";
 import StatusTag from "./StatusTag";
 
 const LINK = "text-[16px] leading-6 text-v8-link transition-colors duration-200 hover:text-v8-white";
 
 function FootLink({ link }: { link: FooterLink }) {
+  // Only a link whose capabilities are not all live carries a tag (live coverage is the default and stays untagged).
+  const tagged = link.capabilities?.find((id) => !isLive(id));
   const label = (
     <>
       {link.label}
-      {link.capability && <StatusTag capability={link.capability} className="ml-2 align-[2px]" />}
+      {tagged && <StatusTag capability={tagged} className="ml-2 align-[2px]" />}
     </>
   );
   if (link.href.startsWith("/")) {
@@ -23,7 +26,7 @@ function FootLink({ link }: { link: FooterLink }) {
     <a
       href={link.href}
       className={LINK}
-      {...(link.href === "#start" ? { "data-wl-source": "section" } : {})}
+      {...(link.href === "#get-started" ? { "data-wl-source": "section" } : {})}
       {...(link.external ? { target: "_blank", rel: "noopener" } : {})}
     >
       {label}
@@ -55,23 +58,13 @@ export default function Footer() {
           </nav>
         </div>
         <div className="mt-[72px] flex flex-wrap items-center justify-between gap-4 pt-6 text-[15px] leading-[21px] text-v8-muted shadow-[0_-1px_0_var(--color-v8-ring)]">
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="text-[20px] font-medium text-v8-white">Crado</span>
-            <span>{FOOTER_COPYRIGHT}</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-            <div className="flex items-center gap-3">
-              <span>Member of NVIDIA Inception</span>
-              {/* The member badge as supplied (501×217), served unaltered and scaled to 32px tall. */}
-              <Image src="/assets/nvidia-inception-badge.png" alt="NVIDIA Inception program member" width={74} height={32} unoptimized loading="lazy" className="block h-8 w-auto" />
-            </div>
-            <div className="flex gap-6">
-              {FOOTER_LEGAL.map((l) => (
-                <Link key={l.label} href={l.href} className="text-v8-muted hover:text-v8-white">
-                  {l.label}
-                </Link>
-              ))}
-            </div>
+          <span className="text-[20px] font-medium text-v8-white">Crado</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <span>
+              {FOOTER_COPYRIGHT} · {FOOTER_NVIDIA}
+            </span>
+            {/* The member badge as supplied (501×217), served unaltered and scaled to 32px tall. */}
+            <Image src="/assets/nvidia-inception-badge.png" alt="NVIDIA Inception program member" width={74} height={32} unoptimized loading="lazy" className="block h-8 w-auto" />
           </div>
         </div>
       </div>

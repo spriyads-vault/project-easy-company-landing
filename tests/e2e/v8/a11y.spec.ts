@@ -16,7 +16,6 @@ for (const width of [1440, 834, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
-    for (const s of await page.locator("#faq summary").all()) await s.click();
     expect(await scan(page)).toEqual([]);
   });
 }

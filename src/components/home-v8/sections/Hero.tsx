@@ -1,8 +1,8 @@
-import { HERO } from "@/content/home-v8";
+import { HERO, IDS, STATE_LABEL, STATE_LEGEND } from "@/content/home-v8";
 import HeroDiagram from "../HeroDiagram";
-import { Icon, PILL_GHOST, PILL_LIGHT } from "../ui";
+import { Glyph, Icon, MONO, PILL_GHOST, PILL_LIGHT } from "../ui";
 
-/** Hero (design: SECTION 1): a rounded panel with the eyebrow, h1, intro, the two calls to action and the diagram. */
+/** Hero (SECTION 1): a rounded panel with the eyebrow, h1, intro, the two calls to action, the artifact and its legend. */
 export default function Hero() {
   return (
     <section id="hero" aria-labelledby="hero-title" className="relative pt-20">
@@ -15,21 +15,32 @@ export default function Hero() {
           </h1>
           <p className="m-0 mt-5 max-w-[760px] text-[20px] leading-[29px] text-pretty text-v8-muted">{HERO.intro}</p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <a href="#start" data-wl-source="hero" className={`${PILL_LIGHT} px-[22px] py-3 text-[16px] leading-6`}>
-              {HERO.join}
+            <a href={`#${IDS.getStarted}`} data-wl-source="hero" className={`${PILL_LIGHT} px-[22px] py-3 text-[16px] leading-6`}>
+              {HERO.primary}
             </a>
-            <a href="#sample-case" className={`${PILL_GHOST} px-[22px] py-3 text-[16px] leading-6`}>
-              {HERO.sample}
+            <a href={`#${IDS.sample}`} className={`${PILL_GHOST} px-[22px] py-3 text-[16px] leading-6`}>
+              {HERO.secondary}
             </a>
           </div>
         </div>
-        <div className="v8-defer mt-14 px-6 pb-12">
+        <div className="v8-defer mt-14 px-6 pb-8">
           <HeroDiagram />
         </div>
-        <div className="h-2" />
+        {/* The epistemic legend: what each glyph in the artifact (and the rest of the page) means. */}
+        <dl className={`m-0 mx-6 mb-8 grid grid-cols-1 gap-x-8 gap-y-3 border-t border-v8-line pt-6 ${MONO} text-[12px] leading-[18px] v8n:grid-cols-2 v8d:flex v8d:flex-wrap v8d:justify-center`}>
+          {STATE_LEGEND.map((l) => (
+            <div key={l.state} className="flex items-baseline gap-2">
+              <dt className="flex flex-none items-baseline gap-1.5 text-v8-ink">
+                <Glyph state={l.state} />
+                {STATE_LABEL[l.state]}
+              </dt>
+              <dd className="m-0 text-v8-faint">{l.text}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
       <div className="mx-6 mt-5 flex">
-        <a href="#gap" className="flex items-center gap-1.5 text-[16px] leading-6 font-[450] text-v8-muted hover:text-v8-white">
+        <a href={`#${IDS.productGraph}`} className="flex items-center gap-1.5 text-[16px] leading-6 font-[450] text-v8-muted hover:text-v8-white">
           {HERO.scroll} <Icon name="south" size={20} />
         </a>
       </div>

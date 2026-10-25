@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { DIAGRAM, PULSE, type DiagramRow } from "@/content/home-v8";
+import { DIAGRAM, PULSE, STATE_LABEL, type DiagramRow } from "@/content/home-v8";
 import { LOGO_PATH } from "@/lib/site";
-import { Chip, Glyph, MONO, anim } from "./ui";
+import { Chip, MONO, anim } from "./ui";
 
-const CARD_TITLE = `${MONO} text-[12px] text-v8-faint`;
+const CARD_TITLE = `${MONO} text-[12px] leading-[18px] text-v8-faint`;
 const DASH = "var(--color-v8-dash)";
 const ARROW = "var(--color-v8-arrow)";
 
@@ -12,11 +12,23 @@ function Rows({ rows, timed }: { rows: DiagramRow[]; timed?: number[] }) {
     <div className="flex flex-col gap-2">
       {rows.map((r, i) => (
         <Chip key={r.text} state={r.state} {...(timed ? anim("fade", timed[i], 300) : {})}>
-          {r.state && <span className="text-v8-faint">{r.state.toUpperCase()} </span>}
+          {r.state && <span className="text-v8-faint">{STATE_LABEL[r.state]} </span>}
           {r.text}
         </Chip>
       ))}
     </div>
+  );
+}
+
+/** The record's derived state: an elevated chip with the terracotta accent (never a white card). */
+function Derived({ t }: { t: number }) {
+  return (
+    <span
+      className={`self-start rounded-v8-chip border border-v8-line-elevated border-l-2 border-l-v8-rust bg-v8-elevated px-[9px] py-[5px] ${MONO} text-[12px] leading-[18px] text-v8-ink`}
+      {...anim("fade", t, 300)}
+    >
+      {DIAGRAM.record.derived}
+    </span>
   );
 }
 
@@ -57,73 +69,61 @@ function Engine({ id, logoHeight, mapClass }: { id: string; logoHeight: number; 
     <>
       <DotMap id={id} logoHeight={logoHeight} className={mapClass} />
       <span className={CARD_TITLE}>{DIAGRAM.engine.title}</span>
-      <div className="flex flex-col gap-2">
-        {DIAGRAM.engine.rows.map((r) => (
-          <Chip key={r}>{r}</Chip>
-        ))}
-        <Chip>
-          {DIAGRAM.engine.missing.before} <Glyph state="missing" /> <span className="text-v8-faint">MISSING</span> {DIAGRAM.engine.missing.after}
-        </Chip>
-      </div>
+      <Rows rows={DIAGRAM.engine.rows} timed={[450, 550, 650, 750]} />
     </>
   );
 }
 
-function Legend({ className }: { className: string }) {
-  return (
-    <div className={`flex justify-center gap-4 ${MONO} text-v8-faint ${className}`}>
-      {(["observed", "known", "inferred", "missing"] as const).map((s) => (
-        <span key={s}>
-          <Glyph state={s} /> {s}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-const DESK_CARD = "absolute top-[250px] box-border flex h-[325px] w-[340px] flex-col gap-2.5 overflow-hidden rounded-v8-card border border-v8-line bg-v8-card p-4";
+/*
+ * Desktop stage geometry (in the design's 1440-wide stage): cards from y 240 to 590, arrows at their middle, the
+ * Rev 18 return loop below them and its label pill on the loop.
+ */
+const CARD_TOP = 240;
+const CARD_H = 350;
+const DESK_CARD = "absolute box-border flex w-[340px] flex-col gap-2.5 overflow-hidden rounded-v8-card border border-v8-line bg-v8-card p-4";
 
 function ArrowRight({ left, t }: { left: number; t: number }) {
   return (
-    <svg width="48" height="20" viewBox="0 0 48 20" className="absolute top-[390px]" aria-hidden="true" {...anim("draw-r", t, 300, { left })}>
+    <svg width="48" height="20" viewBox="0 0 48 20" className="absolute" aria-hidden="true" {...anim("draw-r", t, 300, { left, top: CARD_TOP + CARD_H / 2 - 10 })}>
       <line x1="0" y1="10" x2="41" y2="10" stroke={DASH} strokeDasharray="4 4" />
       <path d="M41 6 L45.5 10 L41 14" fill="none" stroke={ARROW} strokeWidth="1.2" />
     </svg>
   );
 }
 
-/** Desktop diagram (from 1100px): the design's 1440 × 715 stage, cropped to 1200 × 545 and zoomed to fit. */
+/** Desktop artifact (from 1100px): the design's 1440-wide stage, cropped to 1200 wide and zoomed to fit. */
 function Desktop() {
+  const cardStyle = { top: CARD_TOP, height: CARD_H };
   return (
-    <div className="v8-dz relative mx-auto hidden h-[545px] w-[1200px] overflow-hidden v8d:block">
-      <div data-anim-root="" className="absolute top-[-170px] left-[-120px] h-[715px] w-[1440px]">
+    <div className="v8-dz relative mx-auto hidden h-[530px] w-[1200px] overflow-hidden v8d:block">
+      <div data-anim-root="" className="absolute top-[-170px] left-[-120px] h-[700px] w-[1440px]">
         <div className={`absolute inset-x-0 top-[200px] text-center ${MONO} text-[12px] text-v8-faint`}>{DIAGRAM.caption}</div>
         <ArrowRight left={486} t={0} />
         <ArrowRight left={886} t={600} />
-        <svg width="840" height="80" viewBox="0 0 840 80" className="absolute top-[565px] left-[300px]" aria-hidden="true" {...anim("draw-l", 1300, 400)}>
+        <svg width="840" height="80" viewBox="0 0 840 80" className="absolute left-[300px]" aria-hidden="true" {...anim("draw-l", 1300, 400, { top: CARD_TOP + CARD_H })}>
           <path d="M810 10 V62 Q810 70 802 70 H18 Q10 70 10 62 V18" fill="none" stroke={DASH} strokeDasharray="4 4" />
           <path d="M6 22 L10 17.5 L14 22" fill="none" stroke={ARROW} strokeWidth="1.2" />
         </svg>
-        <div className={`${DESK_CARD} left-[140px]`} {...anim("fade", 0, 300)}>
+        <div className={`${DESK_CARD} left-[140px]`} {...anim("fade", 0, 300, cardStyle)}>
           <span className={CARD_TITLE}>{DIAGRAM.facts.title}</span>
           <Rows rows={DIAGRAM.facts.rows} />
         </div>
-        <div className={`${DESK_CARD} left-[540px]`} {...anim("fade", 300, 300)}>
-          <Engine id="dz-desk" logoHeight={26} mapClass="w-[160px]" />
+        <div className={`${DESK_CARD} left-[540px]`} {...anim("fade", 300, 300, cardStyle)}>
+          <Engine id="dz-desk" logoHeight={26} mapClass="w-[150px]" />
         </div>
-        <div className={`${DESK_CARD} left-[940px]`} {...anim("fade", 900, 300)}>
+        <div className={`${DESK_CARD} left-[940px]`} {...anim("fade", 900, 300, cardStyle)}>
           <span className={CARD_TITLE}>{DIAGRAM.record.title}</span>
           <Rows rows={DIAGRAM.record.rows} timed={[1000, 1080, 1160]} />
+          <Derived t={1240} />
         </div>
-        <div className="pointer-events-none absolute top-[621px] left-[120px] flex w-[1200px] justify-center">
+        <div className="pointer-events-none absolute left-[120px] flex w-[1200px] justify-center" style={{ top: CARD_TOP + CARD_H + 56 }}>
           <div
             className={`box-border flex h-7 items-center rounded-full border border-v8-line bg-v8-inset px-3 whitespace-nowrap ${MONO} text-[12px] text-v8-dim`}
             {...anim("fade", 1500, 300)}
           >
-            {DIAGRAM.retest}
+            {DIAGRAM.loop}
           </div>
         </div>
-        <Legend className="absolute inset-x-0 top-[675px] text-[11.5px]" />
       </div>
     </div>
   );
@@ -142,11 +142,11 @@ function DownArrow({ t }: { t: number }) {
 
 const NARROW_CARD = "flex flex-col gap-2.5 rounded-v8-card border border-v8-line bg-v8-card p-3.5";
 
-/** Narrow diagram (below 1100px): the three cards stacked, with the return loop down the left edge. */
+/** Narrow artifact (below 1100px): the three cards stacked, with the return loop down the left edge. */
 function Narrow() {
   return (
     <div data-anim-root="" className="mx-auto box-border flex w-full max-w-[460px] flex-col v8d:hidden">
-      <div className={`mb-5 text-center ${MONO} text-[11px] text-v8-faint`}>{DIAGRAM.captionShort}</div>
+      <div className={`mb-5 text-center ${MONO} text-[11px] leading-[16px] text-v8-faint`}>{DIAGRAM.captionShort}</div>
       <div className="relative flex flex-col pl-[18px]">
         <div className="pointer-events-none absolute inset-0" aria-hidden="true" {...anim("draw-u", 1300, 400)}>
           <div className="absolute top-[22px] bottom-3.5 left-1 border-l border-dashed border-v8-dash" />
@@ -168,18 +168,18 @@ function Narrow() {
         <div className={NARROW_CARD}>
           <span className={CARD_TITLE}>{DIAGRAM.record.title}</span>
           <Rows rows={DIAGRAM.record.rows} timed={[1000, 1080, 1160]} />
+          <Derived t={1240} />
         </div>
         <div className="h-[18px]" />
         <div className={`self-start rounded-v8-chip border border-v8-line bg-v8-inset px-2.5 py-[5px] ${MONO} text-[11px] text-v8-dim`} {...anim("fade", 1500, 300)}>
-          {DIAGRAM.retest}
+          {DIAGRAM.loop}
         </div>
       </div>
-      <Legend className="mt-3.5 text-[10.5px]" />
     </div>
   );
 }
 
-/** Hero diagram: daily inputs → deterministic checks → verified revision record. Decorative motion, real text. */
+/** Hero artifact: product memory → deterministic checks → verified revision continuity. Decorative motion, real text. */
 export default function HeroDiagram() {
   return (
     <figure className="m-0" aria-label={DIAGRAM.caption}>
