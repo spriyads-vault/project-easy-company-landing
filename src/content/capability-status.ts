@@ -4,7 +4,9 @@
  * fails if one does.
  *
  * Defaults (SCRUM-294): the EMC investigator, product memory, change and retest comparison, and evidence state per
- * revision are LIVE. Everything else is ROADMAP until it ships. To move a capability, change its status here.
+ * revision are LIVE. The v8 homepage adds a typed single reading, the derived result at signing and the public case
+ * library (LIVE), and BOM intake (ROADMAP). Everything else is ROADMAP until it ships. To move a capability, change
+ * its status here.
  */
 
 export type CapabilityStatus = "LIVE" | "EARLY ACCESS" | "ROADMAP";
@@ -23,6 +25,13 @@ export const CAPABILITIES = {
   productMemory: { name: "Product memory (reports, facts and likely causes filed with each product)", summary: "product memory", status: "LIVE" },
   changeAndRetest: { name: "Change and retest comparison", summary: "change and retest comparison", status: "LIVE" },
   evidenceStatePerRevision: { name: "Evidence state per revision", summary: "evidence state per revision", status: "LIVE" },
+  // Live in the console (v8 homepage, owner-confirmed for the v8 copy)
+  singleReading: { name: "Typing a single bench reading", summary: "typing a single bench reading", status: "LIVE" },
+  derivedResultAtSigning: { name: "Derived result at signing (not a certification)", summary: "the derived result at signing", status: "LIVE" },
+  publicCaseLibrary: { name: "Public case library (workspace history stays in its own workspace)", summary: "the public case library", status: "LIVE" },
+
+  // Sources not yet live
+  bomIntake: { name: "BOM intake", summary: "BOM intake", status: "ROADMAP" },
 
   // Agents not yet live
   changeReviewer: { name: "Change reviewer agent", summary: "the change reviewer agent", status: "ROADMAP" },

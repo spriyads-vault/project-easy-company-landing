@@ -191,11 +191,11 @@ function listOf(items: string[]): string {
  * FAQ 06, generated from capability-status.ts: the LIVE capabilities, then only the other statuses that some item on
  * the page actually has (tests/unit/capability-status.test.ts fails if it names one that none has).
  */
-export function liveTodayAnswer(): string {
+export function liveTodayAnswer(page: readonly CapabilityId[] = PAGE_CAPABILITIES): string {
   const live = Object.values(CAPABILITIES)
     .filter((c) => c.status === "LIVE")
     .map((c) => c.summary);
-  const others = (["EARLY ACCESS", "ROADMAP"] as const).filter((s) => PAGE_CAPABILITIES.some((id) => statusOf(id) === s)).map((s) => STATUS_IN_PROSE[s]);
+  const others = (["EARLY ACCESS", "ROADMAP"] as const).filter((s) => page.some((id) => statusOf(id) === s)).map((s) => STATUS_IN_PROSE[s]);
   const first = live[0] ? live[0][0].toUpperCase() + live[0].slice(1) : "";
   const lead = live.length ? `${listOf([first, ...live.slice(1)])}.` : "Nothing yet.";
   return others.length ? `${lead} Everything else on this page is marked ${others.join(" or ")}.` : lead;
