@@ -25,6 +25,15 @@ export function linkify(text: string, className = LINK): ReactNode {
 export default function LegalPage({ doc }: { doc: LegalDoc }) {
   return (
     <SiteShell variant="page">
+      <LegalBody doc={doc} />
+    </SiteShell>
+  );
+}
+
+/** The legal page content, shared by the v3 page above and the v8 one (src/site/v8/LegalPageV8.tsx). */
+export function LegalBody({ doc }: { doc: LegalDoc }) {
+  return (
+    <>
       <main id="main" className="mx-auto max-w-article px-(--space-gutter) py-[clamp(64px,8vw,112px)]">
         <p className="m-0 font-mono text-[10px] tracking-[0.1em] text-fg-faint">LAST UPDATED · {doc.lastUpdated.toUpperCase()}</p>
         <h1 className="m-0 mt-4 mb-12 border-b border-line-2 pb-6 text-[clamp(32px,4vw,44px)] leading-[1.1] font-bold tracking-[-0.035em]">
@@ -54,6 +63,6 @@ export default function LegalPage({ doc }: { doc: LegalDoc }) {
           ))}
         </div>
       </main>
-    </SiteShell>
+    </>
   );
 }

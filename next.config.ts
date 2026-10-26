@@ -7,14 +7,15 @@ import type { NextConfig } from "next";
  * build: with the flag off, the bundle (and the preloaded fonts) are exactly what they were before v6.
  *   @crado/home-active   the "/" page (src/home/v3, src/home/v6 or src/home/v8)
  *   @crado/fonts-active  the root layout's fonts (v3 faces, IBM Plex preloaded on every page, or the v3 faces unpreloaded for v8)
- *   @crado/site-active   docs layout, docs article and primitives, legal page and 404 (src/site/v3.ts or v6.ts)
+ *   @crado/site-active   docs layout, docs article and primitives, legal page and 404 (src/site/v3.ts, v6.ts or v8.ts)
  * See src/lib/flags.ts for the same flag read at runtime.
  */
 const on = (v: string | undefined) => ["1", "true", "on"].includes((v ?? "").toLowerCase());
 /**
  * NEXT_PUBLIC_FF_HOMEPAGE_V8 (default off) swaps in the v8 dark homepage and wins over v6: "/" is src/home/v8, the
- * root layout gets src/app/fonts-v8.ts (the v3 faces without preloads; the homepage loads its own), and docs, legal
- * pages and the 404 keep the v3 modules. Same rule as src/lib/flags.ts HOMEPAGE_V8.
+ * root layout gets src/app/fonts-v8.ts (the v8 faces, plus the v3 faces without preloads for the docs content), and
+ * docs, legal pages and the 404 get src/site/v8.ts: the v3 content inside the v8 shell. Same rule as
+ * src/lib/flags.ts HOMEPAGE_V8.
  */
 const HOMEPAGE_V8 = on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V8);
 const HOMEPAGE_V6 = !HOMEPAGE_V8 && on(process.env.NEXT_PUBLIC_FF_HOMEPAGE_V6);
@@ -35,7 +36,7 @@ const SECTION_SLUGS = ["how-it-works", "agents", "coverage", "faq", "waitlist"];
 const ALIASES = {
   "@crado/home-active": HOMEPAGE_V8 ? "./src/home/v8/HomePage.tsx" : HOMEPAGE_V6 ? "./src/home/v6/HomePage.tsx" : "./src/home/v3/HomePage.tsx",
   "@crado/fonts-active": HOMEPAGE_V8 ? "./src/app/fonts-v8.ts" : HOMEPAGE_V6 ? "./src/app/fonts-v6.ts" : "./src/app/fonts.ts",
-  "@crado/site-active": HOMEPAGE_V6 ? "./src/site/v6.ts" : "./src/site/v3.ts",
+  "@crado/site-active": HOMEPAGE_V8 ? "./src/site/v8.ts" : HOMEPAGE_V6 ? "./src/site/v6.ts" : "./src/site/v3.ts",
 };
 
 const nextConfig: NextConfig = {

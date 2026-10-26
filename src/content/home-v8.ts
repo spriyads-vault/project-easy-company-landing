@@ -534,6 +534,21 @@ export const NAV = [
   { href: `#${IDS.faq}`, label: "FAQ" },
 ] as const;
 
+/**
+ * The announcement bar above the header, on the homepage and on every docs and legal page. Replaces the v3 "PILOT
+ * PROGRAMME" strip. Names only the live 15.109(a) investigation; the onboarding line is the waitlist's own wording.
+ */
+export const ANNOUNCEMENT = {
+  label: "NOW ONBOARDING HARDWARE TEAMS",
+  text: "Radiated-emissions investigation under 47 CFR §\u00a015.109(a)",
+  cta: "Join the waitlist →",
+};
+
+/** A homepage link as seen from another page: "#id" becomes "/#id"; paths and URLs are unchanged. */
+export function fromPage(href: string, linkBase: "" | "/"): string {
+  return href.startsWith("#") ? `${linkBase}${href}` : href;
+}
+
 export const NAV_CTA = {
   sample: { href: `#${IDS.sample}`, label: "Sample case" },
   /** The waitlist: there is no product sign-up on this site. */

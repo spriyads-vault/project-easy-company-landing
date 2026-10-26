@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { isLive } from "@/content/capability-status";
-import { FOOTER, FOOTER_COPYRIGHT, FOOTER_NVIDIA, FOOTER_TAGLINE, type FooterLink } from "@/content/home-v8";
+import { FOOTER, FOOTER_COPYRIGHT, FOOTER_NVIDIA, FOOTER_TAGLINE, fromPage, type FooterLink } from "@/content/home-v8";
 import StatusTag from "./StatusTag";
 
 const LINK = "text-[16px] leading-6 text-v8-link transition-colors duration-200 hover:text-v8-white";
 
-function FootLink({ link }: { link: FooterLink }) {
+function FootLink({ link, linkBase }: { link: FooterLink; linkBase: "" | "/" }) {
   // Only a link whose capabilities are not all live carries a tag (live coverage is the default and stays untagged).
   const tagged = link.capabilities?.find((id) => !isLive(id));
   const label = (
@@ -15,9 +15,11 @@ function FootLink({ link }: { link: FooterLink }) {
       {tagged && <StatusTag capability={tagged} className="ml-2 align-[2px]" />}
     </>
   );
-  if (link.href.startsWith("/")) {
+  // Homepage sections from another page ("/#faq") are a page navigation, so they use Link like any path.
+  const href = fromPage(link.href, linkBase);
+  if (href.startsWith("/")) {
     return (
-      <Link href={link.href} className={LINK}>
+      <Link href={href} className={LINK}>
         {label}
       </Link>
     );
@@ -35,10 +37,13 @@ function FootLink({ link }: { link: FooterLink }) {
   );
 }
 
-/** Footer (design: link columns, the legal row) with the NVIDIA Inception member badge. */
-export default function Footer() {
+/**
+ * Footer (design: link columns, the legal row) with the NVIDIA Inception member badge. `linkBase` "/" on docs and legal
+ * pages, so the homepage section links go to the homepage.
+ */
+export default function Footer({ linkBase = "" }: { linkBase?: "" | "/" }) {
   return (
-    <footer className="bg-v8-page px-6 pt-[72px] pb-9 shadow-[0_-1px_0_var(--color-v8-ring)]">
+    <footer className="bg-v8-page px-6 pt-[72px] pb-9 font-v8-sans text-v8-white shadow-[0_-1px_0_var(--color-v8-ring)]">
       <div className="mx-auto max-w-[1120px]">
         <div className="flex flex-wrap justify-between gap-12">
           <p className="m-0 max-w-[320px] flex-[1_1_260px] text-[24px] leading-[30px] font-medium">{FOOTER_TAGLINE}</p>
@@ -49,7 +54,7 @@ export default function Footer() {
                 <ul className="m-0 mt-4 flex list-none flex-col gap-3 p-0">
                   {col.links.map((l) => (
                     <li key={l.label}>
-                      <FootLink link={l} />
+                      <FootLink link={l} linkBase={linkBase} />
                     </li>
                   ))}
                 </ul>

@@ -6,6 +6,15 @@ import { DocsMobileBar, DocsNavProvider, DocsRail, DocsSidebar } from "./DocsNav
 export default function DocsLayout({ children }: { children: ReactNode }) {
   return (
     <SiteShell variant="docs">
+      <DocsBody>{children}</DocsBody>
+    </SiteShell>
+  );
+}
+
+/** Sidebar, content and rail, shared by the v3 layout above and the v8 one (src/site/v8/DocsLayoutV8.tsx). */
+export function DocsBody({ children }: { children: ReactNode }) {
+  return (
+    <>
       <DocsNavProvider>
         <DocsMobileBar />
         <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)] items-start gap-12 px-5 font-sans sm:grid-cols-[240px_minmax(0,1fr)] sm:px-8 xl:grid-cols-[260px_minmax(0,1fr)_200px] xl:gap-16">
@@ -16,6 +25,6 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           <DocsRail />
         </div>
       </DocsNavProvider>
-    </SiteShell>
+    </>
   );
 }

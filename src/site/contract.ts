@@ -2,7 +2,10 @@
 // v3 has, v6 has with a compatible type. Imported by nothing; tsc checks it.
 import type * as V3 from "./v3";
 import type * as V6 from "./v6";
+import type * as V8 from "./v8";
 
 type Exports<T> = { [K in keyof T]: T[K] };
 export type SiteContract = Exports<typeof V6> extends Exports<typeof V3> ? true : never;
 export const siteContract: SiteContract = true;
+export type SiteContractV8 = Exports<typeof V8> extends Exports<typeof V3> ? true : never;
+export const siteContractV8: SiteContractV8 = true;

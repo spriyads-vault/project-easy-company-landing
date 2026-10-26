@@ -1,0 +1,44 @@
+/*
+ * The v8 shell around docs, legal pages and the 404 (src/site/v8/SiteShellV8.tsx). Loaded only with that shell. The
+ * v3 content inside it reads its accent from --color-accent*, so redefining them here turns every docs accent (links,
+ * the active sidebar bar, callouts, focus rings) from the v3 blue to the v8 terracotta, and the font tokens to the v8
+ * faces. Tokens: design-system.css.
+ */
+:root:has([data-site-v8]) {
+  background: var(--color-v8-page);
+}
+
+:root:has([data-site-v8]) body {
+  background: var(--color-v8-page);
+}
+
+[data-site-v8] {
+  --color-accent: var(--color-v8-rust);
+  --color-accent-strong: var(--color-v8-rust);
+  --color-accent-soft: rgb(171 81 46 / 0.22);
+  --color-accent-text: var(--color-v8-rust-text);
+  --color-accent-band: var(--color-v8-rust);
+  --color-accent-vivid: var(--color-v8-rust-text);
+  --color-accent-pale: var(--color-v8-rust-text);
+  --color-accent-glow: var(--color-v8-rust-text);
+  --color-accent-soft-line: var(--color-v8-rust-text);
+  --color-bg: var(--color-v8-page);
+
+  /* Type: the v8 faces for the docs and legal content too, so these pages match the header and use the preloaded face.
+     Google Sans Flex is self-hosted at weights 400 to 600, so "bold" headings set 600. */
+  --font-display: var(--font-google-sans-flex), system-ui, sans-serif;
+  --font-sans: var(--font-google-sans-flex), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-weight-bold: 600;
+  font-family: var(--font-display);
+  font-synthesis-weight: none;
+}
+
+[data-site-v8] :focus-visible {
+  outline-color: var(--color-v8-focus);
+}
+
+[data-site-v8] ::selection {
+  background: var(--color-v8-rust);
+  color: #fff;
+}

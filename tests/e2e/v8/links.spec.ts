@@ -57,7 +57,7 @@ test("v8 header: centre links on wide screens, the two pills, and no sign-in", a
 
 test("/docs/changelog stays reachable from the docs navigation", async ({ page }) => {
   await page.goto("/docs");
-  await expect(page.locator('a[href="/docs/changelog"]').first()).toBeAttached();
+  await expect(page.locator('a[href^="/docs/changelog"]').first()).toBeAttached();
 });
 
 for (const path of ["/docs", "/docs/changelog", "/privacy", "/terms"]) {
@@ -65,14 +65,42 @@ for (const path of ["/docs", "/docs/changelog", "/privacy", "/terms"]) {
     const res = await page.goto(path);
     expect(res?.status()).toBe(200);
     await expect(page.locator("h1")).toHaveCount(1);
-    const hrefs = [...(await links(page, "nav[aria-label='Main']")), ...(await links(page, "footer"))];
+    // The v8 shell: announcement bar, v8 header and footer (not the old v3 nav or "PILOT PROGRAMME" strip).
+    await expect(page.locator("[data-announcement]")).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+    await expect(page.getByText("PILOT PROGRAMME")).toHaveCount(0);
+    await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
+    const hrefs = [...(await links(page, "[data-announcement]")), ...(await links(page, "header")), ...(await links(page, "footer"))];
     await checkHrefs(page, hrefs, path);
   });
 }
 
-test("an unknown page is a 404 with the not-found page", async ({ page }) => {
+test("an unknown page is a 404 with the not-found page in the v8 shell", async ({ page }) => {
   const res = await page.goto("/no-such-page");
   expect(res?.status()).toBe(404);
+  await expect(page.locator("h1")).toHaveText("This page isn't here.");
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+});
+
+test("docs use the terracotta accent, not the v3 blue, and mark Method & Coverage as current", async ({ page }) => {
+  await page.goto("/docs");
+  const accent = await page.evaluate(() => getComputedStyle(document.querySelector("[data-site-v8]")!).getPropertyValue("--color-accent").trim());
+  expect(accent.toLowerCase()).not.toContain("2e4bff");
+  // Inline docs links are underlined in the accent.
+  const underline = await page.locator("article p a").first().evaluate((a) => getComputedStyle(a).textDecorationColor);
+  expect(underline).toBe("rgb(171, 81, 46)");
+  await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Method & Coverage" })).toHaveAttribute("aria-current", "page");
+});
+
+test("the homepage announcement bar links to the waitlist and slides away on scroll", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const bar = page.locator("[data-announcement] a");
+  await expect(bar).toHaveAttribute("href", "#get-started");
+  await expect(bar).toBeInViewport();
+  await page.evaluate(() => scrollTo(0, 1200));
+  await expect(bar).not.toBeInViewport();
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeInViewport();
 });
 
 test("sitemap and robots are unchanged and every sitemap URL resolves", async ({ request }) => {
