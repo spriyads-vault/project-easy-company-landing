@@ -5,7 +5,7 @@ import { Glyph, Icon, MONO, PILL_GHOST, PILL_LIGHT } from "../ui";
 /** Hero (SECTION 1): a rounded panel with the eyebrow, h1, intro, the two calls to action, the artifact and its legend. */
 export default function Hero() {
   return (
-    <section id="hero" aria-labelledby="hero-title" className="relative pt-20">
+    <section id="hero" aria-labelledby="hero-title" className="relative pt-[116px]">
       <div className="mx-6 flex flex-col overflow-hidden rounded-v8-panel bg-v8-panel">
         <div className="h-5" />
         <div className="flex flex-col items-center px-6 pt-[clamp(24px,4vh,48px)] text-center">
